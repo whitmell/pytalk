@@ -8,6 +8,9 @@ client = OpenIE()
 
 quiet=True
 max_answers=3
+trace=1
+def tprint(*args) :
+  if trace : print(*args)
 
 def say(what) :
   print(what)
@@ -81,9 +84,10 @@ def answer_quest(q,db) :
     rel_from(0,lemmas,ts)
     matches = defaultdict(set)
     q_db=digest(q)
-    for x in q_db:
-      print(x)
-    print('!!!!')
+    if trace > 1:
+      for x in q_db:
+        print(x)
+      print('!!!!')
     _q_sents,q_lemmas,q_tags,_q_ls,_q_ds,_q_ts=q_db
 
     unknowns=[]
@@ -99,7 +103,7 @@ def answer_quest(q,db) :
          if stemmer or tag[0] == q_tag[0]:
            matches[sent].add(q_lemma)
          else : print('LEMMA',q_lemma,q_tag,tag)
-    if unknowns: print("UNKNOWNS:", unknowns)
+    if unknowns: tprint("UNKNOWNS:", unknowns)
     best=[]
     for (id, shared) in matches.items() :
       sent=sentences[id]
@@ -129,14 +133,14 @@ def query(fname,qs) :
       interact(q,db)
 
 def interact(q,db):
-  print('----- QUERY ----\n')
+  tprint('----- QUERY ----\n')
   say(q)
   print('')
   for info, sent, rank, shared in answer_quest(q, db):
     print(info,end=': ')
     say(nice(sent))
-    print('  ', shared, rank,)
-  print('\n', '------END-------', '\n')
+    tprint('  ', shared, rank,)
+  tprint('\n', '------END-------', '\n')
 
 def cleaned(w) :
   if w in ['-LRB-','-lrb-'] : return '('

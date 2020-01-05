@@ -173,16 +173,17 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-examples/*.pro
+examples/*.json
 examples/*.gv
 examples/*.gv.pdf
+examples/geo.txt
+examples/geo_quest.txt
 
 pdfs/*.pro
 pdfs/*.gv
 pdfs/*.gv.pdf
 
-test/keys/*
-test/abs/*
+*.json
 *.gv
 *.gv.pdf
 
