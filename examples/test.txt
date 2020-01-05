@@ -1,0 +1,3 @@
+Bill and Joe gave the blue book to Mary in Boston.
+The blue book is about machine learning.
+X gave the book to Y?
