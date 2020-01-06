@@ -85,8 +85,9 @@ def digest(text) :
   t=len(tags)
   tt=len(triples)
   n=len(ners)
+  d=len(dependencies)
   #tprint('LENS:',s,l,t,tt)
-  assert l==s==t==n
+  assert l==s==t==n==d
   if openie : assert t==tt
   return res
 
@@ -107,27 +108,27 @@ def rel_from(id,lemmas,tss):
     rs.append(res)
   yield rs
 
-# TODO
+
 def deps_from(id,lemmas,deps):
   rs=[]
-  #print("LLLL",lemmas)
-  #print("QQQQ",deps)
   for dep in deps[id] :
-    #print("!!!DEP",dep)
+    lemma = lemmas[id]
     f, r, t = dep
-    lemma=lemmas[id]
-    res = lemma[f],r,lemma[t]
+    if t == -1 : target=id
+    else: target = lemma[t]
+    res = lemma[f],r,target
     rs.append(res)
   yield rs
 
 
-def show_trips(db) :
+def show_db(db) :
     sents, lemmas, tags, ners, ls, ds, ts = db
     for id in range(len(ts)) :
       for trip in rel_from(id, lemmas, ts):
-         print('TRIP:', trip)
-      #for dep in deps_from(id,lemmas,ds) :
-         #print('DEP:',dep)
+         print('TRIPLES:', trip)
+    for dep in deps_from(id,lemmas,ds) :
+         print('DEPENDS:',dep)
+    print('')
 
 
 def answer_quest(q,db) :
@@ -138,8 +139,8 @@ def answer_quest(q,db) :
       for x in q_db:
         print(x)
       print('!!!!')
-    if trace>0 :
-      show_trips(q_db)
+    if trace>1 :
+      show_db(q_db)
 
     _q_sents,q_lemmas,q_tags,_g_ners,_q_ls,_q_ds,q_ts=q_db
     unknowns=[]
@@ -156,7 +157,7 @@ def answer_quest(q,db) :
          if stemmer or tag[0] == q_tag[0]:
            matches[sent].add(q_lemma)
          else : print('UNMATCHED LEMMA',q_lemma,q_tag,tag)
-    if unknowns: tprint("UNKNOWNS:", unknowns)
+    if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
     best=[]
     for (id, shared) in matches.items() :
       sent=sentences[id]
@@ -174,8 +175,8 @@ def answer_quest(q,db) :
 
 def query(fname,qs) :
   db,qs=get_db_and_quests(fname,qs)
-  if trace > 0:
-    show_trips(db)
+  if trace > 1:
+    show_db(db)
   if qs:
     for q in qs : interact(q,db)
   else:

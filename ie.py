@@ -22,11 +22,13 @@ def ies_of(sentence):
   yield ts
 
 def deps_of(sentence):
+      deps=[]
       for x in sentence['enhancedPlusPlusDependencies'] :
         r=x['dep']
         t=x['governor']
         f=x['dependent']
-        yield (f,r,t)
+        deps.append((f-1,r,t-1))
+      yield deps
 
 def word_ies_of(sentence,lemma=True):
   ts=[]
