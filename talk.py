@@ -6,9 +6,9 @@ from nltk.corpus import stopwords
 stop_words=set(stopwords.words('english'))
 client = OpenIE()
 
-quiet=True
+quiet=False
 max_answers=3
-trace=1
+trace=0
 def tprint(*args) :
   if trace : print(*args)
 
@@ -17,6 +17,7 @@ def say(what) :
   if not quiet : subprocess.run(["say", what])
 
 def load(infile) :
+  tprint('LOADING:',infile)
   with open(infile, 'r') as f: text = f.read()
   return digest(text)
 
@@ -56,41 +57,52 @@ def digest(text) :
     sentences.append(sent)
     lemmas.append(lemma)
     tags.append(tag)
-  return (sentences,lemmas,tags, l2occ,dependencies,triples)
+  res = (sentences,lemmas,tags, l2occ,dependencies,triples)
+  s = len(sentences)
+  l=len(lemmas)
+  t=len(tags)
+  tt=len(triples)
+  #tprint('LENS:',s,l,t,tt)
+  assert l==s==t==tt
+  return res
 
-def validate(xs):
-  for x in xs:
-    q_tag = x[2]
-    if good_tag(q_tag):
-      yield q_tag
+def rel_from(id,lemmas,tags,tss):
+  def to_lems(ux):
+    for u in range(*ux):
+      yield lemma[u]
 
-def rel_from(id,ls,ts):
-  s,v,o=ts[id]
-  #lemma=ls[id]
-  #print(lemma)
-  #sx = [lemmas[id][j] for j in range(*s)]
-  #print('REL', s)
-  ##print(ls)
-  #ls=lemmas[id]
-  #print(lex)
-  #print([j for j in range(*s)])
-
+  rs=[]
+  for t in tss[id] :
+    sx, vx, ox = t
+    lemma = lemmas[id]
+    tag = tags[id]
+    sub = tuple(to_lems(sx))
+    rel = tuple(to_lems(vx))
+    ob = tuple(to_lems(ox))
+    res = (sub, rel, ob)
+    rs.append(res)
+  yield rs
 
 
 
 
 def answer_quest(q,db) :
     sentences,lemmas,tags, ls, ds, ts=db
-    rel_from(0,lemmas,ts)
+    if trace>2: #TODO
+      for i in range(len(lemmas)) :
+        for trip in rel_from(i,lemmas,tags,ts) :
+          tprint('TRIP',len(trip))
     matches = defaultdict(set)
     q_db=digest(q)
     if trace > 1:
       for x in q_db:
         print(x)
       print('!!!!')
-    _q_sents,q_lemmas,q_tags,_q_ls,_q_ds,_q_ts=q_db
+    _q_sents,q_lemmas,q_tags,_q_ls,_q_ds,q_ts=q_db
 
     unknowns=[]
+    if trace> 2: # TODO
+       for trip in rel_from(0,q_lemmas,q_tags,q_ts) : print('QTRIP',trip)
     for qj,q_lemma in enumerate(q_lemmas[0]):
        if q_lemma in stop_words or q_lemma in ".?" : continue
        q_tag=q_tags[0][qj]
@@ -102,7 +114,7 @@ def answer_quest(q,db) :
          tag=tags[sent][pos]
          if stemmer or tag[0] == q_tag[0]:
            matches[sent].add(q_lemma)
-         else : print('LEMMA',q_lemma,q_tag,tag)
+         else : print('UNMATCHED LEMMA',q_lemma,q_tag,tag)
     if unknowns: tprint("UNKNOWNS:", unknowns)
     best=[]
     for (id, shared) in matches.items() :
@@ -114,7 +126,7 @@ def answer_quest(q,db) :
     for i,b in enumerate(best):
       if i<max_answers :
         rank, id, shared, sent = b
-        answers.append((id,sent,rank,shared))
+        answers.append((id,sent,round(rank,2),shared))
     answers.sort()
 
     return answers
@@ -140,7 +152,8 @@ def interact(q,db):
     print(info,end=': ')
     say(nice(sent))
     tprint('  ', shared, rank,)
-  tprint('\n', '------END-------', '\n')
+  print('')
+  tprint('------END-------', '\n')
 
 def cleaned(w) :
   if w in ['-LRB-','-lrb-'] : return '('
@@ -183,17 +196,19 @@ def ggo() :
 
 
 def ggo1() :
-  jsave('examples/geo.txt','geo_test.json')
-  query('test.json', #'examples/texas.txt',
-        ["Who fought in the battle of San Antonio?",
-         "Who fired the cannons?",
-         "Who was Stephen Austin?"
-        ])
-
+  jsave('examples/geo.txt','test.json')
+  ggo()
 
 def igo() :
   query('test.json', [])
 
-ggo()
+def test() :
+    jsave('examples/test.txt', 'test.json')
+    with open('examples/test_quest.txt', 'r') as f:
+      qs = list(l[:-1] for l in f)
+      query('test.json', qs)
+
+
+#test()
 
 

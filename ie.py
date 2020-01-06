@@ -9,11 +9,13 @@ annotators=['tokenize','ssplit','pos','lemma','ner',
             'parse','depparse', 'natlog', 'openie']
 
 def ies_of(sentence):
+  ts=[]
   for triple in sentence['openie']:
     s = triple['subjectSpan']
     v = triple['relationSpan']
     o = triple['objectSpan']
-    yield tuple(s),tuple(v),tuple(o)
+    ts.append( (tuple(s),tuple(v),tuple(o)) )
+  yield ts
 
 def deps_of(sentence):
       for x in sentence['enhancedPlusPlusDependencies'] :
