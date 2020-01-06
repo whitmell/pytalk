@@ -1,14 +1,17 @@
 from collections import defaultdict
 import subprocess
+from pathlib import Path
+import json
+
 from ie import *
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))
 client = OpenIE()
 
-quiet=False
+quiet=True
 max_answers=3
-trace=0
+trace=1
 def tprint(*args) :
   if trace : print(*args)
 
@@ -27,9 +30,24 @@ def jload(infile) :
 
 def jsave(infile,outfile):
   d=load(infile)
-  import json
   with open(outfile,'w') as g:
     json.dump(d,g,indent=0)
+
+def get_db_and_quests(fname,qs) :
+  if fname[-4:]==".txt":
+    jfname=fname[:-4]+".json"
+    my_file = Path(jfname)
+    if not my_file.is_file() :
+       jsave(fname,jfname)
+    db=jload(jfname)
+  else:
+    db = jload(fname)
+  if not isinstance(qs,list) :
+    qfname=qs
+    with open(qfname,'r') as f:
+      qs = list(l.strip() for l in f)
+  return (db,qs)
+
 
 def digest(text) :
   l2occ = defaultdict(list)
@@ -38,18 +56,21 @@ def digest(text) :
   sentences = []
   lemmas = []
   tags=[]
+  ners=[]
   for i,xss in enumerate(client.extract(text)) :
     lexs,deps,ies=xss
     sent=[]
     lemma=[]
     tag=[]
+    ner=[]
     for j,t in enumerate(lexs):
-      w,l,p=t
+      w,l,p,n=t
       wi=len(l2occ)
       l2occ[l].append((i,j))
       sent.append(w)
       lemma.append(l)
       tag.append(p)
+      ner.append(n)
     for t in ies:
       triples.append(t)
     for t in deps:
@@ -57,25 +78,28 @@ def digest(text) :
     sentences.append(sent)
     lemmas.append(lemma)
     tags.append(tag)
-  res = (sentences,lemmas,tags, l2occ,dependencies,triples)
+    ners.append(ner)
+  res = (sentences,lemmas,tags,ners,  l2occ,dependencies,triples)
   s = len(sentences)
   l=len(lemmas)
   t=len(tags)
   tt=len(triples)
+  n=len(ners)
   #tprint('LENS:',s,l,t,tt)
-  assert l==s==t==tt
+  assert l==s==t==n
+  if openie : assert t==tt
   return res
 
-def rel_from(id,lemmas,tags,tss):
+def rel_from(id,lemmas,tss):
   def to_lems(ux):
-    for u in range(*ux):
-      yield lemma[u]
-
+    f,t=ux
+    if f>=0:
+      for u in range(*ux):
+        yield lemma[u]
   rs=[]
   for t in tss[id] :
     sx, vx, ox = t
     lemma = lemmas[id]
-    tag = tags[id]
     sub = tuple(to_lems(sx))
     rel = tuple(to_lems(vx))
     ob = tuple(to_lems(ox))
@@ -83,26 +107,43 @@ def rel_from(id,lemmas,tags,tss):
     rs.append(res)
   yield rs
 
+# TODO
+def deps_from(id,lemmas,deps):
+  rs=[]
+  #print("LLLL",lemmas)
+  #print("QQQQ",deps)
+  for dep in deps[id] :
+    #print("!!!DEP",dep)
+    f, r, t = dep
+    lemma=lemmas[id]
+    res = lemma[f],r,lemma[t]
+    rs.append(res)
+  yield rs
 
+
+def show_trips(db) :
+    sents, lemmas, tags, ners, ls, ds, ts = db
+    for id in range(len(ts)) :
+      for trip in rel_from(id, lemmas, ts):
+         print('TRIP:', trip)
+      #for dep in deps_from(id,lemmas,ds) :
+         #print('DEP:',dep)
 
 
 def answer_quest(q,db) :
-    sentences,lemmas,tags, ls, ds, ts=db
-    if trace>2: #TODO
-      for i in range(len(lemmas)) :
-        for trip in rel_from(i,lemmas,tags,ts) :
-          tprint('TRIP',len(trip))
+    sentences,lemmas,tags,ners, ls, ds, ts=db
     matches = defaultdict(set)
     q_db=digest(q)
     if trace > 1:
       for x in q_db:
         print(x)
       print('!!!!')
-    _q_sents,q_lemmas,q_tags,_q_ls,_q_ds,q_ts=q_db
+    if trace>0 :
+      show_trips(q_db)
 
+    _q_sents,q_lemmas,q_tags,_g_ners,_q_ls,_q_ds,q_ts=q_db
     unknowns=[]
-    if trace> 2: # TODO
-       for trip in rel_from(0,q_lemmas,q_tags,q_ts) : print('QTRIP',trip)
+
     for qj,q_lemma in enumerate(q_lemmas[0]):
        if q_lemma in stop_words or q_lemma in ".?" : continue
        q_tag=q_tags[0][qj]
@@ -123,19 +164,18 @@ def answer_quest(q,db) :
       best.append((r,id,shared,sent))
     best.sort(reverse=True)
     answers=[]
-    for i,b in enumerate(best):
-      if i<max_answers :
-        rank, id, shared, sent = b
-        answers.append((id,sent,round(rank,2),shared))
-    answers.sort()
 
+    for i,b in enumerate(best):
+      if i >= max_answers : break
+      rank, id, shared, sent = b
+      answers.append((id,sent,round(rank,2),shared))
+    answers.sort()
     return answers
 
 def query(fname,qs) :
-  if fname[-4:]==".txt":
-     db=load(fname)
-  else :
-    db = jload(fname)
+  db,qs=get_db_and_quests(fname,qs)
+  if trace > 0:
+    show_trips(db)
   if qs:
     for q in qs : interact(q,db)
   else:
@@ -154,6 +194,8 @@ def interact(q,db):
     tprint('  ', shared, rank,)
   print('')
   tprint('------END-------', '\n')
+
+# helpers
 
 def cleaned(w) :
   if w in ['-LRB-','-lrb-'] : return '('
@@ -174,41 +216,4 @@ def nice(ws) :
 def good_tag(tag,starts="NVJ"):
   c=tag[0]
   return c in starts
-
-# tests
-def go() :
-  with open('examples/texas_quest.txt','r') as f:
-    qs=list(l[:-1] for l in f)
-    query('test.json',qs)
-
-def go1() :
-  jsave('examples/texas.txt','test.json')
-  query('test.json', #'examples/texas.txt',
-        ["Who fought in the battle of San Antonio?",
-         "Who fired the cannons?",
-         "Who was Stephen Austin?"
-        ])
-
-def ggo() :
-  with open('examples/geo_quest.txt','r') as f:
-    qs=list(l[:-1] for l in f)
-    query('test.json',qs)
-
-
-def ggo1() :
-  jsave('examples/geo.txt','test.json')
-  ggo()
-
-def igo() :
-  query('test.json', [])
-
-def test() :
-    jsave('examples/test.txt', 'test.json')
-    with open('examples/test_quest.txt', 'r') as f:
-      qs = list(l[:-1] for l in f)
-      query('test.json', qs)
-
-
-#test()
-
 
