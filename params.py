@@ -3,7 +3,7 @@ openie='openie' in annotators
 quiet=True
 max_answers=3
 trace=1
-force=True
+force=False
 from nltk.stem import PorterStemmer
-stemmer=PorterStemmer()
-#stemmer=None
+#stemmer=PorterStemmer()
+stemmer=None

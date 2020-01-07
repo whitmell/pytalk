@@ -31,9 +31,9 @@ def lexs_of(sentence):
       w = cleaned(tok['word'])
       #print('TOK',tok['index'],w)
       l = cleaned(tok['lemma'])
-      if stemmer : l=stemmer.stem(l)
       t = tok['pos']
       n = tok['ner']
+      if stemmer and n!='O' : l = stemmer.stem(l)
       yield ( w, l, t ,n)
 
 def to_json(infile,outfile):

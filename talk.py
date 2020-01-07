@@ -129,6 +129,8 @@ def show_db(db) :
          print('TRIPLES:', trip)
     for dep in deps_from(id,lemmas,ds) :
          print('DEPENDS:',dep)
+    for ner in ners:
+       print(ner)
     print('')
 
 
