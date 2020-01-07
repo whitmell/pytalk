@@ -8,6 +8,7 @@ from ie import *
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))
+stop_words.union({'|(){}[]'})
 client = OpenIE()
 
 def tprint(*args) :
@@ -154,9 +155,9 @@ def answer_quest(q,db) :
          continue
        for sent,pos in ys:
          tag=tags[sent][pos]
-         if stemmer or tag[0] == q_tag[0]:
-           matches[sent].add(q_lemma)
-         else : print('UNMATCHED LEMMA',q_lemma,q_tag,tag)
+         #if stemmer or tag[0] == q_tag[0]:
+         matches[sent].add(q_lemma)
+         #else : print('UNMATCHED LEMMA',q_lemma,q_tag,tag)
     if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
     best=[]
     for (id, shared) in matches.items() :
@@ -198,11 +199,6 @@ def interact(q,db):
   tprint('------END-------', '\n')
 
 # helpers
-
-def cleaned(w) :
-  if w in ['-LRB-','-lrb-'] : return '('
-  if w in ['-RRB-','-rrb-'] : return ')'
-  return w
 
 def nice(ws) :
   ws=[cleaned(w) for w in ws]
