@@ -1,13 +1,7 @@
 import sys
 import json
 from nltk.stem import PorterStemmer
-
-#stemmer=None
-stemmer=PorterStemmer()
-
-annotators=['tokenize','pos','lemma','depparse']+['openie','ner']
-
-openie='openie' in annotators
+from params import *
 
 def ies_of(sentence):
   if not openie: return

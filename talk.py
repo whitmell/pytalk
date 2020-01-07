@@ -3,15 +3,13 @@ import subprocess
 from pathlib import Path
 import json
 
+from params import *
 from ie import *
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))
 client = OpenIE()
 
-quiet=True
-max_answers=3
-trace=1
 def tprint(*args) :
   if trace : print(*args)
 
@@ -20,7 +18,7 @@ def say(what) :
   if not quiet : subprocess.run(["say", what])
 
 def load(infile) :
-  tprint('LOADING:',infile)
+  tprint('LOADING:',infile,'\n')
   with open(infile, 'r') as f: text = f.read()
   return digest(text)
 
@@ -35,11 +33,14 @@ def jsave(infile,outfile):
 
 def get_db_and_quests(fname,qs) :
   if fname[-4:]==".txt":
-    jfname=fname[:-4]+".json"
-    my_file = Path(jfname)
-    if not my_file.is_file() :
-       jsave(fname,jfname)
-    db=jload(jfname)
+    if force:
+      db = load(fname)
+    else :
+      jfname=fname[:-4]+".json"
+      my_file = Path(jfname)
+      if not my_file.is_file() :
+         jsave(fname,jfname)
+      db=jload(jfname)
   else:
     db = jload(fname)
   if not isinstance(qs,list) :
@@ -47,7 +48,6 @@ def get_db_and_quests(fname,qs) :
     with open(qfname,'r') as f:
       qs = list(l.strip() for l in f)
   return (db,qs)
-
 
 def digest(text) :
   l2occ = defaultdict(list)
@@ -164,8 +164,9 @@ def answer_quest(q,db) :
       r=len(shared)+len(shared)/len(sent)
       best.append((r,id,shared,sent))
     best.sort(reverse=True)
-    answers=[]
 
+    answers=[]
+    #print("BEST",len(best),len(lemmas))
     for i,b in enumerate(best):
       if i >= max_answers : break
       rank, id, shared, sent = b
