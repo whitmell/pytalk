@@ -52,10 +52,18 @@ def get_db_and_quests(fname,qs) :
 
 def digest(text) :
   l2occ = defaultdict(list)
-  sent_data=[]
+  dependencies = []
+  triples = []
+  sentences = []
+  lemmas = []
+  tags=[]
+  ners=[]
   for i,xss in enumerate(client.extract(text)) :
     lexs,deps,ies=xss
-    sent,lemma,tag,ner=[],[],[],[]
+    sent=[]
+    lemma=[]
+    tag=[]
+    ner=[]
     for j,t in enumerate(lexs):
       w,l,p,n=t
       wi=len(l2occ)
@@ -64,81 +72,104 @@ def digest(text) :
       lemma.append(l)
       tag.append(p)
       ner.append(n)
-    d=(tuple(sent),tuple(lemma),tuple(tag),tuple(ner),tuple(deps),tuple(ies))
-    sent_data.append(d)
-  return l2occ,sent_data
+    for t in ies:
+      triples.append(t)
+    for t in deps:
+      dependencies.append(t)
+    sentences.append(sent)
+    lemmas.append(lemma)
+    tags.append(tag)
+    ners.append(ner)
+  res = (sentences,lemmas,tags,ners,  l2occ,dependencies,triples)
+  s = len(sentences)
+  l=len(lemmas)
+  t=len(tags)
+  tt=len(triples)
+  n=len(ners)
+  d=len(dependencies)
+  #tprint('LENS:',s,l,t,tt)
+  assert l==s==t==n==d
+  if openie : assert t==tt
+  return res
 
-def rel_from(d):
+def rel_from(id,lemmas,tss):
   def to_lems(ux):
     f,t=ux
     if f>=0:
       for u in range(*ux):
         yield lemma[u]
   rs=[]
-  for ts in d[IE] :
-    for t in ts :
-      sx, vx, ox = t
-      lemma = d[LEMMA]
-      sub = tuple(to_lems(sx))
-      rel = tuple(to_lems(vx))
-      ob = tuple(to_lems(ox))
-      res = (sub, rel, ob)
-      rs.append(res)
-  yield rs
-
-
-def deps_from(id,d):
-  rs=[]
-  deps=d[DEP]
-  lemmas=d[LEMMA]
-  for dep in deps :
-    f, r, t = dep
-    if t == -1 : target=id
-    else: target = lemmas[t]
-    res = lemmas[f],r,target
+  for t in tss[id] :
+    sx, vx, ox = t
+    lemma = lemmas[id]
+    sub = tuple(to_lems(sx))
+    rel = tuple(to_lems(vx))
+    ob = tuple(to_lems(ox))
+    res = (sub, rel, ob)
     rs.append(res)
   yield rs
 
-SENT,LEMMA,TAG,NER,DEP,IE=0,1,2,3,4,5
 
-def ners_from(d):
-  ners=[]
-  for j, ner in enumerate(d[NER]):
-    lemma = d[LEMMA][j]
-    if ner != 'O': ners.append((lemma,ner))
-  return ners
+def deps_from(id,lemmas,deps):
+  rs=[]
+  for dep in deps[id] :
+    lemma = lemmas[id]
+    f, r, t = dep
+    if t == -1 : target=id
+    else: target = lemma[t]
+    res = lemma[f],r,target
+    rs.append(res)
+  yield rs
+
 
 def show_db(db) :
-    l2occ,sent_data = db
-    for i,d in enumerate(sent_data) :
-      for trip in rel_from(d): print('TRIPLES:', trip)
-      for dep in deps_from(i,d) : print('DEPENDS:',dep)
-      print("NERS",ners_from(d))
+    sents, lemmas, tags, ners, ls, ds, ts = db
+    for id in range(len(ts)) :
+      for trip in rel_from(id, lemmas, ts):
+         print('TRIPLES:', trip)
+    for dep in deps_from(id,lemmas,ds) :
+         print('DEPENDS:',dep)
+    for ner in ners:
+       print(ner)
     print('')
 
+
 def answer_quest(q,db) :
-    l2occ,sent_data=db
+    sentences,lemmas,tags,ners, ls, ds, ts=db
     matches = defaultdict(set)
-    q_l2occ,q_sent_data=digest(q)
+    q_db=digest(q)
+    if trace > 1:
+      for x in q_db:
+        print(x)
+      print('!!!!')
+    if trace>1 :
+      show_db(q_db)
+
+    _q_sents,q_lemmas,q_tags,_g_ners,_q_ls,_q_ds,q_ts=q_db
     unknowns=[]
-    for q_lemma in q_sent_data[0][LEMMA]:
+
+    for qj,q_lemma in enumerate(q_lemmas[0]):
        if q_lemma in stop_words or q_lemma in ".?" : continue
-       ys = l2occ.get(q_lemma)
+       q_tag=q_tags[0][qj]
+       ys = ls.get(q_lemma)
        if not ys :
          unknowns.append(q_lemma)
          continue
        for sent,pos in ys:
+         tag=tags[sent][pos]
+         #if stemmer or tag[0] == q_tag[0]:
          matches[sent].add(q_lemma)
          #else : print('UNMATCHED LEMMA',q_lemma,q_tag,tag)
     if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
     best=[]
     for (id, shared) in matches.items() :
-      sent=sent_data[id][SENT]
+      sent=sentences[id]
       r=len(shared)+len(shared)/len(sent)
       best.append((r,id,shared,sent))
     best.sort(reverse=True)
 
     answers=[]
+    #print("BEST",len(best),len(lemmas))
     for i,b in enumerate(best):
       if i >= max_answers : break
       rank, id, shared, sent = b
@@ -148,7 +179,7 @@ def answer_quest(q,db) :
 
 def query(fname,qs) :
   db,qs=get_db_and_quests(fname,qs)
-  if trace > -1:
+  if trace > 1:
     show_db(db)
   if qs:
     for q in qs : interact(q,db)

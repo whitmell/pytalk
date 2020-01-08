@@ -17,17 +17,18 @@ def ies_of(sentence):
 
 def deps_of(sentence):
       deps=[]
+      #print('SENT',[x for x in sentence['entitymentions']])
       for x in sentence['enhancedPlusPlusDependencies'] :
         r=x['dep']
         t=x['governor']
         f=x['dependent']
         deps.append((f-1,r,t-1))
-      yield deps
+      return deps
 
 def lexs_of(sentence):
     toks = sentence['tokens']
     for tok in toks:
-      #print([x for x in tok])
+      #print('TOKENS',[x for x in tok])
       w = cleaned(tok['word'])
       #print('TOK',tok['index'],w)
       l = cleaned(tok['lemma'])
@@ -43,15 +44,17 @@ def to_json(infile,outfile):
     xs=[x for x in client.extract(text)]
     json.dump(xs,g,indent=2)
 
+'''
 def clean_ascii(text) :
   def trim(char):
     if ord(char) < 7 or ord(char) > 127: return ''
     elif char in "|": return " "
     else: return char
   return "".join(map(trim,text))
+'''
 
 def clean_text(text) :
-  test=clean_ascii(text)
+  #text=clean_ascii(text)
   text=text.replace('..',' ')
   return text
 
@@ -75,7 +78,7 @@ class OpenIE:
                       annotators=annotators, output_format='json')
       for sentence in core_nlp_output['sentences']:
         lexs=tuple(lexs_of(sentence))
-        deps=tuple(deps_of(sentence))
+        deps=deps_of(sentence)
         ies=tuple(ies_of(sentence))
         yield lexs,deps,ies
 
