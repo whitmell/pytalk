@@ -1,10 +1,11 @@
+# stanfordnlp client
 import sys
 import json
 from nltk.stem import PorterStemmer
 from params import *
 
 def ies_of(sentence):
-  if not openie: return
+  if not NLPclient: return
   ts=[]
   for triple in sentence['openie']:
     s1,s2 = triple['subjectSpan']
@@ -34,15 +35,16 @@ def lexs_of(sentence):
       l = cleaned(tok['lemma'])
       t = tok['pos']
       n = tok['ner']
-      if stemmer and n!='O' : l = stemmer.stem(l)
+      if stemmer and n=='O' : l = stemmer.stem(l)
       yield ( w, l, t ,n)
 
 def to_json(infile,outfile):
-  client = OpenIE()
+  client = NLPclient()
   with open(infile,'r') as f : text=f.read()
   with open(outfile, 'w') as g:
     xs=[x for x in client.extract(text)]
     json.dump(xs,g,indent=2)
+
 
 '''
 def clean_ascii(text) :
@@ -64,7 +66,7 @@ def cleaned(w) :
   return w
 
 
-class OpenIE:
+class NLPclient:
   def __init__(self, core_nlp_version = '2018-10-05'):
     from stanfordnlp.server import CoreNLPClient
     self.client = CoreNLPClient(start_server=False)
@@ -93,7 +95,7 @@ class OpenIE:
     #print('DONE EXTRACTING.')
 
 def show_extract(infile):
-  client = OpenIE()
+  client = NLPclient()
   with open(infile,'r') as f : text=f.read()
   for x in client.extract(text) :
     print(x)

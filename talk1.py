@@ -1,6 +1,6 @@
 from collections import defaultdict
 import subprocess
-from ie import *
+from nlp import *
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))

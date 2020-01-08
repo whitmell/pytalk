@@ -1,4 +1,5 @@
 import glob
+import os
 from talk import *
 
 doc_dir="examples/"
@@ -24,6 +25,11 @@ def clean_path(path) :
   for f in files:
     os.remove(f)
 
+def json_clean()  :
+  D=doc_dir
+  files = glob.glob(D + "/*.json")
+  for f in files:
+    os.remove(f)
 
 # tests
 def go() :

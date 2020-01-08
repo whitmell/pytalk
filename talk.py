@@ -4,12 +4,12 @@ from pathlib import Path
 import json
 
 from params import *
-from ie import *
+from nlp import *
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))
 stop_words.union({'|(){}[]'})
-client = OpenIE()
+client = NLPclient()
 
 def tprint(*args) :
   if trace : print(*args)
@@ -148,7 +148,7 @@ def answer_quest(q,db) :
 
 def query(fname,qs) :
   db,qs=get_db_and_quests(fname,qs)
-  if trace > -1:
+  if trace > 1:
     show_db(db)
   if qs:
     for q in qs : interact(q,db)
