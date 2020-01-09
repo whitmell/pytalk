@@ -11,6 +11,9 @@ def quest2doc(qf) :
 
 def process_docs() :
   for quest_file in quest_files :
+    process_doc(quest_file)
+
+def process_doc(quest_file) :
     print(quest_file)
     doc_file=quest2doc(quest_file)
     print(doc_file,'-->',quest_file,'?')

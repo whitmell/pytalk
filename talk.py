@@ -2,6 +2,7 @@ from collections import defaultdict
 import subprocess
 from pathlib import Path
 import json
+import math
 
 from params import *
 from nlp import *
@@ -66,7 +67,7 @@ def digest(text) :
       ner.append(n)
     d=(tuple(sent),tuple(lemma),tuple(tag),tuple(ner),tuple(deps),tuple(ies))
     sent_data.append(d)
-  return l2occ,sent_data
+  return sent_data,l2occ
 
 def rel_from(d):
   def to_lems(ux):
@@ -85,7 +86,6 @@ def rel_from(d):
       res = (sub, rel, ob)
       rs.append(res)
   yield rs
-
 
 def deps_from(id,d):
   rs=[]
@@ -117,9 +117,9 @@ def show_db(db) :
     print('')
 
 def answer_quest(q,db) :
-    l2occ,sent_data=db
+    sent_data,l2occ=db
     matches = defaultdict(set)
-    q_l2occ,q_sent_data=digest(q)
+    q_sent_data,q_l2occ=digest(q)
     unknowns=[]
     for q_lemma in q_sent_data[0][LEMMA]:
        if q_lemma in stop_words or q_lemma in ".?" : continue
@@ -134,7 +134,9 @@ def answer_quest(q,db) :
     best=[]
     for (id, shared) in matches.items() :
       sent=sent_data[id][SENT]
-      r=len(shared)+len(shared)/len(sent)
+      l=len(shared)
+      ls=len(sent)
+      r=l/(1+math.log(ls/(l*l)))
       best.append((r,id,shared,sent))
     best.sort(reverse=True)
 
@@ -165,7 +167,7 @@ def interact(q,db):
   for info, sent, rank, shared in answer_quest(q, db):
     print(info,end=': ')
     say(nice(sent))
-    tprint('  ', shared, rank,)
+    tprint('  ', shared, rank)
   print('')
   tprint('------END-------', '\n')
 
@@ -182,7 +184,7 @@ def nice(ws) :
   sent = sent.replace("''", '"')
   return sent
 
-def good_tag(tag,starts="NVJ"):
+def good_tag(tag,starts="NVJA"):
   c=tag[0]
   return c in starts
 
