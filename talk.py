@@ -58,9 +58,9 @@ def get_quests(qs) :
       qs = list(l.strip() for l in f)
   return qs
 
-def get_db_and_quests(fname,qs) :
+def get_db_and_quests(fname,quest_list_or_quest_file) :
   db=load(fname)
-  qs=get_quests(qs)
+  qs=get_quests(quest_list_or_quest_file)
   return (db,qs)
 
 def digest(text) :
@@ -131,12 +131,19 @@ def to_edges(db) :
       else :
         yield (f,t)
 
-def to_graph(db) :
+def get_avg_len(db) :
+  sent_data,_=db
+  lens=[len(x[LEMMA]) for x in sent_data]
+  n=len(lens)
+  s=sum(lens)
+  return round(s/n)
+
+def to_graph(db,personalization=None) :
   g = nx.DiGraph()
   for e in to_edges(db) :
     f,t=e
     g.add_edge(f,t)
-  pr=nx.pagerank(g)
+  pr=nx.pagerank(g,personalization=personalization)
   by_rank=[(x,r) for (x,r) in pr.items()]
   by_rank.sort(key=lambda x : x[1],reverse=True)
   return g,by_rank
@@ -226,13 +233,13 @@ def interact(q,db):
 class Talker :
   def __init__(self,from_file,sk=5,wk=8):
     self.db=load(from_file)
+    self.avg_len = get_avg_len(self.db)
     self.g,self.pr=to_graph(self.db)
     self.get_sum_and_words(sk,wk)
 
   def query_with(self,qs):
     qs = get_quests(qs)
     answer_with(self.db,qs)
-
 
   def get_tags(self,w):
     l2occ=self.db[1]
@@ -246,7 +253,7 @@ class Talker :
 
   def get_sum_and_words(self,sk,wk):
     def good_sent(ws) :
-      return len(ws)<30
+      return len(ws)<=self.avg_len+2
     sents,words=[],[]
     for i  in range(len(self.pr)):
       x,r=self.pr[i]
@@ -266,9 +273,16 @@ class Talker :
     self.keywords=words
 
 
+  def show_summary(self):
+    say('SUMMARY:')
+    for s in self.summary:
+      say(s)
+    print('')
 
-
-
+  def show_keywords(self):
+    print('KEYWORDS:')
+    print(self.keywords)
+    print('')
 
 
 # helpers

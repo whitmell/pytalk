@@ -82,16 +82,11 @@ def dtest() :
   gshow(g)
 
 def ttest() :
-  fname='examples/bfr'
+  fname='examples/geo'
   t = Talker(fname+'.txt')
   #print(t.pr)
-  print('SUMMARY')
-  for s in t.summary:
-    print(s)
-  print('')
-  print('KEYWORDS')
-  print(t.keywords)
-  print('')
+  t.show_summary()
+  t.show_keywords()
   t.query_with(fname+'_quest.txt')
   #gshow(t.g)
 
