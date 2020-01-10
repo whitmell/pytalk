@@ -122,10 +122,11 @@ def to_edges(db) :
     for dep in dep_from(id,sd):
       f,f_,r,t,t_=dep
       if r == 'punct': continue
-      if f in stop_words or t in stop_words : continue
-      if r in ['nsubj','dobj','iobj'] or t_[0]=='V':
+      elif r in ['nsubj','dobj','iobj'] or t_[0]=='V':
         yield (t,f)
         yield (f,id)
+      elif f in stop_words or t in stop_words:
+        continue
       elif r=='ROOT' :
         yield (t,f)
       else :
@@ -144,9 +145,14 @@ def to_graph(db,personalization=None) :
     f,t=e
     g.add_edge(f,t)
   pr=nx.pagerank(g,personalization=personalization)
+  by_rank=rank_sort
+  return g,pr
+
+def rank_sort(pr) :
   by_rank=[(x,r) for (x,r) in pr.items()]
   by_rank.sort(key=lambda x : x[1],reverse=True)
-  return g,by_rank
+  return by_rank
+
 
 def ners_from(d):
   ners=[]
@@ -171,7 +177,8 @@ def materialize(db) :
       ners=ners_from(d)
       yield tuple(d[LEMMA]),tuple(d[TAG]),ners,tuple(rels),tuple(deps)
 
-def answer_quest(q,db) :
+def answer_quest(q,talker) :
+    db=talker.db
     sent_data,l2occ=db
     matches = defaultdict(set)
     q_sent_data,q_l2occ=digest(q)
@@ -189,9 +196,7 @@ def answer_quest(q,db) :
     best=[]
     for (id, shared) in matches.items() :
       sent=sent_data[id][SENT]
-      l=len(shared)
-      ls=len(sent)
-      r=l/(1+math.log(ls/(l*l)))
+      r=answer_rank(id,shared,sent,talker)
       best.append((r,id,shared,sent))
     best.sort(reverse=True)
 
@@ -203,27 +208,40 @@ def answer_quest(q,db) :
     answers.sort()
     return answers
 
+def answer_rank(id,shared,sent,talker) :
+  lshared = len(shared)
+  lsent = len(sent)
+  lavg=talker.avg_len
+  srank=talker.pr.get(id)
+  if not srank :
+    srank=0
+    #ppp('BAD',nice(sent))
+  #ppp(id,srank,lshared,lsent,lavg)
+  #r = l / (1 + math.log(lsent / (l * l)))
+  r=lshared+math.exp(srank)/(1+abs(lsent-lavg))
+  return r
+
 def query(fname,qs) :
   db,qs=get_db_and_quests(fname,qs)
   if trace > 1:
     show_db(db)
   answer_with(db,qs)
 
-def answer_with(db,qs)     :
+def answer_with(talker,qs)     :
   qs = get_quests(qs)
   if qs:
-    for q in qs : interact(q,db)
+    for q in qs : interact(q,talker)
   else:
     while True:
       q=input('> ')
       if not q : break
-      interact(q,db)
+      interact(q,talker)
 
-def interact(q,db):
+def interact(q,talker):
   tprint('----- QUERY ----\n')
   say(q)
   print('')
-  for info, sent, rank, shared in answer_quest(q, db):
+  for info, sent, rank, shared in answer_quest(q, talker):
     print(info,end=': ')
     say(nice(sent))
     tprint('  ', shared, rank)
@@ -239,7 +257,7 @@ class Talker :
 
   def query_with(self,qs):
     qs = get_quests(qs)
-    answer_with(self.db,qs)
+    answer_with(self,qs)
 
   def get_tags(self,w):
     l2occ=self.db[1]
@@ -255,8 +273,9 @@ class Talker :
     def good_sent(ws) :
       return len(ws)<=self.avg_len+2
     sents,words=[],[]
-    for i  in range(len(self.pr)):
-      x,r=self.pr[i]
+    by_rank=rank_sort(self.pr)
+    for i  in range(len(by_rank)):
+      x,r=by_rank[i]
       if sk and isinstance(x,int) :
         ws=self.db[0][x][SENT]
         if good_sent(ws) :

@@ -82,7 +82,7 @@ def dtest() :
   gshow(g)
 
 def ttest() :
-  fname='examples/geo'
+  fname='examples/texas'
   t = Talker(fname+'.txt')
   #print(t.pr)
   t.show_summary()
