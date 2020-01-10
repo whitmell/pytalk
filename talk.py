@@ -14,6 +14,13 @@ stop_words=set(stopwords.words('english'))
 stop_words.union({'|(){}[]'})
 client = NLPclient()
 
+
+def test_with(fname) :
+  t = Talker(from_file=fname+'.txt')
+  t.show_summary()
+  t.show_keywords()
+  t.query_with(fname+'_quest.txt')
+
 def tprint(*args) :
   if trace : print(*args)
 
@@ -144,7 +151,12 @@ def to_graph(db,personalization=None) :
   for e in to_edges(db) :
     f,t=e
     g.add_edge(f,t)
-  pr=nx.pagerank(g,personalization=personalization)
+  try :
+     pr=nx.pagerank(g,personalization=personalization)
+  except :
+    n=g.number_of_nodes()
+    pr=dict()
+    for l in db[1] : pr[l]=1/n
   by_rank=rank_sort
   return g,pr
 
@@ -181,7 +193,9 @@ def answer_quest(q,talker) :
     db=talker.db
     sent_data,l2occ=db
     matches = defaultdict(set)
-    q_sent_data,q_l2occ=digest(q)
+    answerer=Talker(from_text=q)
+    q_sent_data,q_l2occ=answerer.db
+    #gshow(answerer.g)
     unknowns=[]
     for q_lemma in q_sent_data[0][LEMMA]:
        if q_lemma in stop_words or q_lemma in ".?" : continue
@@ -194,6 +208,8 @@ def answer_quest(q,talker) :
          #else : print('UNMATCHED LEMMA',q_lemma,q_tag,tag)
     if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
     best=[]
+    if pers :
+      talker.pr=nx.pagerank(talker.g,personalization=answerer.pr)
     for (id, shared) in matches.items() :
       sent=sent_data[id][SENT]
       r=answer_rank(id,shared,sent,talker)
@@ -249,8 +265,13 @@ def interact(q,talker):
   tprint('------END-------', '\n')
 
 class Talker :
-  def __init__(self,from_file,sk=5,wk=8):
-    self.db=load(from_file)
+  def __init__(self,from_file=None,from_text=None,sk=5,wk=8):
+    if from_file:
+       self.db=load(from_file)
+    elif from_text :
+       self.db=digest(from_text)
+    else :
+      assert from_file or from_text
     self.avg_len = get_avg_len(self.db)
     self.g,self.pr=to_graph(self.db)
     self.get_sum_and_words(sk,wk)

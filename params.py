@@ -7,7 +7,7 @@ force=False
 from nltk.stem import PorterStemmer
 #stemmer=PorterStemmer()
 stemmer=None
-
+pers=True
 def ppp(*args) :
   print('DEBUG:',end='')
   print(*args)

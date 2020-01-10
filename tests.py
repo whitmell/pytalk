@@ -77,19 +77,19 @@ def dtest() :
   json_clean()
   #db=get_db('examples/geo.txt')
   #db = get_db('examples/summary.txt')
-  db = get_db('examples/test.txt')
+  db = get_db('examples/geo.txt')
   g,pr=to_graph(db)
   gshow(g)
 
 def ttest() :
-  fname='examples/texas'
-  t = Talker(fname+'.txt')
-  #print(t.pr)
-  t.show_summary()
-  t.show_keywords()
-  t.query_with(fname+'_quest.txt')
-  #gshow(t.g)
+  fname='examples/geo'
+  test_with(fname)
+
+def t1() :
+  t=Talker(from_text="X gave the book to Mary?")
+  gshow(t.g)
+  print(t.pr)
 
 ttest()
-
+#t1()
 #process_docs()
