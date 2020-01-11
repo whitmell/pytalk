@@ -28,9 +28,12 @@ def clean_path(path) :
   for f in files:
     os.remove(f)
 
-def json_clean()  :
+def clean()  :
   D=doc_dir
   files = glob.glob(D + "/*.json")
+  for f in files:
+    os.remove(f)
+  files = glob.glob(D + "/*_cloud.pdf")
   for f in files:
     os.remove(f)
 
@@ -40,8 +43,8 @@ def t1() :
   print(t.pr)
 
 def ttest() :
-  fname='examples/hindenburg'
-  test_with(fname,query=False)
+  fname='examples/geo'
+  test_with(fname,query=True)
 
 
 

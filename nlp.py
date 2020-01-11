@@ -17,26 +17,28 @@ def ies_of(sentence):
   yield ts
 
 def deps_of(sentence):
-      deps=[]
-      #print('SENT',[x for x in sentence['entitymentions']])
-      for x in sentence['enhancedPlusPlusDependencies'] :
-        r=x['dep']
-        t=x['governor']
-        f=x['dependent']
-        deps.append((f-1,r,t-1))
-      return deps
+  deps = []
+  # print('SENT',[x for x in sentence['entitymentions']])
+  for x in sentence['enhancedPlusPlusDependencies']:
+    r = x['dep']
+    t = x['governor']
+    f = x['dependent']
+    deps.append((f - 1, r, t - 1))
+  return deps
+
 
 def lexs_of(sentence):
-    toks = sentence['tokens']
-    for tok in toks:
-      #print('TOKENS',[x for x in tok])
-      w = cleaned(tok['word'])
-      #print('TOK',tok['index'],w)
-      l = cleaned(tok['lemma'])
-      t = tok['pos']
-      n = tok['ner']
-      if stemmer and n=='O' : l = stemmer.stem(l)
-      yield ( w, l, t ,n)
+  toks = sentence['tokens']
+  for tok in toks:
+    # print('TOKENS',[x for x in tok])
+    w = cleaned(tok['word'])
+    # print('TOK',tok['index'],w)
+    l = cleaned(tok['lemma'])
+    t = tok['pos']
+    n = tok['ner']
+    if lower : l=l.lower()
+    if stemmer and n == 'O': l = stemmer.stem(l)
+    yield (w, l, t, n)
 
 def to_json(infile,outfile):
   client = NLPclient()
@@ -44,16 +46,6 @@ def to_json(infile,outfile):
   with open(outfile, 'w') as g:
     xs=[x for x in client.extract(text)]
     json.dump(xs,g,indent=2)
-
-
-'''
-def clean_ascii(text) :
-  def trim(char):
-    if ord(char) < 7 or ord(char) > 127: return ''
-    elif char in "|": return " "
-    else: return char
-  return "".join(map(trim,text))
-'''
 
 def clean_text(text) :
   #text=clean_ascii(text)

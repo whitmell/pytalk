@@ -4,10 +4,11 @@ from pathlib import Path
 import json
 import math
 import networkx as nx
-from graphviz import Digraph as DotGraph
 
 from params import *
 from nlp import *
+from vis import gshow,pshow
+
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))
@@ -19,10 +20,10 @@ def test_with(fname,query=True) :
   t = Talker(from_file=fname+'.txt')
   t.show_summary()
   t.show_keywords()
-  pshow(t)
+  if show : pshow(t,file_name=fname+"_cloud.pdf")
   if query:
     t.query_with(fname+'_quest.txt')
-    pshow(t)
+    pshow(t,file_name=fname+"_quest_cloud.pdf")
 
 def tprint(*args) :
   if trace : print(*args)
@@ -38,13 +39,17 @@ def tload(infile) :
 
 def jload(infile) :
   with open(infile, 'r') as f:
-    return json.load(f)
+    res = json.load(f)
+    return res
 
 def jsave(infile,outfile):
   d=tload(infile)
   with open(outfile,'w') as g:
     json.dump(d,g,indent=0)
 
+def exists_file(fname) :
+  path = Path(fname)
+  return path.is_file()
 
 def load(fname) :
   if fname[-4:]==".txt":
@@ -52,14 +57,12 @@ def load(fname) :
       db = tload(fname)
     else :
       jfname=fname[:-4]+".json"
-      my_file = Path(jfname)
-      if not my_file.is_file() :
-         jsave(fname,jfname)
+      if not exists_file(jfname) :
+        jsave(fname,jfname)
       db=jload(jfname)
   else:
     db = jload(fname)
   return db
-
 
 def get_quests(qs) :
   if not isinstance(qs,list) :
@@ -264,7 +267,7 @@ def interact(q,talker):
   tprint('------END-------', '\n')
 
 class Talker :
-  def __init__(self,from_file=None,from_text=None,sk=5,wk=8):
+  def __init__(self,from_file=None,from_text=None,sk=5,wk=8,show=show):
     if from_file:
        self.db=load(from_file)
     elif from_text :
@@ -302,11 +305,14 @@ class Talker :
           sk-=1
           sents.append((x,ws))
       elif wk and isinstance(x,str) :
-        for tag in self.get_tags(x) :
+        tags=self.get_tags(x)
+        ncount=0
+        for tag in tags :
           if tag[0]=='N' :
-            wk -= 1
-            words.append(x)
-            break
+            ncount+=1
+        if ncount>len(tags)//2 :
+          wk -= 1
+          words.append(x)
     sents.sort(key=lambda x: x[0])
     summary=[(s,nice(ws)) for (s,ws) in sents]
     return summary,words
@@ -342,22 +348,3 @@ def nice(ws) :
 def good_tag(tag,starts="NVJA"):
   c=tag[0]
   return c in starts
-
-
-def showGraph(dot, show=True, file_name='textgraph.gv'):
-    dot.render(file_name, view=show)
-
-def gshow(g,file_name='textgraph.gv',show=True):
-    dot = DotGraph()
-    for e in g.edges():
-        f, t = e
-        #w = g[f][t]['weight']
-        w=''
-        dot.edge(str(f), str(t), label=str(w))
-    dot.render(file_name, view=show)
-
-def pshow(t,k=30) :
-  from vis import show_ranks
-  sum,kws=t.extract_content(5,k)
-  d = {w : t.pr[w] for w in kws}
-  show_ranks(d)
