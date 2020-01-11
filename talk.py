@@ -15,11 +15,14 @@ stop_words.union({'|(){}[]'})
 client = NLPclient()
 
 
-def test_with(fname) :
+def test_with(fname,query=True) :
   t = Talker(from_file=fname+'.txt')
   t.show_summary()
   t.show_keywords()
-  t.query_with(fname+'_quest.txt')
+  pshow(t)
+  if query:
+    t.query_with(fname+'_quest.txt')
+    pshow(t)
 
 def tprint(*args) :
   if trace : print(*args)
@@ -84,7 +87,8 @@ def digest(text) :
       lemma.append(l)
       tag.append(p)
       ner.append(n)
-    d=(tuple(sent),tuple(lemma),tuple(tag),tuple(ner),tuple(deps),tuple(ies))
+    d=(tuple(sent),tuple(lemma),tuple(tag),
+       tuple(ner),tuple(deps),tuple(ies))
     sent_data.append(d)
   #tprint('DIGESTED')
   return sent_data,l2occ
@@ -187,7 +191,8 @@ def materialize(db) :
       rels=(t for t in rel_from(d))
       deps=(t for t in deps_from(i,d))
       ners=ners_from(d)
-      yield tuple(d[LEMMA]),tuple(d[TAG]),ners,tuple(rels),tuple(deps)
+      yield tuple(d[LEMMA]),tuple(d[TAG]),\
+            ners,tuple(rels),tuple(deps)
 
 def answer_quest(q,talker) :
     db=talker.db
@@ -237,12 +242,6 @@ def answer_rank(id,shared,sent,talker) :
   r=lshared+math.exp(srank)/(1+abs(lsent-lavg))
   return r
 
-def query(fname,qs) :
-  db,qs=get_db_and_quests(fname,qs)
-  if trace > 1:
-    show_db(db)
-  answer_with(db,qs)
-
 def answer_with(talker,qs)     :
   qs = get_quests(qs)
   if qs:
@@ -290,7 +289,7 @@ class Talker :
       tags.add(tag)
     return tags
 
-  def get_sum_and_words(self,sk,wk):
+  def extract_content(self,sk,wk):
     def good_sent(ws) :
       return len(ws)<=self.avg_len+2
     sents,words=[],[]
@@ -309,9 +308,11 @@ class Talker :
             words.append(x)
             break
     sents.sort(key=lambda x: x[0])
-    self.summary=[(s,nice(ws)) for (s,ws) in sents]
-    self.keywords=words
+    summary=[(s,nice(ws)) for (s,ws) in sents]
+    return summary,words
 
+  def get_sum_and_words(self, sk, wk):
+    self.summary,self.keywords=self.extract_content(sk,wk)
 
   def show_summary(self):
     say('SUMMARY:')
@@ -355,3 +356,8 @@ def gshow(g,file_name='textgraph.gv',show=True):
         dot.edge(str(f), str(t), label=str(w))
     dot.render(file_name, view=show)
 
+def pshow(t,k=30) :
+  from vis import show_ranks
+  sum,kws=t.extract_content(5,k)
+  d = {w : t.pr[w] for w in kws}
+  show_ranks(d)

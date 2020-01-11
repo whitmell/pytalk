@@ -34,61 +34,16 @@ def json_clean()  :
   for f in files:
     os.remove(f)
 
-# tests
-def go() :
-  with open('examples/texas_quest.txt','r') as f:
-    qs=list(l[:-1] for l in f)
-    query('test.json',qs)
-
-def go1() :
-  jsave('examples/texas.txt','test.json')
-  query('test.json', #'examples/texas.txt',
-        ["Who fought in the battle of San Antonio?",
-         "Who fired the cannons?",
-         "Who was Stephen Austin?"
-        ])
-
-def ggo() :
-  with open('examples/geo_quest.txt','r') as f:
-    qs=list(l[:-1] for l in f)
-    query('test.json',qs)
-
-
-def ggo1() :
-  jsave('examples/geo.txt','test.json')
-  ggo()
-
-def igo() :
-  query('test.json', [])
-
-def test() :
-    jsave('examples/test.txt', 'test.json')
-    with open('examples/test_quest.txt', 'r') as f:
-      qs = list(l[:-1] for l in f)
-      query('test.json', qs)
-
-def etest() :
-  db=get_db('examples/test.txt')
-  for ms in materialize(db):
-    for m in ms : print(m)
-    print('')
-
-def dtest() :
-  json_clean()
-  #db=get_db('examples/geo.txt')
-  #db = get_db('examples/summary.txt')
-  db = get_db('examples/geo.txt')
-  g,pr=to_graph(db)
-  gshow(g)
-
-def ttest() :
-  fname='examples/geo'
-  test_with(fname)
-
 def t1() :
   t=Talker(from_text="X gave the book to Mary?")
   gshow(t.g)
   print(t.pr)
+
+def ttest() :
+  fname='examples/hindenburg'
+  test_with(fname,query=False)
+
+
 
 ttest()
 #t1()
