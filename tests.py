@@ -1,6 +1,6 @@
 import glob
 import os
-from talk import *
+from doctalk.talk import *
 
 doc_dir="examples/"
 doc_files = sorted(glob.glob(doc_dir+"*.txt"))
@@ -46,7 +46,7 @@ def go()  :
   files = sorted(glob.glob(D + "/*_quest.txt"))
   for qf in files:
     df=qf.replace("_quest.txt","")
-    test_with(df,query=True,show=False)
+    run_with(df,query=True,show=True)
 
 go()
 

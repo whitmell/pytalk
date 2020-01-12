@@ -1,13 +1,11 @@
 from collections import defaultdict
 import subprocess
 from pathlib import Path
-import json
 import math
 import networkx as nx
 
-from params import *
-from nlp import *
-from vis import gshow,pshow
+from .nlp import *
+from .vis import pshow
 
 from nltk.corpus import stopwords
 
@@ -16,11 +14,18 @@ stop_words.union({'|(){}[]'})
 client = NLPclient()
 
 
-def test_with(fname,query=True,show=show) :
+def run_with(fname,query=True,show=show) :
+  '''
+  Activates dialog about document in <fname>.txt with questions in <fname>_quests.txt
+  Assumes stanford corenlp server listening on port 9000 with annotators in
+  params annotators available.
+  '''
   t = Talker(from_file=fname+'.txt')
   t.show_summary()
   t.show_keywords()
-  if show : pshow(t,file_name=fname+"_cloud.pdf")
+  if show :
+    ppp('showing')
+    pshow(t,file_name=fname+"_cloud.pdf")
   if query:
     t.query_with(fname+'_quest.txt')
     pshow(t,file_name=fname+"_quest_cloud.pdf",show=show)
@@ -71,10 +76,12 @@ def get_quests(qs) :
       qs = list(l.strip() for l in f)
   return qs
 
+'''
 def get_db_and_quests(fname,quest_list_or_quest_file) :
   db=load(fname)
   qs=get_quests(quest_list_or_quest_file)
   return (db,qs)
+'''
 
 def digest(text) :
   l2occ = defaultdict(list)
@@ -229,7 +236,7 @@ def answer_quest(q,talker) :
       if i >= max_answers : break
       rank, id, shared, sent = b
       answers.append((id,sent,round(rank,3),shared))
-    answers.sort()
+    if not answers_by_rank : answers.sort()
     return answers
 
 def answer_rank(id,shared,sent,talker) :

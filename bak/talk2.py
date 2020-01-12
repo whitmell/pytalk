@@ -1,10 +1,8 @@
 from collections import defaultdict
 import subprocess
 from pathlib import Path
-import json
 
-from params import *
-from nlp import *
+from doctalk.nlp import *
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))

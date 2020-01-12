@@ -1,6 +1,6 @@
 from collections import defaultdict
 import subprocess
-from nlp import *
+from doctalk.nlp import *
 from nltk.corpus import stopwords
 
 stop_words=set(stopwords.words('english'))

@@ -1,0 +1,3 @@
+include ./requirements.txt
+include ./doctalk/*.py
+include ./doctalk/*.sh

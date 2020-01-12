@@ -1,8 +1,8 @@
-from params import show
+from .params import show
 from graphviz import Digraph as DotGraph
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from pathlib import Path
+
 
 def showGraph(dot, show=True, file_name='textgraph.gv'):
   dot.render(file_name, view=show)
@@ -27,7 +27,7 @@ def show_ranks(rank_dict,file_name="cloud.pdf",show=show) :
   f=plt.figure()
   plt.imshow(cloud, interpolation='bilinear')
   plt.axis("off")
-  if show : plt.show()
+  if show>1 : plt.show()
   '''
   if exists_file(file_name) :
     for i in range(6):

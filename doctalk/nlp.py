@@ -1,8 +1,6 @@
 # stanfordnlp client
-import sys
 import json
-from nltk.stem import PorterStemmer
-from params import *
+from .params import *
 
 def ies_of(sentence):
   if not NLPclient: return
