@@ -76,13 +76,6 @@ def get_quests(qs) :
       qs = list(l.strip() for l in f)
   return qs
 
-'''
-def get_db_and_quests(fname,quest_list_or_quest_file) :
-  db=load(fname)
-  qs=get_quests(quest_list_or_quest_file)
-  return (db,qs)
-'''
-
 def digest(text) :
   l2occ = defaultdict(list)
   sent_data=[]
@@ -259,7 +252,7 @@ def answer_rank(id,shared,sent,talker) :
   #ppp('HOW:', good, long, freq, long * freq, shared)
   r=good/(1+long*freq)
 
-  #r=sigmoid(r)
+  r=sigmoid(r)
   return r
 
 def answer_with(talker,qs)     :

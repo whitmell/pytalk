@@ -1,6 +1,7 @@
 import glob
 import os
 from doctalk.talk import *
+from doctalk.nlp import *
 
 doc_dir="examples/"
 doc_files = sorted(glob.glob(doc_dir+"*.txt"))
@@ -19,7 +20,6 @@ def process_doc(quest_file) :
     print(doc_file,'-->',quest_file,'?')
     query(doc_file,quest_file)
 
-
 #clean files at given directory path
 def clean_path(path) :
   os.makedirs(path,exist_ok=True)
@@ -37,9 +37,16 @@ def clean()  :
   for f in files:
     os.remove(f)
 
+# tests to run
+
+def nlp_test() :
+  to_json('examples/test.txt', 'examples/temp.json')
+  show_extract('examples/test.txt')
+
+
 def ttest() :
-  fname='examples/logrank'
-  test_with(fname,query=True,show=False)
+  fname='examples/test'
+  run_with(fname,query=True,show=False)
 
 def go()  :
   D=doc_dir
@@ -48,8 +55,8 @@ def go()  :
     df=qf.replace("_quest.txt","")
     run_with(df,query=True,show=True)
 
-go()
-
-#ttest()
-#t1()
-#process_docs()
+if __name__== "--main__" :
+  #nlp_test()
+  #go()
+  ttest()
+  pass

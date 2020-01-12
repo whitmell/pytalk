@@ -89,14 +89,3 @@ def show_extract(infile):
   with open(infile,'r') as f : text=f.read()
   for x in client.extract(text) :
     print(x)
-
-def ttest() :
-  to_json('examples/texas.txt','test.json')
-
-def test() :
-  show_extract('examples/test.txt')
-
-if __name__=="__main__" :
-  #go()
-  test()
-  #pass
