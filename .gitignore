@@ -176,8 +176,8 @@ fabric.properties
 examples/*.json
 examples/*.gv
 examples/*.gv.pdf
-examples/geo.txt
-examples/geo_quest.txt
+examples/*_cloud.pdf
+
 
 pdfs/*.pro
 pdfs/*.gv

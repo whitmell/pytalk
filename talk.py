@@ -243,7 +243,15 @@ def answer_rank(id,shared,sent,talker) :
   freq=sum(get_freq(x) for x in shared)
   if not srank :
     srank=0
-  r=lshared+1/freq+math.exp(srank)/((1+abs(lsent-lavg)))
+  good=lshared*math.exp(srank)
+  if lsent>2*lavg :
+    long=math.sqrt(lsent)
+  else :
+    long=1
+  freq=math.log(freq)
+  #ppp('HOW:', good, long, freq, long * freq, shared)
+  r=good/(1+long*freq)
+
   #r=sigmoid(r)
   return r
 
