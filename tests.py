@@ -37,17 +37,19 @@ def clean()  :
   for f in files:
     os.remove(f)
 
-def t1() :
-  t=Talker(from_text="X gave the book to Mary?")
-  gshow(t.g)
-  print(t.pr)
-
 def ttest() :
-  fname='examples/geo'
-  test_with(fname,query=True)
+  fname='examples/logrank'
+  test_with(fname,query=True,show=False)
 
+def go()  :
+  D=doc_dir
+  files = sorted(glob.glob(D + "/*_quest.txt"))
+  for qf in files:
+    df=qf.replace("_quest.txt","")
+    test_with(df,query=True,show=False)
 
+go()
 
-ttest()
+#ttest()
 #t1()
 #process_docs()

@@ -16,12 +16,12 @@ def gshow(g, file_name='textgraph.gv', show=True):
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show)
 
-def pshow(t, k=24,file_name="cloud.pdf"):
+def pshow(t, k=24,file_name="cloud.pdf",show=show):
   sum, kws = t.extract_content(5, k)
   d = {w: t.pr[w] for w in kws}
-  show_ranks(d,file_name=file_name)
+  show_ranks(d,file_name=file_name,show=show)
 
-def show_ranks(rank_dict,file_name="cloud.pdf") :
+def show_ranks(rank_dict,file_name="cloud.pdf",show=show) :
   cloud=WordCloud(width=800,height=400)
   cloud.fit_words(rank_dict)
   f=plt.figure()

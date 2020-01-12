@@ -16,14 +16,14 @@ stop_words.union({'|(){}[]'})
 client = NLPclient()
 
 
-def test_with(fname,query=True) :
+def test_with(fname,query=True,show=show) :
   t = Talker(from_file=fname+'.txt')
   t.show_summary()
   t.show_keywords()
   if show : pshow(t,file_name=fname+"_cloud.pdf")
   if query:
     t.query_with(fname+'_quest.txt')
-    pshow(t,file_name=fname+"_quest_cloud.pdf")
+    pshow(t,file_name=fname+"_quest_cloud.pdf",show=show)
 
 def tprint(*args) :
   if trace : print(*args)
@@ -228,7 +228,7 @@ def answer_quest(q,talker) :
     for i,b in enumerate(best):
       if i >= max_answers : break
       rank, id, shared, sent = b
-      answers.append((id,sent,round(rank,2),shared))
+      answers.append((id,sent,round(rank,3),shared))
     answers.sort()
     return answers
 
@@ -237,18 +237,22 @@ def answer_rank(id,shared,sent,talker) :
   lsent = len(sent)
   lavg=talker.avg_len
   srank=talker.pr.get(id)
+  def get_freq(x) :
+    return len(talker.db[1].get(x))
+
+  freq=sum(get_freq(x) for x in shared)
   if not srank :
     srank=0
-    #ppp('BAD',nice(sent))
-  #ppp(id,srank,lshared,lsent,lavg)
-  #r = l / (1 + math.log(lsent / (l * l)))
-  r=lshared+math.exp(srank)/(1+abs(lsent-lavg))
+  r=lshared+1/freq+math.exp(srank)/((1+abs(lsent-lavg)))
+  #r=sigmoid(r)
   return r
 
 def answer_with(talker,qs)     :
   qs = get_quests(qs)
   if qs:
-    for q in qs : interact(q,talker)
+    for q in qs :
+      if not q :break
+      interact(q,talker)
   else:
     while True:
       q=input('> ')
@@ -333,6 +337,8 @@ class Talker :
 
 
 # helpers
+def sigmoid(x):
+  return 1 / (1 + math.exp(-x))
 
 def nice(ws) :
   ws=[cleaned(w) for w in ws]

@@ -1,7 +1,7 @@
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+['natlog','openie']
 openie='openie' in annotators
 quiet=True
-max_answers=3
+max_answers=5
 trace=1
 force=False
 from nltk.stem import PorterStemmer
