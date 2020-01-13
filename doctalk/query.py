@@ -216,7 +216,7 @@ def t11() :
 def t12() :
   ranked_txt_quest('examples','geo','geo_quest')
 
-def go() :
+def qgo() :
   t1()
   t2()
   t3()
