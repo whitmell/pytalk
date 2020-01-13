@@ -16,9 +16,10 @@ client = NLPclient()
 
 def run_with(fname,query=True,show=show) :
   '''
-  Activates dialog about document in <fname>.txt with questions in <fname>_quests.txt
-  Assumes stanford corenlp server listening on port 9000 with annotators in
-  params annotators available.
+  Activates dialog about document in <fname>.txt with questions
+  in <fname>_quests.txt
+  Assumes stanford corenlp server listening on port 9000
+  with annotators listed in params.py  available.
   '''
   t = Talker(from_file=fname+'.txt')
   t.show_summary()
@@ -103,18 +104,35 @@ def rel_from(d):
     f,t=ux
     if f>=0:
       for u in range(*ux):
-        yield lemma[u]
-  rs=[]
+        yield lemma[u],tag[u]
+  rs,svos=set(),set()
   for ts in d[IE] :
     for t in ts :
       sx, vx, ox = t
       lemma = d[LEMMA]
+      tag=d[TAG]
       sub = tuple(to_lems(sx))
       rel = tuple(to_lems(vx))
       ob = tuple(to_lems(ox))
       res = (sub, rel, ob)
-      rs.append(res)
-  yield tuple(rs)
+      s=()
+      for l,tl in sub:
+        if tl[0]=='N' :
+          s=l
+      o=()
+      for l, tl in ob:
+        if tl[0] == 'N':
+          o = l
+      v=()
+      for l, tl in rel:
+        if tl[0] == 'V':
+          v = l
+      rs.add(res)
+      svo=s,v,o
+      if () in svo : continue
+      svos.add(svo)
+
+  return tuple(rs),tuple(svos)
 
 def dep_from(id,d):
   deps=d[DEP]
@@ -191,11 +209,19 @@ def show_db(db) :
 def materialize(db) :
   sent_data,l2occ= db
   for i,d in enumerate(sent_data) :
-      rels=(t for t in rel_from(d))
-      deps=(t for t in deps_from(i,d))
+      rels,svos = rel_from(d)
+      deps=tuple(t for t in deps_from(i,d))
       ners=ners_from(d)
-      yield tuple(d[LEMMA]),tuple(d[TAG]),\
-            ners,tuple(rels),tuple(deps)
+      yield tuple(d[SENT]),tuple(d[LEMMA]),tuple(d[TAG]),\
+            ners,rels,svos,deps
+
+def svos(fname) :
+  t=Talker(from_file=fname)
+  db=t.db
+  for i,m in enumerate(materialize(db)) :
+    lemmas,words,tags,ners,rels,svos,deps = m
+    for s,v,o in svos :
+      yield s,v,o,i
 
 def answer_quest(q,talker) :
     db=talker.db
@@ -279,7 +305,8 @@ def interact(q,talker):
   tprint('------END-------', '\n')
 
 class Talker :
-  def __init__(self,from_file=None,from_text=None,sk=5,wk=8,show=show):
+  def __init__(self,from_file=None,from_text=None,
+               sk=5,wk=8,show=show):
     if from_file:
        self.db=load(from_file)
     elif from_text :

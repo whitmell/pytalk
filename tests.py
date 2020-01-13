@@ -2,6 +2,7 @@ import glob
 import os
 from doctalk.talk import *
 from doctalk.nlp import *
+import pprint
 
 doc_dir="examples/"
 doc_files = sorted(glob.glob(doc_dir+"*.txt"))
@@ -43,6 +44,21 @@ def nlp_test() :
   to_json('examples/test.txt', 'examples/temp.json')
   show_extract('examples/test.txt')
 
+def mtest() :
+  fname = 'examples/geo.txt'
+  t=Talker(from_file=fname)
+  db=t.db
+  for m in materialize(db) :
+    lemmas,words,tags,ners,rels,svos,deps = m
+    #pprint.pprint(rels)
+    pprint.pprint(svos)
+    print('')
+
+def stest() :
+  fname = 'examples/geo.txt'
+  for svo in svos(fname) :
+    print(svo)
+
 
 def ttest() :
   fname='examples/test'
@@ -55,8 +71,10 @@ def go()  :
     df=qf.replace("_quest.txt","")
     run_with(df,query=True,show=True)
 
-if __name__== "--main__" :
+if __name__== "__main__" :
   #nlp_test()
   #go()
-  ttest()
+  #ttest()
+  #mtest()
+  stest()
   pass
