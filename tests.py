@@ -47,7 +47,7 @@ def nlp_test() :
   show_extract('examples/test.txt')
 
 def mtest() :
-  fname = 'examples/geo.txt'
+  fname = 'examples/summary.txt'
   t=Talker(from_file=fname)
   db=t.db
   for m in materialize(db) :
@@ -67,6 +67,13 @@ def ttest() :
   fname='examples/test'
   run_with(fname,query=True,show=False)
 
+def do(qf) :
+    df=qf.replace("_quest.txt","")
+    run_with(df,query=True,show=True)
+
+def ftest() :
+  do('examples/test_quest.txt')
+
 def go()  :
   D=doc_dir
   files = sorted(glob.glob(D + "/*_quest.txt"))
@@ -79,5 +86,6 @@ if __name__== "__main__" :
   #go()
   #ttest()
   #mtest()
-  mtest()
+  #mtest()
+  ftest()
   pass

@@ -171,11 +171,12 @@ def to_edges(db) :
         yield (t,f)
       else :
         yield (f,t)
-    for (f, t) in comps_from(id, sd):
-      ft = " ".join((f, t))
-      ppp(ft)
-      yield f, ft
-      yield t, ft
+    if False :
+      for (f, t) in comps_from(id, sd):
+        ft = " ".join((f, t))
+        ppp(ft)
+        yield f, ft
+        yield t, ft
 
 
 def get_avg_len(db) :
