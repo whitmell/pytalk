@@ -51,9 +51,10 @@ def mtest() :
   t=Talker(from_file=fname)
   db=t.db
   for m in materialize(db) :
-    lemmas,words,tags,ners,rels,svos,deps = m
+    lemmas,words,tags,ners,rels,svos,deps,comps = m
     #pprint.pprint(rels)
-    pprint.pprint(svos)
+    #pprint.pprint(svos)
+    pprint.pprint(comps)
     print('')
 
 def stest() :
@@ -78,5 +79,5 @@ if __name__== "__main__" :
   #go()
   #ttest()
   #mtest()
-  stest()
+  mtest()
   pass

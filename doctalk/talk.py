@@ -25,7 +25,6 @@ def run_with(fname,query=True,show=show) :
   t.show_summary()
   t.show_keywords()
   if show :
-    ppp('showing')
     pshow(t,file_name=fname+"_cloud.pdf")
   if query:
     t.query_with(fname+'_quest.txt')
@@ -146,7 +145,16 @@ def dep_from(id,d):
     yield res
 
 def deps_from(id,d) :
-  return (t for t in dep_from(id,d))
+  return tuple(t for t in dep_from(id,d))
+
+def comp_from(id,d) :
+  for x in dep_from(id,d) :
+    f,tf,rel,t,tt=x
+    if rel == 'compound' :
+      yield (f,t)
+
+def comps_from(id,d) :
+  return tuple(t for t in comp_from(id,d) if t)
 
 def to_edges(db) :
   sent_data,l2occ=db
@@ -163,6 +171,12 @@ def to_edges(db) :
         yield (t,f)
       else :
         yield (f,t)
+    for (f, t) in comps_from(id, sd):
+      ft = " ".join((f, t))
+      ppp(ft)
+      yield f, ft
+      yield t, ft
+
 
 def get_avg_len(db) :
   sent_data,_=db
@@ -182,7 +196,6 @@ def to_graph(db,personalization=None) :
     n=g.number_of_nodes()
     pr=dict()
     for l in db[1] : pr[l]=1/n
-  by_rank=rank_sort
   return g,pr
 
 def rank_sort(pr) :
@@ -210,10 +223,11 @@ def materialize(db) :
   sent_data,l2occ= db
   for i,d in enumerate(sent_data) :
       rels,svos = rel_from(d)
-      deps=tuple(t for t in deps_from(i,d))
+      deps=deps_from(i,d)
+      comps=comps_from(i,d) # or directly from deps
       ners=ners_from(d)
       yield tuple(d[SENT]),tuple(d[LEMMA]),tuple(d[TAG]),\
-            ners,rels,svos,deps
+            ners,rels,svos,deps,comps
 
 def svos(fname) :
   t=Talker(from_file=fname)
@@ -315,7 +329,8 @@ class Talker :
       assert from_file or from_text
     self.avg_len = get_avg_len(self.db)
     self.g,self.pr=to_graph(self.db)
-    self.get_sum_and_words(sk,wk)
+    #self.get_sum_and_words(sk,wk)
+    self.summary, self.keywords = self.extract_content(sk, wk)
 
   def query_with(self,qs):
     qs = get_quests(qs)
@@ -355,9 +370,6 @@ class Talker :
     sents.sort(key=lambda x: x[0])
     summary=[(s,nice(ws)) for (s,ws) in sents]
     return summary,words
-
-  def get_sum_and_words(self, sk, wk):
-    self.summary,self.keywords=self.extract_content(sk,wk)
 
   def show_summary(self):
     say('SUMMARY:')
