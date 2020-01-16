@@ -39,7 +39,7 @@ Overview of the System Architecture
 
 Fig.  summarizes the architecture of our system. The Stanford parser is started as a separate server process to which the Python text processing module connects as a client. It interfaces with the Prolog-based dialog engine by generating a clausal representation of the document's structure and content, as well as the user's queries. The dialog engine is responsible for handling the user's queries for which answers are sent back to the Python front-end which handles also the call to OS-level spoken-language services, when activated.
 
-deepsysSystem Architecture0.34deepsys
+System Architecture
 
 
 Today's dependency parsers,

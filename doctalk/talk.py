@@ -150,7 +150,10 @@ def deps_from(id,d) :
 def comp_from(id,d) :
   for x in dep_from(id,d) :
     f,tf,rel,t,tt=x
-    if rel == 'compound' or rel == 'amod':
+    #ppp(f,t)
+    if (rel == 'compound' or rel == 'amod') and \
+       good_word(f) and good_word(t) and \
+       good_tag(tf) and good_tag(tt) :
       yield (f,t)
 
 def comps_from(id,d) :
@@ -173,11 +176,11 @@ def to_edges(db) :
         yield (f,t)
     if compounds :
       for ft in comps_from(id, sd):
-        f,t=ft
-        #ppp("FT",ft)
-        yield f, ft
-        yield t, ft
-        yield ft,ft
+          f,t=ft
+          #ppp("FT",ft)
+          yield f, ft
+          yield t, ft
+          yield ft,t
 
 
 def get_avg_len(db) :
@@ -294,7 +297,7 @@ def answer_rank(id,shared,sent,talker) :
   #ppp('HOW:', good, long, freq, long * freq, shared)
   r=good/(1+long*freq)
 
-  r=sigmoid(r)
+  r=math.tanh(r)
   return r
 
 def answer_with(talker,qs)     :
@@ -339,19 +342,35 @@ class Talker :
     qs = get_quests(qs)
     answer_with(self,qs)
 
-  def get_tags(self,w):
+  def get_tagged(self,w):
     l2occ=self.db[1]
     sent_data=self.db[0]
     occs=l2occ.get(w)
     tags=set()
+    words=set()
     for i,j in occs:
+      word = sent_data[i][SENT][j]
       tag=sent_data[i][TAG][j]
+      words.add(word)
       tags.add(tag)
-    return tags
+    return words,tags
 
   def extract_content(self,sk,wk):
     def good_sent(ws) :
       return len(ws)<=self.avg_len+2
+    def nice_word(x,good_tags='N') :
+      ws, tags = self.get_tagged(x)
+      ncount = 0
+      for tag in tags:
+        if tag[0] in good_tags:
+          ncount += 1
+      if ncount > len(tags) // 2:
+        cx = x.capitalize()
+        if cx in ws: x = cx
+        return x
+      else:
+        return None
+
     sents,words=[],[]
     by_rank=rank_sort(self.pr)
     for i  in range(len(by_rank)):
@@ -361,20 +380,16 @@ class Talker :
         if good_sent(ws) :
           sk-=1
           sents.append((x,ws))
-      elif wk and isinstance(x,str) :
-        tags=self.get_tags(x)
-        ncount=0
-        for tag in tags :
-          if tag[0]=='N' :
-            ncount+=1
-        if ncount>len(tags)//2 :
+      elif wk and good_word(x) :
+        x=nice_word(x)
+        if x:
           wk -= 1
           words.append(x)
       elif wk and isinstance(x,tuple) :
-          #ppp("TUPLE",x)
-          #w=" ".join(x)
-          wk -= 1
-          words.append(x)
+          x=tuple(map(nice_word,x))
+          if all(x) :
+            wk -= 1
+            words.append(x)
     sents.sort(key=lambda x: x[0])
     summary=[(s,nice(ws)) for (s,ws) in sents]
     self.by_rank=by_rank # to be used when needed
@@ -393,9 +408,6 @@ class Talker :
 
 
 # helpers
-def sigmoid(x):
-  return 1 / (1 + math.exp(-x))
-
 def nice(ws) :
   ws=[cleaned(w) for w in ws]
   sent=" ".join(ws)
@@ -406,6 +418,9 @@ def nice(ws) :
   sent = sent.replace('``', '"')
   sent = sent.replace("''", '"')
   return sent
+
+def good_word(w) :
+  return isinstance(w,str) and w.isalpha() and w not in stop_words
 
 def good_tag(tag,starts="NVJA"):
   c=tag[0]
