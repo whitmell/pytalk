@@ -1,4 +1,4 @@
-from .params import show
+from .params import *
 from graphviz import Digraph as DotGraph
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
@@ -17,10 +17,17 @@ def gshow(g, file_name='temp.gv', show=1):
   dot.render(file_name, view=show>1)
 
 def pshow(t, k=24,file_name="temp",show=show):
+  def t2s(x) :
+    if isinstance(x,tuple) :
+      return " ".join(x)
+    return x
   sum, kws = t.extract_content(5, k)
-  d = {w: t.pr[w] for w in kws}
+  #ppp(t.by_rank)
+  d0 = {w: t.pr[w] for w in kws}
+  d={t2s(w) : t.pr[w] for w in d0}
+  #ppp("DDDD",d0)
   show_ranks(d,file_name=file_name+"_cloud.pdf",show=show)
-  topg=t.g.subgraph(d)
+  topg=t.g.subgraph(d0)
   gshow(topg,file_name+".gv",show=show)
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=show) :
@@ -30,14 +37,6 @@ def show_ranks(rank_dict,file_name="cloud.pdf",show=show) :
   plt.imshow(cloud, interpolation='bilinear')
   plt.axis("off")
   if show>1 : plt.show()
-  '''
-  if exists_file(file_name) :
-    for i in range(6):
-      fname = file_name.replace("quest_cloud","quest_cloud"+str(i))
-      if not exists_file(fname) :
-        file_name=fname
-        break
-  '''
   f.savefig(file_name,bbox_inches='tight')
 
 if __name__=="__main__":

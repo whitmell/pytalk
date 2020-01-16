@@ -10,6 +10,7 @@ from nltk.stem import PorterStemmer
 stemmer=None
 lower=True
 pers=True
+compounds=True
 show=1
 def ppp(*args) :
   print('DEBUG:',end='')

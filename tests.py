@@ -81,7 +81,7 @@ def go()  :
     run_with(df,query=True,show=True)
 
 def ftest() :
-  fname='examples/geo'
+  fname='examples/test'  #################
   run_with(fname,query=False,show=True)
 
 

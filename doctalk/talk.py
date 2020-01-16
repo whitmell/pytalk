@@ -171,12 +171,13 @@ def to_edges(db) :
         yield (t,f)
       else :
         yield (f,t)
-    if False :
-      for (f, t) in comps_from(id, sd):
-        ft = " ".join((f, t))
-        ppp(ft)
+    if compounds :
+      for ft in comps_from(id, sd):
+        f,t=ft
+        #ppp("FT",ft)
         yield f, ft
         yield t, ft
+        yield ft,ft
 
 
 def get_avg_len(db) :
@@ -369,8 +370,14 @@ class Talker :
         if ncount>len(tags)//2 :
           wk -= 1
           words.append(x)
+      elif wk and isinstance(x,tuple) :
+          #ppp("TUPLE",x)
+          #w=" ".join(x)
+          wk -= 1
+          words.append(x)
     sents.sort(key=lambda x: x[0])
     summary=[(s,nice(ws)) for (s,ws) in sents]
+    self.by_rank=by_rank # to be used when needed
     return summary,words
 
   def show_summary(self):
