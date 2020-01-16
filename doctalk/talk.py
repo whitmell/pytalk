@@ -5,7 +5,7 @@ import math
 import networkx as nx
 
 from .nlp import *
-from .vis import pshow
+from .vis import pshow,gshow
 
 from nltk.corpus import stopwords
 
@@ -25,10 +25,10 @@ def run_with(fname,query=True,show=show) :
   t.show_summary()
   t.show_keywords()
   if show :
-    pshow(t,file_name=fname+"_cloud.pdf")
+    pshow(t,file_name=fname)
   if query:
     t.query_with(fname+'_quest.txt')
-    pshow(t,file_name=fname+"_quest_cloud.pdf",show=show)
+    pshow(t,file_name=fname+"_quest",show=show)
 
 def tprint(*args) :
   if trace : print(*args)
@@ -150,7 +150,7 @@ def deps_from(id,d) :
 def comp_from(id,d) :
   for x in dep_from(id,d) :
     f,tf,rel,t,tt=x
-    if rel == 'compound' :
+    if rel == 'compound' or rel == 'amod':
       yield (f,t)
 
 def comps_from(id,d) :
@@ -324,6 +324,7 @@ class Talker :
                sk=5,wk=8,show=show):
     if from_file:
        self.db=load(from_file)
+       self.from_file=from_file
     elif from_text :
        self.db=digest(from_text)
     else :

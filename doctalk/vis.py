@@ -7,19 +7,21 @@ import matplotlib.pyplot as plt
 def showGraph(dot, show=True, file_name='textgraph.gv'):
   dot.render(file_name, view=show)
 
-def gshow(g, file_name='textgraph.gv', show=True):
+def gshow(g, file_name='temp.gv', show=1):
   dot = DotGraph()
   for e in g.edges():
     f, t = e
     # w = g[f][t]['weight']
     w = ''
     dot.edge(str(f), str(t), label=str(w))
-  dot.render(file_name, view=show)
+  dot.render(file_name, view=show>1)
 
-def pshow(t, k=24,file_name="cloud.pdf",show=show):
+def pshow(t, k=24,file_name="temp",show=show):
   sum, kws = t.extract_content(5, k)
   d = {w: t.pr[w] for w in kws}
-  show_ranks(d,file_name=file_name,show=show)
+  show_ranks(d,file_name=file_name+"_cloud.pdf",show=show)
+  topg=t.g.subgraph(d)
+  gshow(topg,file_name+".gv",show=show)
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=show) :
   cloud=WordCloud(width=800,height=400)

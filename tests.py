@@ -47,7 +47,7 @@ def nlp_test() :
   show_extract('examples/test.txt')
 
 def mtest() :
-  fname = 'examples/summary.txt'
+  fname = 'examples/geo.txt'
   t=Talker(from_file=fname)
   db=t.db
   for m in materialize(db) :
@@ -62,16 +62,15 @@ def stest() :
   for svo in svos(fname) :
     print(svo)
 
-
-def ttest() :
+def qtest() :
   fname='examples/test'
-  run_with(fname,query=True,show=False)
+  run_with(fname,query=True,show=True)
 
 def do(qf) :
     df=qf.replace("_quest.txt","")
     run_with(df,query=True,show=True)
 
-def ftest() :
+def qftest() :
   do('examples/test_quest.txt')
 
 def go()  :
@@ -80,6 +79,11 @@ def go()  :
   for qf in files:
     df=qf.replace("_quest.txt","")
     run_with(df,query=True,show=True)
+
+def ftest() :
+  fname='examples/geo'
+  run_with(fname,query=False,show=True)
+
 
 if __name__== "__main__" :
   #nlp_test()

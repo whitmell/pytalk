@@ -19,3 +19,6 @@ java -mx16g -cp "stanford-corenlp-full-2018-10-05/*" edu.stanford.nlp.pipeline.S
 ```
 
 See some examples at : https://github.com/ptarau/pytalk .
+
+Please see the install hints for stanfordnlp, that might involve torch binaries, and require anaconda on some systems.
+
