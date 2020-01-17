@@ -9,8 +9,7 @@ from .vis import pshow,gshow
 
 from nltk.corpus import stopwords
 
-stop_words=set(stopwords.words('english'))
-stop_words.union({'|(){}[]'})
+stop_words=set(stopwords.words('english')).union({'|(){}[]%'})
 client = NLPclient()
 
 
@@ -166,8 +165,9 @@ def to_edges(db) :
       f,f_,r,t,t_=dep
       if r == 'punct': continue
       elif r in ['nsubj','dobj','iobj'] or t_[0]=='V':
-        yield (t,f)
-        yield (f,id)
+        yield (id, f) # sent to predicate
+        yield (t,f) # pred to arg
+        yield (f,id) # arg to sent
       elif f in stop_words or t in stop_words:
         continue
       elif r=='ROOT' :
@@ -177,10 +177,10 @@ def to_edges(db) :
     if compounds :
       for ft in comps_from(id, sd):
           f,t=ft
-          #ppp("FT",ft)
-          yield f, ft
+          yield f, ft #parts to compound
           yield t, ft
-          yield ft,t
+          yield ft,id # compound to sent
+          yield ft,ft # to self
 
 
 def get_avg_len(db) :
@@ -325,7 +325,7 @@ def interact(q,talker):
 
 class Talker :
   def __init__(self,from_file=None,from_text=None,
-               sk=5,wk=8,show=show):
+               sk=sum_count,wk=key_count,show=show):
     if from_file:
        self.db=load(from_file)
        self.from_file=from_file
@@ -333,6 +333,8 @@ class Talker :
        self.db=digest(from_text)
     else :
       assert from_file or from_text
+    self.sum_count=sk
+    self.key_count=wk
     self.avg_len = get_avg_len(self.db)
     self.g,self.pr=to_graph(self.db)
     #self.get_sum_and_words(sk,wk)

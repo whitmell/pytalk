@@ -1,5 +1,9 @@
-annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+['natlog','openie']
+annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
+           ['natlog','openie']
 openie='openie' in annotators
+
+sum_count=4
+key_count=10
 quiet=True
 max_answers=3
 answers_by_rank=True
