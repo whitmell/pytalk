@@ -5,6 +5,7 @@ import math
 import networkx as nx
 
 from .nlp import *
+from .sim import *
 from .vis import pshow,gshow
 
 from nltk.corpus import stopwords
