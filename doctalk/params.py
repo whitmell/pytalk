@@ -5,8 +5,8 @@ openie='openie' in annotators
 sum_count=4
 key_count=10
 quiet=True
-max_answers=3
-answers_by_rank=True
+max_answers=5
+answers_by_rank=False
 trace=1
 force=False
 from nltk.stem import PorterStemmer

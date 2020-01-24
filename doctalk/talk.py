@@ -259,9 +259,9 @@ def answer_quest(q,talker) :
        ys = l2occ.get(q_lemma)
        if not ys :
          unknowns.append(q_lemma)
-         continue
-       for sent,_pos in ys:
-         matches[sent].add(q_lemma)
+       else :
+         for sent,_pos in ys:
+           matches[sent].add(q_lemma)
        if expand_query > 0:
          related = wn_all(expand_query, 10, q_lemma, wn_tag(q_tag))
          for r_lemma in related:
@@ -269,13 +269,24 @@ def answer_quest(q,talker) :
            zs=l2occ.get(r_lemma)
            if not zs : continue
            for r_sent,_r_pos in zs :
-             nears[r_sent].add(r_lemma)
-             #ppp(q_lemma,'-->',r_lemma)
+             nears[r_sent].add((r_lemma,q_lemma))
+           if zs and not ys :
+             if q_lemma in unknowns : unknowns.pop()
+           tprint('EXPANDED:',q_lemma,'-->',r_lemma)
     if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
 
     best=[]
     if pers :
-      talker.pr=nx.pagerank(talker.g,personalization=answerer.pr)
+      d={x:r for x,r in answerer.pr.items() if x not in stop_words}
+      '''
+      for near in nears.values() :
+         for n,l in near :
+           lr=d.get(l)
+           if lr :
+             d[n]=math.log(1+lr)
+             #ppp(n,l,lr)
+      '''
+      talker.pr=nx.pagerank(talker.g,personalization=d)
 
     for (id, shared) in matches.items() :
       sent=sent_data[id][SENT]
@@ -283,7 +294,8 @@ def answer_quest(q,talker) :
       best.append((r,id,shared,sent))
       #ppp('MATCH', id,shared, r)
 
-    for (id,shared) in nears.items() :
+    for (id,shared_source) in nears.items() :
+      shared = {x for x,_ in shared_source}
       sent = sent_data[id][SENT]
       r = answer_rank(id, shared, sent, talker)/2
       best.append((r, id, shared, sent))
