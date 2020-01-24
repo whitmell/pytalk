@@ -3,6 +3,7 @@ import os
 from doctalk.talk import *
 from doctalk.nlp import *
 from doctalk.query import *
+from doctalk.sim import *
 
 import pprint
 
@@ -92,4 +93,5 @@ if __name__== "__main__" :
   #mtest()
   #mtest()
   ftest()
+  #simtest()
   pass

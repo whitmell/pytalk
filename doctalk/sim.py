@@ -1,79 +1,67 @@
 from nltk.corpus import wordnet as wn
-import math
 
 # basic wordnet relations
   
-def wn_hyper(k,w,t) :
-  i=1
-  for s in wn.synsets(w) :
-    for h in s.hypernyms() :
-      r = s2w(h,t)
-      if r : 
-        yield r
-        i+=1
-        if i >k : return
+def wn_hyper(k,w,t) : return wn_rel(hypers, 2, k, w, t)
 
-def wn_hypo(k,w,t) :
-  i=1
-  for s in wn.synsets(w) :
-    for h in s.hyponyms() :
-      r = s2w(h,t)
-      if r : 
-        yield r
-        i+=1
-        if i >k : return
- 
-def wn_mero(k,w,t) :
-  i=1
-  for s in wn.synsets(w) :
-    for h in s.part_meronyms() :
-      r = s2w(h,t)
-      if r : 
-        yield r
-        i+=1
-        if i >k : return
+def wn_hypo(k,w,t) : return wn_rel(hypos, 2, k, w, t)
 
-def wn_holo(k,w,t) :
-  i=1
-  for s in wn.synsets(w) :
-    for h in s.part_holonyms() :
-      r = s2w(h,t)
-      if r : 
-        yield r
-        i+=1
-        if i >k : return
+def wn_mero(k,w,t) : return wn_rel(meros, 2, k, w, t)
 
-#  less useful but potentially interesting for weak proximity
-def wn_syn(k,w,t) :
-  i=1
-  for s in wn.synsets(w) : 
-    r = s2w(s,t)
-    if r and r != w : 
-      yield r
-      i+=1
-      if i >=k : return
+def wn_holo(k,w,t) : return wn_rel(holos, 2, k, w, t)
 
-def syns(k,w,t) :
-  tag='.'+t+'.'
-  synonyms = set()
-  for syn in wn.synsets(w):
-    if not tag in syn.name() : continue
-    for l in syn.lemmas():
-      print('  ',l)
-      s=l.name()
-      s=s.replace('_', ' ')
-      synonyms.add(s)
-      if len(synonyms) >=k : return synonyms
-  return synonyms
+def wn_syn(k,w,t) : return wn_rel(id, 2, k, w, t)
 
-def s2w(s,t) :
-  n = s.name()
-  (w,tw,_) = n.split('.')
-  if t==tw : return w.replace('_',' ')
-  return None
-  
+def wn_all(n,k,w,t) :
+  res=wn_rel(id, n, k, w, t)
+  for r in (hypers,hypos,meros,holos) :
+    res.update(wn_rel(r,n,k,w,t))
+  return res
 
-def ttt() :
-  print(syns(3,'dog','n'))
+
+
+def id(w) : return [w]
+
+def hypos(s) : return s.hyponyms()
+
+def hypers(s) : return s.hypernyms()
+
+def meros(s) : return s.part_meronyms()
+
+def holos(s) : return s.part_holonyms()
+
+#  ADJ,ADJ_SAT, ADV, NOUN, VERB = 'a','s', 'r', 'n', 'v'
+
+def wn_tag(T) :
+  c=T[0].lower()
+  if c in 'nvr' : return c
+  elif c == 'j' : return 'a'
+  else : return None
+
+def wn_rel(f,n,k,w,t) :
+  related = set()
+  for i,syns in enumerate(wn.synsets(w,pos=t)):
+    if i>=n : break
+    for j,syn in enumerate(f(syns)) :
+      if j>=n : break
+      #print('!!!!!',syn)
+      for l in syn.lemmas():
+        #print('  ',l)
+        s=l.name()
+        if w == s : continue
+        s=s.replace('_', ' ')
+        related.add(s)
+        if len(related) >=k : return related
+  return related
+
+def simtest() :
+  w,tag='bank','n'
+  print(wn_rel(id,2,300,w,tag))
+  print(wn_rel(hypers, 2, 300, w, tag))
+  print(wn_rel(hypos, 2, 300, w, tag))
+  print(wn_rel(meros, 2, 300, w, tag))
+  print(wn_rel(holos, 2, 300, w, tag))
+  print('')
+  print(wn_all(2,3,w,tag))
       
 ######

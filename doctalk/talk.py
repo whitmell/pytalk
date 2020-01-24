@@ -247,27 +247,48 @@ def answer_quest(q,talker) :
     db=talker.db
     sent_data,l2occ=db
     matches = defaultdict(set)
+    nears=defaultdict(set)
     answerer=Talker(from_text=q)
     q_sent_data,q_l2occ=answerer.db
     #gshow(answerer.g)
     unknowns=[]
-    for q_lemma in q_sent_data[0][LEMMA]:
+    for j,q_lemma in enumerate(q_sent_data[0][LEMMA]):
+       q_tag=q_sent_data[0][TAG][j]
+       if q_tag[0] not in "NVJ" : continue # ppp(q_lemma,q_tag)
        if q_lemma in stop_words or q_lemma in ".?" : continue
        ys = l2occ.get(q_lemma)
        if not ys :
          unknowns.append(q_lemma)
          continue
-       for sent,pos in ys:
+       for sent,_pos in ys:
          matches[sent].add(q_lemma)
-         #else : print('UNMATCHED LEMMA',q_lemma,q_tag,tag)
+       if expand_query > 0:
+         related = wn_all(expand_query, 10, q_lemma, wn_tag(q_tag))
+         for r_lemma in related:
+           if r_lemma in stop_words : continue
+           zs=l2occ.get(r_lemma)
+           if not zs : continue
+           for r_sent,_r_pos in zs :
+             nears[r_sent].add(r_lemma)
+             #ppp(q_lemma,'-->',r_lemma)
     if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
+
     best=[]
     if pers :
       talker.pr=nx.pagerank(talker.g,personalization=answerer.pr)
+
     for (id, shared) in matches.items() :
       sent=sent_data[id][SENT]
       r=answer_rank(id,shared,sent,talker)
       best.append((r,id,shared,sent))
+      #ppp('MATCH', id,shared, r)
+
+    for (id,shared) in nears.items() :
+      sent = sent_data[id][SENT]
+      r = answer_rank(id, shared, sent, talker)/2
+      best.append((r, id, shared, sent))
+      #ppp('EXPAND', id,shared, r)
+
     best.sort(reverse=True)
 
     answers=[]
@@ -317,6 +338,7 @@ def interact(q,talker):
   tprint('----- QUERY ----\n')
   say(q)
   print('')
+  ### answer is computed here ###
   for info, sent, rank, shared in answer_quest(q, talker):
     print(info,end=': ')
     say(nice(sent))
