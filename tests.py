@@ -85,6 +85,11 @@ def ftest() :
   fname='examples/test'  #################
   run_with(fname,query=False,show=True)
 
+def chat_test() :
+  chat_about('examples/bfr')
+
+def canned_test() :
+  chat_about('examples/bfr',["What rocket is SpaceX developing?"])
 
 if __name__== "__main__" :
   #nlp_test()
@@ -92,6 +97,7 @@ if __name__== "__main__" :
   #ttest()
   #mtest()
   #mtest()
-  qftest()
+  #qftest()
   #simtest()
+  canned_test()
   pass

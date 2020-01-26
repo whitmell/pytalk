@@ -31,6 +31,16 @@ def run_with(fname,query=True,show=show) :
     t.query_with(fname+'_quest.txt')
     pshow(t,file_name=fname+"_quest",show=show)
 
+
+def chat_about(fname,qs=None) :
+  t = Talker(from_file=fname + '.txt')
+  t.show_summary()
+  t.show_keywords()
+  if show:
+    pshow(t, file_name=fname)
+  t.query_with(qs)
+
+
 def tprint(*args) :
   if trace : print(*args)
 
@@ -341,8 +351,9 @@ def answer_rank(id,shared,sent,talker,expanded=0) :
   #r=math.tanh(r)
   return r
 
-def answer_with(talker,qs)     :
-  qs = get_quests(qs)
+def query_with(talker,qs_or_fname)     :
+  if isinstance(qs_or_fname,str) : qs = get_quests(qs) # file name
+  else : qs=qs_or_fname # list of questions or None
   if qs:
     for q in qs :
       if not q :break
@@ -383,8 +394,7 @@ class Talker :
     self.summary, self.keywords = self.extract_content(sk, wk)
 
   def query_with(self,qs):
-    qs = get_quests(qs)
-    answer_with(self,qs)
+    query_with(self,qs)
 
   def get_tagged(self,w):
     l2occ=self.db[1]
