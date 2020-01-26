@@ -16,7 +16,7 @@ def gshow(g, file_name='temp.gv', show=1):
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show>1)
 
-def pshow(t, k=24,file_name="temp",show=show):
+def pshow(t, k=24,file_name="temp",show=show_pics):
   def t2s(x) :
     if isinstance(x,tuple) :
       return " ".join(x)
@@ -38,7 +38,7 @@ def pshow(t, k=24,file_name="temp",show=show):
   topg=t.g.subgraph(s)
   gshow(topg,file_name+".gv",show=show)
 
-def show_ranks(rank_dict,file_name="cloud.pdf",show=show) :
+def show_ranks(rank_dict,file_name="cloud.pdf",show=show_pics) :
   cloud=WordCloud(width=800,height=400)
   cloud.fit_words(rank_dict)
   f=plt.figure()

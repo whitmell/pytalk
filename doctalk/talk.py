@@ -4,6 +4,7 @@ from pathlib import Path
 import math
 import networkx as nx
 import statistics as stat
+from pprint import pprint
 
 from .nlp import *
 from .sim import *
@@ -15,7 +16,7 @@ stop_words=set(stopwords.words('english')).union({'|(){}[]%'})
 client = NLPclient()
 
 
-def run_with(fname,query=True,show=show) :
+def run_with(fname,query=True,show=show_pics) :
   '''
   Activates dialog about document in <fname>.txt with questions
   in <fname>_quests.txt
@@ -23,22 +24,17 @@ def run_with(fname,query=True,show=show) :
   with annotators listed in params.py  available.
   '''
   t = Talker(from_file=fname+'.txt')
-  t.show_summary()
-  t.show_keywords()
-  if show :
-    pshow(t,file_name=fname)
+  t.show_all()
   if query:
     t.query_with(fname+'_quest.txt')
     pshow(t,file_name=fname+"_quest",show=show)
 
 
-def chat_about(fname,qs=None) :
+def chat_about(fname,qs=None,show_pics=show_pics) :
   t = Talker(from_file=fname + '.txt')
-  t.show_summary()
-  t.show_keywords()
-  if show:
-    pshow(t, file_name=fname)
+  t.show_all()
   t.query_with(qs)
+
 
 
 def tprint(*args) :
@@ -238,13 +234,19 @@ def materialize(db) :
       yield tuple(d[SENT]),tuple(d[LEMMA]),tuple(d[TAG]),\
             ners,rels,svos,deps,comps
 
-def svos(fname) :
-  t=Talker(from_file=fname)
-  db=t.db
-  for i,m in enumerate(materialize(db)) :
-    lemmas,words,tags,ners,rels,svos,deps = m
+def to_svos(db) :
+  sent_data, l2occ = db
+  for i, d in enumerate(sent_data):
+    rels, svos = rel_from(d)
+    comps = comps_from(i, d)  # or directly from deps
+    ners = ners_from(d)
     for s,v,o in svos :
       yield s,v,o,i
+
+
+def svos(fname) :
+  t=Talker(from_file=fname)
+  yield from to_svos(t.db)
 
 def answer_quest(q,talker) :
     db=talker.db
@@ -378,7 +380,8 @@ def interact(q,talker):
 
 class Talker :
   def __init__(self,from_file=None,from_text=None,
-               sk=sum_count,wk=key_count,show=show):
+               sk=sum_count,wk=key_count,show=show_pics):
+    self.from_file=from_file
     if from_file:
        self.db=load(from_file)
        self.from_file=from_file
@@ -467,6 +470,19 @@ class Talker :
     print(self.keywords)
     print('')
 
+  def show_rels(self):
+    print('RELATIONS:')
+    for svoi in to_svos(self.db):
+       print(svoi)
+
+
+  def show_all(self):
+    self.show_summary()
+    self.show_keywords()
+    if show_rels:
+      self.show_rels()
+    if show_pics and self.from_file:
+      pshow(self, file_name=self.from_file)
 
 # helpers
 def nice(ws) :

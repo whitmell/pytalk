@@ -16,7 +16,11 @@ lower=True
 pers=True
 expand_query=2
 compounds=True
-show=1
+show_pics=1
+show_rels=1
+
+from inspect import currentframe
 def ppp(*args) :
-  print('DEBUG:',end='')
+  cf = currentframe()
+  print('DEBUG at:',cf.f_back.f_lineno,end=': ')
   print(*args)
