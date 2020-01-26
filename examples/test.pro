@@ -29,9 +29,9 @@ svo('book', 'is_a', 'learning', [1]).
 svo('machine', 'as_in', 'machine_learning', [1]).
 svo('learning', 'as_in', 'machine_learning', [1]).
 svo('mary', 'go', 'paris', [2]).
-svo('mary', 'sell', 'book', [2]).
 svo('mary', 'sell', 'bookseller', [2]).
+svo('mary', 'sell', 'book', [2]).
 svo('paris', 'is_a', 'city', [2, 3]).
 svo('bookseller', 'is_a', 'title', [2, 3]).
-svo('joe', 'go', 'paris', [3]).
 svo('bill', 'go', 'paris', [3]).
+svo('joe', 'go', 'paris', [3]).

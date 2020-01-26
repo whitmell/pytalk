@@ -177,6 +177,7 @@ examples/*.json
 examples/*.gv
 examples/*.gv.pdf
 examples/*_cloud.pdf
+examples/*.pro
 
 
 pdfs/*.pro

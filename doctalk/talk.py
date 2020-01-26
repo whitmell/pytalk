@@ -506,7 +506,6 @@ class Talker :
         f.write(f'sent({i},{ws}).\n')
       f.write('\n% RELATIONS: \n')
       for svo,occs in self.to_svos().items() :
-        ppp(svo)
         s,v,o=svo
         occs=sorted(list(occs))
         f.write(f'svo{s,v,o,occs}.\n')
