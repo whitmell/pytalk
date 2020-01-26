@@ -12,7 +12,6 @@ from .vis import pshow,gshow
 
 client = NLPclient()
 
-
 def run_with(fname,query=True,show=show_pics) :
   '''
   Activates dialog about document in <fname>.txt with questions
@@ -217,7 +216,7 @@ def ners_from(d):
   ners=[]
   for j, ner in enumerate(d[NER]):
     lemma = d[LEMMA][j]
-    if ner != 'O': ners.append((lemma,ner))
+    if ner != 'O' and good_word(lemma): ners.append((lemma,ner))
   return tuple(ners)
 
 def materialize(db) :
@@ -235,6 +234,12 @@ def wn_from(l2occ) :
     for s,v,o in wn_svo(2,10,w,'n') :
       if l2occ.get(o) :
         yield (s,v,o)
+    for s, v, o in wn_svo(2, 10, w, 'v'):
+      if l2occ.get(o):
+        yield (s, v, o)
+    for s, v, o in wn_svo(2, 10, w, 'a'):
+      if l2occ.get(o):
+        yield (s, v, o)
 
 def v2rel(v) :
   if v=='be' : return 'is_a'
