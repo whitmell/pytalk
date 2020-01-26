@@ -234,6 +234,14 @@ def materialize(db) :
       yield tuple(d[SENT]),tuple(d[LEMMA]),tuple(d[TAG]),\
             ners,rels,svos,deps,comps
 
+def v2rel(v) :
+  if v=='be' : return 'is_a'
+  return v
+
+def e2rel(e) :
+  if e=='MISC' : return 'entity'
+  return e.lower()
+
 def to_svos(db) :
   sent_data, l2occ = db
   for i, d in enumerate(sent_data):
@@ -241,7 +249,14 @@ def to_svos(db) :
     comps = comps_from(i, d)  # or directly from deps
     ners = ners_from(d)
     for s,v,o in svos :
-      yield s,v,o,i
+      yield s,v2rel(v),o,i
+    for x,e in ners :
+      yield x,'is_a',e2rel(e),i
+
+    for a,b in comps :
+      c = " ".join([a,b])
+      yield a,'is_in',c,i
+      yield b,'is_in',c,i
 
 
 def svos(fname) :

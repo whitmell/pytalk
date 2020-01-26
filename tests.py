@@ -99,5 +99,6 @@ if __name__== "__main__" :
   #mtest()
   #qftest()
   #simtest()
-  canned_test()
+  #canned_test()
+  stest()
   pass
