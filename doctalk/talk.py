@@ -533,6 +533,8 @@ class Talker :
     self.show_keywords()
     if show_rels:
       self.show_rels()
+    if to_prolog :
+      self.to_prolog()
     if show_pics and self.from_file:
       pshow(self, file_name=self.from_file)
 
