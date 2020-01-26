@@ -14,7 +14,7 @@ from nltk.stem import PorterStemmer
 stemmer=None
 lower=True
 pers=True
-expand_query=1
+expand_query=2
 compounds=True
 show=1
 def ppp(*args) :

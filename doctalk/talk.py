@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 import math
 import networkx as nx
+import statistics as stat
 
 from .nlp import *
 from .sim import *
@@ -217,14 +218,6 @@ def ners_from(d):
     if ner != 'O': ners.append((lemma,ner))
   return tuple(ners)
 
-def show_db(db) :
-    sent_data,l2occ = db
-    for i,d in enumerate(sent_data) :
-      for trip in rel_from(d): print('TRIPLES:', trip)
-      for dep in deps_from(i,d) : print('DEPENDS:',dep)
-      print("NERS",ners_from(d))
-    print('')
-
 def materialize(db) :
   sent_data,l2occ= db
   for i,d in enumerate(sent_data) :
@@ -290,14 +283,14 @@ def answer_quest(q,talker) :
 
     for (id, shared) in matches.items() :
       sent=sent_data[id][SENT]
-      r=answer_rank(id,shared,sent,talker)
+      r=answer_rank(id,shared,sent,talker,expanded=0)
       best.append((r,id,shared,sent))
       #ppp('MATCH', id,shared, r)
 
     for (id,shared_source) in nears.items() :
       shared = {x for x,_ in shared_source}
       sent = sent_data[id][SENT]
-      r = answer_rank(id, shared, sent, talker)/2
+      r = answer_rank(id, shared, sent, talker,expanded=1)
       best.append((r, id, shared, sent))
       #ppp('EXPAND', id,shared, r)
 
@@ -311,27 +304,36 @@ def answer_quest(q,talker) :
     if not answers_by_rank : answers.sort()
     return answers
 
-def answer_rank(id,shared,sent,talker) :
+def sigmoid(x): return 1 / (1 + math.exp(-x))
+
+def answer_rank(id,shared,sent,talker,expanded=0) :
+
   lshared = len(shared)
+  if not lshared : return 0
+
+  sent_count=len(talker.db[0])
+  word_count=len(talker.db[1])
+
   lsent = len(sent)
   lavg=talker.avg_len
   srank=talker.pr.get(id)
-  def get_freq(x) :
-    return len(talker.db[1].get(x))
 
-  freq=sum(get_freq(x) for x in shared)
-  if not srank :
-    srank=0
-  good=lshared*math.exp(srank)
-  if lsent>2*lavg :
-    long=math.sqrt(lsent)
-  else :
-    long=1
-  freq=math.log(freq)
-  #ppp('HOW:', good, long, freq, long * freq, shared)
-  r=good/(1+long*freq)
+  def get_occ_count(x) : return len(talker.db[1].get(x))
 
-  r=math.tanh(r)
+  unusual=sigmoid(1-stat.harmonic_mean(
+    get_occ_count(x) for x in shared)/sent_count)
+
+  nrank=normalize_sent(srank,lsent,lavg)
+
+  important=math.exp(nrank)
+
+  r=lshared*important*unusual
+
+  if expanded : r=r/2
+
+  ppp('HOW:', lshared, unusual, important, shared,'--->',r)
+
+  #r=math.tanh(r)
   return r
 
 def answer_with(talker,qs)     :
@@ -393,8 +395,7 @@ class Talker :
     return words,tags
 
   def extract_content(self,sk,wk):
-    def good_sent(ws) :
-      return len(ws)<=self.avg_len+2
+
     def nice_word(x,good_tags='N') :
       ws, tags = self.get_tagged(x)
       ncount = 0
@@ -409,14 +410,20 @@ class Talker :
         return None
 
     sents,words=[],[]
-    by_rank=rank_sort(self.pr)
+
+    npr=dict()
+    for x,r in self.pr.items() :
+      if isinstance(x,int) :
+        ws = self.db[0][x][SENT]
+        r=normalize_sent(r,len(ws),self.avg_len)
+      npr[x]=r
+    by_rank=rank_sort(npr)
     for i  in range(len(by_rank)):
       x,r=by_rank[i]
       if sk and isinstance(x,int) :
         ws=self.db[0][x][SENT]
-        if good_sent(ws) :
-          sk-=1
-          sents.append((x,ws))
+        sk-=1
+        sents.append((r,x,ws))
       elif wk and good_word(x) :
         x=nice_word(x)
         if x:
@@ -427,15 +434,16 @@ class Talker :
           if all(x) :
             wk -= 1
             words.append(x)
-    sents.sort(key=lambda x: x[0])
-    summary=[(s,nice(ws)) for (s,ws) in sents]
+    sents.sort(key=lambda x: x[1])
+    summary=[(r,x,nice(ws)) for (r,x,ws) in sents]
     self.by_rank=by_rank # to be used when needed
     return summary,words
 
   def show_summary(self):
     say('SUMMARY:')
-    for s in self.summary:
-      say(s)
+    for r,x,sent in self.summary:
+      print(10000*r,x,end=':')
+      say(sent)
     print('')
 
   def show_keywords(self):
@@ -455,6 +463,13 @@ def nice(ws) :
   sent = sent.replace('``', '"')
   sent = sent.replace("''", '"')
   return sent
+
+
+def normalize_sent(r,sent_len,avg_len):
+  factor =  1/(1+abs(sent_len-avg_len)+math.sqrt(sent_len))
+  #ppp("NORM:",factor,r,sent_len,avg_len)
+  return r*factor
+
 
 def good_word(w) :
   return isinstance(w,str) and w.isalpha() and w not in stop_words

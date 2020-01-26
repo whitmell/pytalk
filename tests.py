@@ -72,7 +72,7 @@ def do(qf) :
     run_with(df,query=True,show=True)
 
 def qftest() :
-  do('examples/geo_quest.txt')
+  do('examples/tesla_quest.txt')
 
 def go()  :
   D=doc_dir
