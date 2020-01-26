@@ -318,20 +318,25 @@ def answer_rank(id,shared,sent,talker,expanded=0) :
   lavg=talker.avg_len
   srank=talker.pr.get(id)
 
-  def get_occ_count(x) : return len(talker.db[1].get(x))
-
-  unusual=sigmoid(1-stat.harmonic_mean(
-    get_occ_count(x) for x in shared)/sent_count)
 
   nrank=normalize_sent(srank,lsent,lavg)
 
+  if nrank==0 : return 0
+
+  def get_occ_count(x): return len(talker.db[1].get(x))
+
+  unusual = sigmoid(1 - stat.harmonic_mean(
+    get_occ_count(x) for x in shared) / sent_count)
+
   important=math.exp(nrank)
 
+  # #r=stat.harmonic_mean((lshared,important,unusual))
   r=lshared*important*unusual
 
   if expanded : r=r/2
 
-  ppp('HOW:', lshared, unusual, important, shared,'--->',r)
+  #ppp('RANKS:',10000*srank,'-->',10000*nrank,lsent,lavg)
+  #ppp('HOW  :', id, lshared, unusual, important, shared,'--->',r)
 
   #r=math.tanh(r)
   return r
@@ -442,7 +447,8 @@ class Talker :
   def show_summary(self):
     say('SUMMARY:')
     for r,x,sent in self.summary:
-      print(10000*r,x,end=':')
+      #print(10000*r,end=' ')
+      print(x,end=': ')
       say(sent)
     print('')
 
@@ -466,7 +472,9 @@ def nice(ws) :
 
 
 def normalize_sent(r,sent_len,avg_len):
-  factor =  1/(1+abs(sent_len-avg_len)+math.sqrt(sent_len))
+  if sent_len > 2*avg_len or sent_len < avg_len/2 :
+    return 0
+  factor =  1/(1+abs(sent_len-avg_len)+sent_len)
   #ppp("NORM:",factor,r,sent_len,avg_len)
   return r*factor
 
