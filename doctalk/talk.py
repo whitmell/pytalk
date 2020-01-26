@@ -470,7 +470,8 @@ class Talker :
       comps = comps_from(i, data)  # or directly from deps
       ners = ners_from(data)
       for s, v, o in svos:
-        d[(s, v2rel(v), o)].add(i)
+        if good_word(s) and good_word(o) :
+           d[(s, v2rel(v), o)].add(i)
       for x, e in ners:
         d[(x, 'is_a', e2rel(e))].add(i)
 
@@ -480,13 +481,19 @@ class Talker :
         d[(b, 'as_in', c)].add(i)
 
     for svo in wn_from(l2occ):
-      d[svo].add(-1)
+      s,v,o=svo
+      occs=set()
+      for  id,_ in l2occ.get(s) :
+        occs.add(id)
+      for id, _ in l2occ.get(o):
+        occs.add(id)
+      d[svo]=occs
 
     return d
+
   def show_summary(self):
     say('SUMMARY:')
     for r,x,sent in self.summary:
-      #print(10000*r,end=' ')
       print(x,end=': ')
       say(sent)
     print('')
