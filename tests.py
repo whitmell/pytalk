@@ -60,7 +60,7 @@ def mtest() :
 
 def stest() :
   fname = 'examples/geo.txt'
-  for svo in svos(fname) :
+  for svo in file_svos(fname) :
     print(svo)
 
 def qtest() :

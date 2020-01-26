@@ -19,6 +19,9 @@ compounds=True
 show_pics=1
 show_rels=1
 
+# decides between '_' and ' ' as separator
+def join(*xs) : return '_'.join(xs)
+
 from inspect import currentframe
 def ppp(*args) :
   cf = currentframe()

@@ -1,4 +1,7 @@
 from nltk.corpus import wordnet as wn
+from nltk.corpus import stopwords
+
+stop_words=set(stopwords.words('english')).union({'|(){}[]%'})
 
 # basic wordnet relations
   
@@ -13,11 +16,18 @@ def wn_holo(k,w,t) : return wn_rel(holos, 2, k, w, t)
 def wn_syn(k,w,t) : return wn_rel(id, 2, k, w, t)
 
 def wn_all(n,k,w,t) :
-  res=wn_rel(id, n, k, w, t)
+  res=wn_rel(id, n, k, w, t) # synonyms
   for r in (hypers,hypos,meros,holos) :
     res.update(wn_rel(r,n,k,w,t))
   return res
 
+def wn_svo(n,k,w,t) :
+  for friend in wn_rel(id,n,k,w,t) :
+    if w<friend: yield (w,'is_like',friend)
+  for friend in wn_rel(hypers,n,k,w,t) :
+    if w!=friend : yield (w,'is_a',friend)
+  for friend in wn_rel(meros, n, k, w, t):
+    if w!=friend : yield (w, 'part_of', friend)
 
 
 def id(w) : return [w]
@@ -40,6 +50,7 @@ def wn_tag(T) :
 
 def wn_rel(f,n,k,w,t) :
   related = set()
+  if w in stop_words : return related
   for i,syns in enumerate(wn.synsets(w,pos=t)):
     if i>=n : break
     for j,syn in enumerate(f(syns)) :
@@ -48,8 +59,9 @@ def wn_rel(f,n,k,w,t) :
       for l in syn.lemmas():
         #print('  ',l)
         s=l.name()
+        if s in stop_words : continue
         if w == s : continue
-        s=s.replace('_', ' ')
+        #s=s.replace('_', ' ')
         related.add(s)
         if len(related) >=k : return related
   return related

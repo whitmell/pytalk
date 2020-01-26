@@ -10,9 +10,6 @@ from .nlp import *
 from .sim import *
 from .vis import pshow,gshow
 
-from nltk.corpus import stopwords
-
-stop_words=set(stopwords.words('english')).union({'|(){}[]%'})
 client = NLPclient()
 
 
@@ -216,7 +213,6 @@ def rank_sort(pr) :
   by_rank.sort(key=lambda x : x[1],reverse=True)
   return by_rank
 
-
 def ners_from(d):
   ners=[]
   for j, ner in enumerate(d[NER]):
@@ -234,6 +230,12 @@ def materialize(db) :
       yield tuple(d[SENT]),tuple(d[LEMMA]),tuple(d[TAG]),\
             ners,rels,svos,deps,comps
 
+def wn_from(l2occ) :
+  for w in l2occ :
+    for s,v,o in wn_svo(2,10,w,'n') :
+      if l2occ.get(o) :
+        yield (s,v,o)
+
 def v2rel(v) :
   if v=='be' : return 'is_a'
   return v
@@ -242,26 +244,12 @@ def e2rel(e) :
   if e=='MISC' : return 'entity'
   return e.lower()
 
-def to_svos(db) :
-  sent_data, l2occ = db
-  for i, d in enumerate(sent_data):
-    rels, svos = rel_from(d)
-    comps = comps_from(i, d)  # or directly from deps
-    ners = ners_from(d)
-    for s,v,o in svos :
-      yield s,v2rel(v),o,i
-    for x,e in ners :
-      yield x,'is_a',e2rel(e),i
-
-    for a,b in comps :
-      c = " ".join([a,b])
-      yield a,'is_in',c,i
-      yield b,'is_in',c,i
 
 
-def svos(fname) :
+
+def file_svos(fname) :
   t=Talker(from_file=fname)
-  yield from to_svos(t.db)
+  yield from t.to_svos().items()
 
 def answer_quest(q,talker) :
     db=talker.db
@@ -369,8 +357,10 @@ def answer_rank(id,shared,sent,talker,expanded=0) :
   return r
 
 def query_with(talker,qs_or_fname)     :
-  if isinstance(qs_or_fname,str) : qs = get_quests(qs) # file name
-  else : qs=qs_or_fname # list of questions or None
+  if isinstance(qs_or_fname,str) :
+    qs = get_quests(qs_or_fname) # file name
+  else :
+    qs=qs_or_fname # list of questions or None
   if qs:
     for q in qs :
       if not q :break
@@ -472,6 +462,27 @@ class Talker :
     self.by_rank=by_rank # to be used when needed
     return summary,words
 
+  def to_svos(self):
+    sent_data, l2occ = self.db
+    d = defaultdict(set)
+    for i, data in enumerate(sent_data):
+      rels, svos = rel_from(data)
+      comps = comps_from(i, data)  # or directly from deps
+      ners = ners_from(data)
+      for s, v, o in svos:
+        d[(s, v2rel(v), o)].add(i)
+      for x, e in ners:
+        d[(x, 'is_a', e2rel(e))].add(i)
+
+      for a, b in comps:
+        c = join(a, b)
+        d[(a, 'as_in', c)].add(i)
+        d[(b, 'as_in', c)].add(i)
+
+    for svo in wn_from(l2occ):
+      d[svo].add(-1)
+
+    return d
   def show_summary(self):
     say('SUMMARY:')
     for r,x,sent in self.summary:
@@ -487,7 +498,7 @@ class Talker :
 
   def show_rels(self):
     print('RELATIONS:')
-    for svoi in to_svos(self.db):
+    for svoi in self.to_svos().items():
        print(svoi)
 
 
