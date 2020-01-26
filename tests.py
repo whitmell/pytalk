@@ -85,6 +85,12 @@ def ftest() :
   fname='examples/test'  #################
   run_with(fname,query=False,show=True)
 
+
+def ptest() :
+  fname='examples/test.txt'
+  t = Talker(from_file=fname)
+  t.to_prolog()
+
 def chat_test() :
   chat_about('examples/bfr')
 
@@ -100,5 +106,5 @@ if __name__== "__main__" :
   #qftest()
   #simtest()
   #canned_test()
-  stest()
+  ptest()
   pass

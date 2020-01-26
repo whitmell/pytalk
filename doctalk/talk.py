@@ -491,6 +491,26 @@ class Talker :
 
     return d
 
+  def to_prolog(self):
+    if not self.from_file : return
+    fname=self.from_file[:-4]
+    with open(fname+".pro",'w') as f :
+      sent_data,l2occ=self.db
+      f.write('% SENTENCES: \n')
+      for i,data in enumerate(sent_data) :
+        ws=data[SENT]
+        f.write(f'sent({i},{ws}).\n')
+      f.write('\n% LEMMAS: \n')
+      for i, data in enumerate(sent_data):
+        ws = data[LEMMA]
+        f.write(f'sent({i},{ws}).\n')
+      f.write('\n% RELATIONS: \n')
+      for svo,occs in self.to_svos().items() :
+        ppp(svo)
+        s,v,o=svo
+        occs=sorted(list(occs))
+        f.write(f'svo{s,v,o,occs}.\n')
+
   def show_summary(self):
     say('SUMMARY:')
     for r,x,sent in self.summary:
