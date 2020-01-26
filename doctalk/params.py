@@ -17,7 +17,7 @@ pers=True
 expand_query=2
 compounds=True
 show_pics=1
-show_rels=1
+show_rels=0
 
 # decides between '_' and ' ' as separator
 def join(*xs) : return '_'.join(xs)
