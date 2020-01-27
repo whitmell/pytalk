@@ -5,7 +5,7 @@ openie='openie' in annotators
 sum_count=4
 key_count=10
 quiet=True
-max_answers=5
+max_answers=4
 answers_by_rank=True
 trace=1
 force=False
@@ -16,12 +16,15 @@ lower=True
 pers=True
 expand_query=2
 compounds=True
+svo_edges=True
+
 show_pics=1
 show_rels=0
 to_prolog=1
 
 # decides between '_' and ' ' as separator
-def join(*xs) : return '_'.join(xs)
+#def join(*xs) : return '_'.join(xs)
+def join(*xs) : return xs
 
 from inspect import currentframe
 def ppp(*args) :

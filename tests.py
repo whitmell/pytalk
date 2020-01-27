@@ -59,7 +59,7 @@ def mtest() :
     print('')
 
 def stest() :
-  fname = 'examples/geo.txt'
+  fname = 'examples/test.txt'
   for svo in file_svos(fname) :
     print(svo)
 
@@ -72,7 +72,7 @@ def do(qf) :
     run_with(df,query=True,show=True)
 
 def qftest() :
-  do('examples/tesla_quest.txt')
+  do('examples/texas_quest.txt')
 
 def go()  :
   D=doc_dir
@@ -103,8 +103,8 @@ if __name__== "__main__" :
   #ttest()
   #mtest()
   #mtest()
-  #qftest()
+  qftest()
   #simtest()
   #canned_test()
-  ptest()
+  #stest()
   pass

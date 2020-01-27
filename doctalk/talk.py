@@ -194,11 +194,18 @@ def get_avg_len(db) :
   s=sum(lens)
   return round(s/n)
 
-def to_graph(db,personalization=None) :
+def to_graph(db,svos,personalization=None) :
   g = nx.DiGraph()
   for e in to_edges(db) :
     f,t=e
     g.add_edge(f,t)
+  if svo_edges:
+    for s,v,o in svos :
+      #if v in ('is_a','part_of','is_like') :
+      if v not in ('kind_of','as_in') :
+        g.add_edge(o,s)
+        g.add_edge(s,o)
+        #ppp(s,v,o)
   try :
      pr=nx.pagerank(g,personalization=personalization)
   except :
@@ -254,7 +261,7 @@ def e2rel(e) :
 
 def file_svos(fname) :
   t=Talker(from_file=fname)
-  yield from t.to_svos().items()
+  yield from t.svos.items()
 
 def answer_quest(q,talker) :
     db=talker.db
@@ -269,7 +276,9 @@ def answer_quest(q,talker) :
        q_tag=q_sent_data[0][TAG][j]
        if q_tag[0] not in "NVJ" : continue # ppp(q_lemma,q_tag)
        if q_lemma in stop_words or q_lemma in ".?" : continue
+
        ys = l2occ.get(q_lemma)
+
        if not ys :
          unknowns.append(q_lemma)
        else :
@@ -304,6 +313,7 @@ def answer_quest(q,talker) :
     for (id, shared) in matches.items() :
       sent=sent_data[id][SENT]
       r=answer_rank(id,shared,sent,talker,expanded=0)
+      #ppp(id,r,shared)
       best.append((r,id,shared,sent))
       #ppp('MATCH', id,shared, r)
 
@@ -402,7 +412,10 @@ class Talker :
     self.sum_count=sk
     self.key_count=wk
     self.avg_len = get_avg_len(self.db)
-    self.g,self.pr=to_graph(self.db)
+
+    self.svos=self.to_svos()
+
+    self.g,self.pr=to_graph(self.db,self.svos)
     #self.get_sum_and_words(sk,wk)
     self.summary, self.keywords = self.extract_content(sk, wk)
 
@@ -410,9 +423,12 @@ class Talker :
     query_with(self,qs)
 
   def get_tagged(self,w):
+
     l2occ=self.db[1]
     sent_data=self.db[0]
     occs=l2occ.get(w)
+    if not occs : return None
+
     tags=set()
     words=set()
     for i,j in occs:
@@ -425,7 +441,9 @@ class Talker :
   def extract_content(self,sk,wk):
 
     def nice_word(x,good_tags='N') :
-      ws, tags = self.get_tagged(x)
+      ws_ts=self.get_tagged(x)
+      if not ws_ts : return None
+      ws, tags = ws_ts
       ncount = 0
       for tag in tags:
         if tag[0] in good_tags:
@@ -463,7 +481,7 @@ class Talker :
             wk -= 1
             words.append(x)
     sents.sort(key=lambda x: x[1])
-    summary=[(r,x,nice(ws)) for (r,x,ws) in sents]
+    summary=[(r,x,ws) for (r,x,ws) in sents]
     self.by_rank=by_rank # to be used when needed
     return summary,words
 
@@ -478,7 +496,7 @@ class Talker :
         if good_word(s) and good_word(o) :
            d[(s, v2rel(v), o)].add(i)
       for x, e in ners:
-        d[(x, 'is_a', e2rel(e))].add(i)
+        d[(x, 'kind_of', e2rel(e))].add(i)
 
       for a, b in comps:
         c = join(a, b)
@@ -517,9 +535,9 @@ class Talker :
 
   def show_summary(self):
     say('SUMMARY:')
-    for r,x,sent in self.summary:
+    for r,x,ws in self.summary:
       print(x,end=': ')
-      say(sent)
+      say(nice(ws))
     print('')
 
   def show_keywords(self):
@@ -557,7 +575,7 @@ def nice(ws) :
 
 
 def normalize_sent(r,sent_len,avg_len):
-  if sent_len > 2*avg_len or sent_len < avg_len/2 :
+  if sent_len > 2*avg_len or sent_len < min(5,avg_len/4) :
     return 0
   factor =  1/(1+abs(sent_len-avg_len)+sent_len)
   #ppp("NORM:",factor,r,sent_len,avg_len)
