@@ -526,7 +526,7 @@ class Talker :
       f.write('\n% LEMMAS: \n')
       for i, data in enumerate(sent_data):
         ws = data[LEMMA]
-        f.write(f'sent({i},{ws}).\n')
+        f.write(f'lemma({i},{ws}).\n')
       f.write('\n% RELATIONS: \n')
       for svo,occs in self.to_svos().items() :
         s,v,o=svo
