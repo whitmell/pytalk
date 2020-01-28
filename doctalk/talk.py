@@ -183,8 +183,8 @@ def to_edges(db) :
           f,t=ft
           yield f, ft #parts to compound
           yield t, ft
-          yield ft,id # compound to sent
-          yield ft,ft # to self
+          #yield ft,id # compound to sent
+          #yield ft,ft # to self
 
 
 def get_avg_len(db) :

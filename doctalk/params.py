@@ -19,6 +19,7 @@ stemmer=None
 lower=True
 pers=True
 expand_query=2
+
 compounds=True
 svo_edges=True
 
@@ -33,5 +34,5 @@ def join(*xs) : return ' '.join(xs)
 from inspect import currentframe
 def ppp(*args) :
   cf = currentframe()
-  print('DEBUG at:',cf.f_back.f_lineno,end=': ')
+  print('DEBUG:',__name__,'line-->',cf.f_back.f_lineno,end=': ')
   print(*args)

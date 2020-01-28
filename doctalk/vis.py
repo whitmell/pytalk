@@ -37,10 +37,8 @@ def pshow(t, k=cloud_size,file_name="temp",show=show_pics):
       s.add(lkw)
   #ppp("CLOUD",d)
   show_ranks(d,file_name=file_name+"_cloud.pdf",show=show)
-  ppp('SUBGRAPH',s)
+  #ppp('SUBGRAPH',s)
   topg=t.g.subgraph(s)
-  #file_name=file_name[:-4]
-  ppp(file_name)
   gshow(topg,file_name+".gv",show=show)
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=show_pics) :
