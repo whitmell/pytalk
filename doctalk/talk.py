@@ -23,7 +23,7 @@ def run_with(fname,query=True,show=show_pics) :
   t.show_all()
   if query:
     t.query_with(fname+'_quest.txt')
-    pshow(t,file_name=fname+"_quest",show=show)
+    pshow(t,file_name=fname+"_quest.txt",show=show)
 
 
 def chat_about(fname,qs=None,show_pics=show_pics) :
@@ -199,10 +199,11 @@ def to_graph(db,svos,personalization=None) :
   for e in to_edges(db) :
     f,t=e
     g.add_edge(f,t)
-  if svo_edges:
+  if  svo_edges:
     for s,v,o in svos :
       #if v in ('is_a','part_of','is_like') :
-      if v not in ('kind_of','as_in') :
+      #if v not in ('kind_of','as_in') :
+      if v in ('is_a','part_of','is_like') :
         g.add_edge(o,s)
         g.add_edge(s,o)
         #ppp(s,v,o)
@@ -455,8 +456,7 @@ class Talker :
       else:
         return None
 
-    sents,words=[],[]
-
+    sents,words=list(),set()
     npr=dict()
     for x,r in self.pr.items() :
       if isinstance(x,int) :
@@ -474,15 +474,22 @@ class Talker :
         x=nice_word(x)
         if x:
           wk -= 1
-          words.append(x)
+          words.add(x)
       elif wk and isinstance(x,tuple) :
-          x=tuple(map(nice_word,x))
-          if all(x) :
+          xs=tuple(map(nice_word,x))
+          if all(xs) :
+            #ppp('KWD', x, 1000 * r)
+
             wk -= 1
-            words.append(x)
+            words.add(xs)
     sents.sort(key=lambda x: x[1])
     summary=[(r,x,ws) for (r,x,ws) in sents]
     self.by_rank=by_rank # to be used when needed
+    for xs in words.copy() :
+      if isinstance(xs,tuple) :
+        for w in xs:
+          if w in words:
+            words.remove(w)
     return summary,words
 
   def to_svos(self):

@@ -34,10 +34,20 @@ def clean_path(path) :
 
 def clean()  :
   D=doc_dir
-  files = glob.glob(D + "/*.json")
+  if force :
+    files = glob.glob(D + "/*.json")
+    for f in files:
+       os.remove(f)
+  files = glob.glob(D + "/*_cloud.pdf")
   for f in files:
     os.remove(f)
-  files = glob.glob(D + "/*_cloud.pdf")
+  files = glob.glob(D + "/*.gv.pdf")
+  for f in files:
+    os.remove(f)
+  files = glob.glob(D + "/*.gv")
+  for f in files:
+    os.remove(f)
+  files = glob.glob(D + "/*.pro")
   for f in files:
     os.remove(f)
 
@@ -72,7 +82,7 @@ def do(qf) :
     run_with(df,query=True,show=True)
 
 def qftest() :
-  do('examples/texas_quest.txt')
+  do('examples/const_quest.txt')
 
 def go()  :
   D=doc_dir

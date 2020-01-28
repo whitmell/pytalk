@@ -2,13 +2,17 @@ annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
 openie='openie' in annotators
 
-sum_count=4
-key_count=10
-quiet=True
-max_answers=4
-answers_by_rank=True
 trace=1
 force=False
+
+sum_count=4
+key_count=10
+max_answers=4
+cloud_size=24
+
+quiet=True
+answers_by_rank=True
+
 from nltk.stem import PorterStemmer
 #stemmer=PorterStemmer()
 stemmer=None
@@ -23,8 +27,8 @@ show_rels=0
 to_prolog=1
 
 # decides between '_' and ' ' as separator
-#def join(*xs) : return '_'.join(xs)
-def join(*xs) : return xs
+def join(*xs) : return ' '.join(xs)
+#def join(*xs) : return xs
 
 from inspect import currentframe
 def ppp(*args) :

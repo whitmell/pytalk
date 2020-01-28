@@ -16,13 +16,14 @@ def gshow(g, file_name='temp.gv', show=1):
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show>1)
 
-def pshow(t, k=24,file_name="temp",show=show_pics):
+def pshow(t, k=cloud_size,file_name="temp",show=show_pics):
+  file_name=file_name[:-4]
   def t2s(x) :
     if isinstance(x,tuple) :
       return " ".join(x)
     return x
   sum, kws = t.extract_content(5, k)
-  #ppp(t.by_rank)
+  #for x in t.by_rank:ppp(x)
   d=dict()
   s=set()
   for kw in kws:
@@ -31,11 +32,15 @@ def pshow(t, k=24,file_name="temp",show=show_pics):
       d[t2s(kw)]=t.pr[kw0]
       s.add(kw0)
     else :
-      d[kw]=t.pr[kw.lower()]
-      s.add(kw)
-  #ppp("DDDD",d)
+      lkw=kw.lower()
+      d[kw]=t.pr[lkw]
+      s.add(lkw)
+  #ppp("CLOUD",d)
   show_ranks(d,file_name=file_name+"_cloud.pdf",show=show)
+  ppp('SUBGRAPH',s)
   topg=t.g.subgraph(s)
+  #file_name=file_name[:-4]
+  ppp(file_name)
   gshow(topg,file_name+".gv",show=show)
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=show_pics) :
