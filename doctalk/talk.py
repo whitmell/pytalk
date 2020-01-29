@@ -537,7 +537,7 @@ class Talker :
       f.write('\n% RELATIONS: \n')
       for svo,occs in self.to_svos().items() :
         s,v,o=svo
-        occs=sorted(list(occs))
+        occs=sorted(occs)
         f.write(f'svo{s,v,o,occs}.\n')
 
   def show_summary(self):
@@ -595,3 +595,4 @@ def good_word(w) :
 def good_tag(tag,starts="NVJA"):
   c=tag[0]
   return c in starts
+

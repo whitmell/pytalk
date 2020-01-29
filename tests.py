@@ -4,6 +4,7 @@ from doctalk.talk import *
 from doctalk.nlp import *
 from doctalk.query import *
 from doctalk.sim import *
+from doctalk.pypro import *
 
 import pprint
 
@@ -97,9 +98,10 @@ def ftest() :
 
 
 def ptest() :
-  fname='examples/test.txt'
-  t = Talker(from_file=fname)
-  t.to_prolog()
+  fname='examples/geo.txt'
+  t = NatTalker(from_file=fname)
+  t.show_all()
+  print(t.to_natlog())
 
 def chat_test() :
   chat_about('examples/bfr')
@@ -113,8 +115,9 @@ if __name__== "__main__" :
   #ttest()
   #mtest()
   #mtest()
-  qftest()
+  #qftest()
   #simtest()
   #canned_test()
   #stest()
+  ptest()
   pass

@@ -26,6 +26,7 @@ svo_edges=True
 show_pics=1
 show_rels=0
 to_prolog=1
+to_natlog=1
 
 # decides between '_' and ' ' as separator
 def join(*xs) : return ' '.join(xs)
@@ -34,5 +35,5 @@ def join(*xs) : return ' '.join(xs)
 from inspect import currentframe
 def ppp(*args) :
   cf = currentframe()
-  print('DEBUG:',__name__,'line-->',cf.f_back.f_lineno,end=': ')
+  print('DEBUG: line-->',cf.f_back.f_lineno,end=': ')
   print(*args)
