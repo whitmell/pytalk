@@ -1,4 +1,4 @@
-from natlog.natlog import natlog
+from natlog.natlog import natlog,Int
 from natlog.db import db
 
 from .params import *
@@ -21,7 +21,7 @@ class NatTalker(Talker) :
     for svo, occs in self.to_svos().items():
       s, v, o = svo
       for id in sorted(occs) :
-        c=(s,v,o,str(id)) # should be Int - automatically !!!
+        c=(s,v,o,Int(id)) # should be Int - automatically !!!
         #ppp(c)
         #assert isinstance(id,int)
         nd.add_clause(c)
