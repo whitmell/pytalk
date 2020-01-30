@@ -98,10 +98,7 @@ def ftest() :
 
 
 def ptest() :
-  fname='examples/geo.txt'
-  t = NatTalker(from_file=fname)
-  t.show_all()
-  print(t.to_natlog())
+  nrun()
 
 def chat_test() :
   chat_about('examples/bfr')
