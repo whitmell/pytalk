@@ -75,7 +75,7 @@ def stest() :
     print(svo)
 
 def qtest() :
-  fname='examples/test'
+  fname='examples/geo'
   run_with(fname,query=True,show=True)
 
 def do(qf) :

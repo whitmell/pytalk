@@ -1,4 +1,3 @@
-#__version__ = '0.0.5'
-__all__ = ('test_with')
+__all__ = ('run_with','chat_about')
 
 from .talk import *
