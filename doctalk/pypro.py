@@ -26,12 +26,12 @@ class NatTalker(Talker) :
     return nd
 
   def natrun(self,natgoal):
-    for answer in self.engine.solve(natgoal):
+    for answer in distinct(self.engine.solve(natgoal)):
       print('ANSWER:', answer)
       pass
 
 def distinct(g) :
-  seen={}
+  seen=set()
   for x in g :
     if not x in seen :
       seen.add(x)
@@ -40,12 +40,12 @@ def distinct(g) :
 def nrun() :
   natscript = '''
 
-  tc_search A Rel B : tc A Rel B (s (s 0)) _ .
+  tc_search A Rel B Res : tc A Rel B (s (s 0)) _ Res.
   
-  tc A Rel C (s N1) N1 : ~ A Rel B _Id, tc1 B Rel C N1 N2.
+  tc A Rel C (s N1) N1 Res : ~ A Rel B Id, tc1 B Rel C N1 N2 Id Res.
 
-  tc1 B _Rel B N N.
-  tc1 B Rel C N1 N2 : tc B Rel C N1 N2.
+  tc1 B _Rel B N N Id Id.
+  tc1 B Rel C N1 N2 _Id Res : tc B Rel C N1 N2 Res.
 
   similar A B Id:
     ~ A R B Id,
@@ -53,13 +53,12 @@ def nrun() :
     ~ T R B Id1.
   '''
 
-  natgoal1 = 'similar deposit B Id?'
-  natgoal2 = 'tc_search deposit Rel B ?'
-
   #T=Talker(from_file='examples/geo.txt')
   N=NatTalker(from_file='examples/geo.txt',
               natscript=natscript,
               )
+  natgoal1 = 'similar deposit B Id?'
+  natgoal2 = 'tc_search permian Rel B Where ?'
   print('GOAL:',natgoal1)
   N.natrun(natgoal1)
   print('')
