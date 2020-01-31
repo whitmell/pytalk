@@ -3,4 +3,4 @@ graphviz
 wordcloud
 matplotlib
 natlog
-textcrafts
+stanfordnlp

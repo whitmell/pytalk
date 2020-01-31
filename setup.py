@@ -24,3 +24,4 @@ setup(name='doctalk',
   install_requires = required,
   zip_safe=False
   )
+

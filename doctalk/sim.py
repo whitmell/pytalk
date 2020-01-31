@@ -1,3 +1,4 @@
+from .down import ensure_nlk_downloads
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 
