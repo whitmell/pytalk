@@ -2,7 +2,7 @@ from natlog.natlog import natlog,Int
 from natlog.db import db
 
 from .params import *
-from .talk import Talker
+from .talk import *
 
 
 class NatTalker(Talker) :
@@ -20,27 +20,61 @@ class NatTalker(Talker) :
       s, v, o = svo
       for id in sorted(occs) :
         c=(s,v,o,id) # should be Int
-        #ppp(c)
-        #assert isinstance(id,int)
         nd.add_db_clause(c)
     return nd
 
-  def natrun(self,natgoal):
-    for answer in distinct(self.engine.solve(natgoal)):
-      print('ANSWER:', answer)
-      pass
+  def query_with_goal(self,natgoal):
+      for answer in distinct(self.engine.solve(natgoal)):
+        yield answer
 
-def distinct(g) :
-  seen=set()
-  for x in g :
-    if not x in seen :
-      seen.add(x)
-      yield x
-      
+  def ask(self,q):
+    answers,answerer=self.answer_quest(q,max_answers=25)
+
+    ids=dict()
+    shareds=set()
+    for answer in answers:
+       id, sent,rank,shared=answer
+       ids[id]=rank
+       shareds.update(shared)
+
+    inferred=set()
+    targets=set()
+    for shared in shareds :
+       for res in self.query_with_goal("tc_search "+shared+" Rel What Where?") :
+         _,_shared,rel,what,where=res
+         id=where.val
+         if id in ids:
+            targets.add(what)
+            inferred.add(id)
+    for id in inferred :
+       ids[id]=ids[id]*2
+
+    yield rank_sort(ids),list(take(10,inferred)), shareds,targets
+
+  def natrun(self, q):
+     print('QUESTION:',q)
+     for x in self.ask(q):
+        ids,inferred,shareds,targets=x
+        print('')
+        print('SHARED:',shareds)
+        print('')
+        print('MINED: ',targets)
+        print('')
+     print('ANSWERS:')
+     for i, r in take(5, ids):
+       print(i, r, end=': ')
+       say(nice(self.get_sentence(i)))
+     print('-----------------------\n')
+
+
 def nrun() :
   natscript = '''
-
-  tc_search A Rel B Res : tc A Rel B (s (s 0)) _ Res.
+  
+  rel 'is_like'.
+  rel 'as_in'.
+  rel 'is_a'.
+  
+  tc_search A Rel B Res : rel Rel, tc A Rel B (s (s 0)) _ Res.
   
   tc A Rel C (s N1) N1 Res : ~ A Rel B Id, tc1 B Rel C N1 N2 Id Res.
 
@@ -53,15 +87,31 @@ def nrun() :
     ~ T R B Id1.
   '''
 
-  #T=Talker(from_file='examples/geo.txt')
   N=NatTalker(from_file='examples/geo.txt',
-              natscript=natscript,
-              )
-  natgoal1 = 'similar deposit B Id?'
-  natgoal2 = 'tc_search permian Rel B Where ?'
-  print('GOAL:',natgoal1)
-  N.natrun(natgoal1)
-  print('')
-  print('GOAL:',natgoal2)
-  N.natrun(natgoal2)
+              natscript=natscript)
+  with open('examples/geo_quest.txt','r') as f:
+    for q in f.readlines():
+      N.natrun(q)
+  #N.natrun("What deposits can be found in the Permian basin?")
+
+  '''
+  goals=[
+    #'similar deposit B Id?',
+    'tc_search permian Rel B Where ?'
+  ]
+  
+  for goal in goals:
+    print('GOAL:',goal)
+    print('')
+    ids=set()
+    for answer in N.natrun(goal):
+      print('ANSWER', answer)
+      continue
+      _,s,v,o,I=answer
+      ids.add(I.val)
+    return
+    for id in ids :
+      print(id,nice(N.get_sentence(id)))
+    print('')
+   '''
 

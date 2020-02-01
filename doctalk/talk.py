@@ -264,7 +264,7 @@ def file_svos(fname) :
   t=Talker(from_file=fname)
   yield from t.svos.items()
 
-def answer_quest(q,talker) :
+def answer_quest(q,talker,max_answers=max_answers) :
     db=talker.db
     sent_data,l2occ=db
     matches = defaultdict(set)
@@ -331,9 +331,9 @@ def answer_quest(q,talker) :
     for i,b in enumerate(best):
       if i >= max_answers : break
       rank, id, shared, sent = b
-      answers.append((id,sent,round(rank,3),shared))
+      answers.append((id,sent,round(rank,4),shared))
     if not answers_by_rank : answers.sort()
-    return answers
+    return answers,answerer
 
 def sigmoid(x): return 1 / (1 + math.exp(-x))
 
@@ -392,7 +392,8 @@ def interact(q,talker):
   say(q)
   print('')
   ### answer is computed here ###
-  for info, sent, rank, shared in answer_quest(q, talker):
+  answers,_=answer_quest(q, talker)
+  for info, sent, rank, shared in answers:
     print(info,end=': ')
     say(nice(sent))
     tprint('  ', shared, rank)
@@ -420,6 +421,9 @@ class Talker :
     #self.get_sum_and_words(sk,wk)
     self.summary, self.keywords = self.extract_content(sk, wk)
 
+  def answer_quest(self,q,max_answers=max_answers):
+    return answer_quest(q,self,max_answers=max_answers)
+
   def query_with(self,qs):
     query_with(self,qs)
 
@@ -439,6 +443,20 @@ class Talker :
       tags.add(tag)
     return words,tags
 
+  def get_sentence(self,i):
+    return  self.db[0][i][SENT]
+
+  def get_lemma(self,i):
+    return  self.db[0][i][LEMMA]
+
+  def get_tag(self,i):
+    return  self.db[0][i][TAG]
+
+  def get_ner(self,i):
+    ner=  self.db[0][i][NER]
+    if ner=='O' : return None
+    return ner
+
   def extract_content(self,sk,wk):
 
     def nice_word(x,good_tags='N') :
@@ -455,7 +473,6 @@ class Talker :
         return x
       else:
         return None
-
     sents,words=list(),set()
     npr=dict()
     for x,r in self.pr.items() :
@@ -588,7 +605,6 @@ def normalize_sent(r,sent_len,avg_len):
   #ppp("NORM:",factor,r,sent_len,avg_len)
   return r*factor
 
-
 def good_word(w) :
   return isinstance(w,str) and w.isalpha() and w not in stop_words
 
@@ -596,3 +612,14 @@ def good_tag(tag,starts="NVJA"):
   c=tag[0]
   return c in starts
 
+def distinct(g) :
+  seen=set()
+  for x in g :
+    if not x in seen :
+      seen.add(x)
+      yield x
+
+def take(k,g) :
+  for i,x in enumerate(g) :
+    if i>k : break
+    yield x
