@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 def showGraph(dot, show=True, file_name='textgraph.gv'):
   dot.render(file_name, view=show)
 
-def gshow(g, file_name='temp.gv', show=1):
+def gshow(g, attr=None, file_name='temp.gv', show=1):
   dot = DotGraph()
   for e in g.edges():
     f, t = e
-    # w = g[f][t]['weight']
-    w = ''
+    if not attr : w= ''
+    else : w = g[f][t][attr]
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show>1)
 
@@ -39,7 +39,7 @@ def pshow(t, k=cloud_size,file_name="temp",show=show_pics):
   show_ranks(d,file_name=file_name+"_cloud.pdf",show=show)
   #ppp('SUBGRAPH',s)
   topg=t.g.subgraph(s)
-  gshow(topg,file_name+".gv",show=show)
+  gshow(topg,file_name=file_name+".gv",show=show)
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=show_pics) :
   cloud=WordCloud(width=800,height=400)

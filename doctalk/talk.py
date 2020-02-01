@@ -168,12 +168,12 @@ def to_edges(db) :
     for dep in dep_from(id,sd):
       f,f_,r,t,t_=dep
       if r == 'punct': continue
+      elif f in stop_words or t in stop_words:
+        continue
       elif r in ['nsubj','dobj','iobj'] or t_[0]=='V':
         yield (id, f) # sent to predicate
         yield (t,f) # pred to arg
         yield (f,id) # arg to sent
-      elif f in stop_words or t in stop_words:
-        continue
       elif r=='ROOT' :
         yield (t,f)
       else :
@@ -599,6 +599,8 @@ def nice(ws) :
 
 
 def normalize_sent(r,sent_len,avg_len):
+  if not r:
+    r=0
   if sent_len > 2*avg_len or sent_len < min(5,avg_len/4) :
     return 0
   factor =  1/(1+abs(sent_len-avg_len)+sent_len)
