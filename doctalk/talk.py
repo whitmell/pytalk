@@ -162,26 +162,48 @@ def comp_from(id,d) :
 def comps_from(id,d) :
   return tuple(t for t in comp_from(id,d) if t)
 
+def sub_centered(id,dep) :
+  f, f_, r, t, t_ = dep
+  if r == 'punct' or f == t:
+    pass
+  elif r in ['nsubj'] and t_[0] == 'V':
+    yield (id, t)  # sent to subject
+    yield (f, id)  # subject to sent
+    yield (t, f)  # pred to subject
+  elif r in ['nsubj', 'dobj', 'iobj'] or t_[0] == 'V':
+    # yield (id, f)  # sent to predicate
+    # yield (t, f)  # pred to arg
+    if not t in stop_words: yield f, t  # arg to pred
+    yield t, id  # pred to sent
+    # yield (f, id)  # arg to sent
+  elif r == 'ROOT':
+    yield (t, f)
+  else:
+    yield (f, t)
+
+def pred_mediated(id,dep) :
+  f, f_, r, t, t_ = dep
+  if r == 'punct' or f==t:
+    pass
+  elif r in ['nsubj', 'dobj', 'iobj'] or t_[0] == 'V':
+    yield (id, f)  # sent to predicate
+    if not f in stop_words: yield t,f  #  pred to arg
+    if not t in stop_words : yield id, t  # sent to pred
+    yield (f, id)  # arg to sent
+  elif r == 'ROOT':
+    yield (t, f)
+  else:
+    yield (f, t)
+
+
 def to_edges(db) :
   sent_data,l2occ=db
   for id,sd in enumerate(sent_data) :
     for dep in dep_from(id,sd):
-      f,f_,r,t,t_=dep
-      if r == 'punct': continue
-      elif r in ['nsubj'] and t_[0]=='V':
-        yield (id, t) # sent to subject
-        yield (f, id)  # subject to sent
-        yield (t,f) # pred to subject
-      elif r in ['nsubj', 'dobj', 'iobj'] or t_[0] == 'V':
-        #yield (id, f)  # sent to predicate
-        #yield (t, f)  # pred to arg
-        if not t in stop_words: yield f,t # arg to pred
-        yield t,id # pred to sent
-        #yield (f, id)  # arg to sent
-      elif r=='ROOT' :
-        yield (t,f)
+      if subject_centered :
+        yield from sub_centered(id,dep)
       else :
-        yield (f,t)
+        yield from pred_mediated(id,dep)
     if compounds :
       for ft in comps_from(id, sd):
           f,t=ft
@@ -189,7 +211,6 @@ def to_edges(db) :
           yield t, ft
           #yield ft,id # compound to sent
           #yield ft,ft # to self
-
 
 def get_avg_len(db) :
   sent_data,_=db
@@ -205,6 +226,7 @@ def to_graph(db,svos,personalization=None) :
     g.add_edge(f,t)
   if  svo_edges:
     for s,v,o in svos :
+      if s==o : continue
       #if v in ('is_a','part_of','is_like') :
       #if v not in ('kind_of','as_in') :
       if v in ('is_a','part_of','is_like') :

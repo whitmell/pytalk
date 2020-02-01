@@ -22,8 +22,9 @@ expand_query=2
 
 compounds=True
 svo_edges=True
+subject_centered=True
 
-show_pics=1
+show_pics=2
 show_rels=0
 to_prolog=1
 
