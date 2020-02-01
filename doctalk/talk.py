@@ -168,12 +168,16 @@ def to_edges(db) :
     for dep in dep_from(id,sd):
       f,f_,r,t,t_=dep
       if r == 'punct': continue
-      elif f in stop_words or t in stop_words:
-        continue
-      elif r in ['nsubj','dobj','iobj'] or t_[0]=='V':
-        yield (id, f) # sent to predicate
-        yield (t,f) # pred to arg
-        yield (f,id) # arg to sent
+      elif r in ['nsubj'] and t_[0]=='V':
+        yield (id, t) # sent to subject
+        yield (f, id)  # subject to sent
+        yield (t,f) # pred to subject
+      elif r in ['nsubj', 'dobj', 'iobj'] or t_[0] == 'V':
+        #yield (id, f)  # sent to predicate
+        #yield (t, f)  # pred to arg
+        if not t in stop_words: yield f,t # arg to pred
+        yield t,id # pred to sent
+        #yield (f, id)  # arg to sent
       elif r=='ROOT' :
         yield (t,f)
       else :
