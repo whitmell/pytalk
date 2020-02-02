@@ -6,11 +6,8 @@ from .talk import *
 
 
 class NatTalker(Talker) :
-  def __init__(self,from_file=None,from_text=None,
-               natscript=None,
-               sk=sum_count,wk=key_count,show=show_pics):
-    super().__init__(from_file=from_file,from_text=from_text,
-        sk=sk,wk=wk,show=show)
+  def __init__(self,natscript=None,**kwargs):
+    super().__init__(**kwargs)
     self.engine=natlog(text=natscript)
     self.engine.db=self.to_nat_db()
 

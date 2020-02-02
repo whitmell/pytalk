@@ -605,15 +605,15 @@ class Talker :
     for svoi in self.svos.items():
        print(svoi)
 
-  def show_svos(self):
+  def show_svos(self,show=show_pics):
     g = self.to_svo_graph()
     seeds = take(subgraph_size,
           [x for x, r in rank_sort(self.pr) if isinstance(x, str)])
     g = g.subgraph(seeds)
     fname=self.from_file[:-4] + "_svo.gv"
-    gshow(g, file_name=fname,attr='rel', show=show_pics)
+    gshow(g, file_name=fname,attr='rel', show=show)
 
-  def show_all(self):
+  def show_all(self,show=show_pics):
     self.show_summary()
     self.show_keywords()
     self.show_stats()
@@ -621,9 +621,9 @@ class Talker :
       self.show_rels()
     if to_prolog :
       self.to_prolog()
-    if show_pics and self.from_file:
+    if show and self.from_file:
       pshow(self, file_name=self.from_file)
-      self.show_svos()
+      self.show_svos(show=show)
 
 
 

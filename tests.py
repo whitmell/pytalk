@@ -4,6 +4,7 @@ from doctalk.talk import *
 from doctalk.nlp import *
 from doctalk.sim import *
 from doctalk.pypro import *
+from doctalk.think import *
 
 import pprint
 
@@ -105,6 +106,14 @@ def chat_test() :
 def canned_test() :
   chat_about('examples/bfr',["What rocket is SpaceX developing?"])
 
+def think_test() :
+  T = Thinker(from_file='examples/test.txt')
+  T.show_all(show=2)
+  print('SVO_NODES', T.svo_graph.number_of_nodes())
+  print('SVO_EDGES', T.svo_graph.number_of_edges())
+  print()
+  T.query_with(['What did Joe give to Mary?'])
+
 if __name__== "__main__" :
   #nlp_test()
   #go()
@@ -116,5 +125,6 @@ if __name__== "__main__" :
   #canned_test()
   #stest()
   #ptest()
-  ftest()
-  pass
+  #ftest()
+  think_test()
+
