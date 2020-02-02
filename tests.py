@@ -115,5 +115,6 @@ if __name__== "__main__" :
   #simtest()
   #canned_test()
   #stest()
-  ptest()
+  #ptest()
+  ftest()
   pass

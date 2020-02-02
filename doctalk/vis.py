@@ -38,7 +38,11 @@ def pshow(t, k=cloud_size,file_name="temp",show=show_pics):
   #ppp("CLOUD",d)
   show_ranks(d,file_name=file_name+"_cloud.pdf",show=show)
   #ppp('SUBGRAPH',s)
-  topg=t.g.subgraph(s)
+  if t.g.number_of_edges()<80:
+    topg=t.g
+  else :
+     topg=t.g.subgraph(s)
+  #ppp('TOPG', topg.number_of_edges())
   gshow(topg,file_name=file_name+".gv",show=show)
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=show_pics) :

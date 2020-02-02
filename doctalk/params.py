@@ -24,13 +24,13 @@ compounds=True
 svo_edges=True
 subject_centered=True
 
-show_pics=2
+show_pics=1 # 1 : just generate files, 2: interactive
 show_rels=0
 to_prolog=1
 
 # decides between '_' and ' ' as separator
-def join(*xs) : return ' '.join(xs)
-#def join(*xs) : return xs
+#def join(*xs) : return ' '.join(xs)
+def join(*xs) : return xs
 
 from inspect import currentframe
 def ppp(*args) :

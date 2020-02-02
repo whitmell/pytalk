@@ -154,7 +154,7 @@ def comp_from(id,d) :
   for x in dep_from(id,d) :
     f,tf,rel,t,tt=x
     #ppp(f,t)
-    if (rel == 'compound' or rel == 'amod') and \
+    if rel in ('compound', 'amod', 'conj:and') and \
        good_word(f) and good_word(t) and \
        good_tag(tf) and good_tag(tt) :
       yield (f,t)
@@ -166,18 +166,15 @@ def sub_centered(id,dep) :
   f, f_, r, t, t_ = dep
   if r == 'punct' or f == t:
     pass
-  elif r in ['nsubj'] and t_[0] == 'V':
-    yield (id, t)  # sent to subject
+  elif r in ['nsubj'] and f_[0] == 'N':
+    yield (id, f)  # sent to subject
     yield (f, id)  # subject to sent
     yield (t, f)  # pred to subject
-  elif r in ['nsubj', 'dobj', 'iobj'] or t_[0] == 'V':
-    # yield (id, f)  # sent to predicate
-    # yield (t, f)  # pred to arg
-    if not t in stop_words: yield f, t  # arg to pred
-    yield t, id  # pred to sent
-    # yield (f, id)  # arg to sent
-  elif r == 'ROOT':
-    yield (t, f)
+  elif r in ['nsubj', 'dobj', 'iobj'] : #or t_[0] == 'V':
+    if not t in stop_words and not f in stop_words :
+      yield f, t  # arg to pred
+      yield t, id  # pred to sent
+  # elif r == 'ROOT': yield (f, t)
   else:
     yield (f, t)
 
@@ -227,12 +224,12 @@ def to_graph(db,svos,personalization=None) :
   if  svo_edges:
     for s,v,o in svos :
       if s==o : continue
-      #if v in ('is_a','part_of','is_like') :
-      #if v not in ('kind_of','as_in') :
       if v in ('is_a','part_of','is_like') :
         g.add_edge(o,s)
         g.add_edge(s,o)
         #ppp(s,v,o)
+      elif v == 'as_in' :
+        g.add_edge(s,o)
   try :
      pr=nx.pagerank(g,personalization=personalization)
   except :
@@ -297,7 +294,6 @@ def answer_quest(q,talker,max_answers=max_answers) :
     nears=defaultdict(set)
     answerer=Talker(from_text=q)
     q_sent_data,q_l2occ=answerer.db
-    #gshow(answerer.g)
     unknowns=[]
     for j,q_lemma in enumerate(q_sent_data[0][LEMMA]):
        q_tag=q_sent_data[0][TAG][j]
@@ -604,12 +600,18 @@ class Talker :
   def show_all(self):
     self.show_summary()
     self.show_keywords()
+    self.show_stats()
     if show_rels:
       self.show_rels()
     if to_prolog :
       self.to_prolog()
     if show_pics and self.from_file:
       pshow(self, file_name=self.from_file)
+
+  def show_stats(self):
+    print('VERTICES:', self.g.number_of_nodes())
+    print('EDGES:',self.g.number_of_edges())
+    print('')
 
 # helpers
 def nice(ws) :
