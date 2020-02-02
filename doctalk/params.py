@@ -9,6 +9,7 @@ sum_count=4
 key_count=10
 max_answers=4
 cloud_size=24
+subgraph_size=32
 
 quiet=True
 answers_by_rank=True
@@ -26,7 +27,7 @@ subject_centered=True
 
 show_pics=1 # 1 : just generate files, 2: interactive
 show_rels=0
-to_prolog=1
+to_prolog=0
 
 # decides between '_' and ' ' as separator
 #def join(*xs) : return ' '.join(xs)

@@ -16,7 +16,7 @@ class NatTalker(Talker) :
 
   def to_nat_db(self):
     nd=db()
-    for svo, occs in self.to_svos().items():
+    for svo, occs in self.svos.items():
       s, v, o = svo
       for id in sorted(occs) :
         c=(s,v,o,id) # should be Int

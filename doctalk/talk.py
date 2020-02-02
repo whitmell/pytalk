@@ -131,7 +131,7 @@ def rel_from(d):
           v = l
       rs.add(res)
       svo=s,v,o
-      if () in svo : continue
+      if () in svo or s==o : continue
       svos.add(svo)
 
   return tuple(rs),tuple(svos)
@@ -539,7 +539,7 @@ class Talker :
       comps = comps_from(i, data)  # or directly from deps
       ners = ners_from(data)
       for s, v, o in svos:
-        if good_word(s) and good_word(o) :
+        if s!=o and good_word(s) and good_word(o) :
            d[(s, v2rel(v), o)].add(i)
       for x, e in ners:
         d[(x, 'kind_of', e2rel(e))].add(i)
@@ -551,6 +551,7 @@ class Talker :
 
     for svo in wn_from(l2occ):
       s,v,o=svo
+      if s==o : continue
       occs=set()
       for  id,_ in l2occ.get(s) :
         occs.add(id)
@@ -559,6 +560,14 @@ class Talker :
       d[svo]=occs
 
     return d
+
+  def to_svo_graph(self):
+    g=nx.DiGraph()
+    for svo in self.svos :
+      s,v,o=svo
+      g.add_edge(s,o,rel=v)
+    return g
+
 
   def to_prolog(self):
     if not self.from_file : return
@@ -574,7 +583,7 @@ class Talker :
         ws = data[LEMMA]
         f.write(f'lemma({i},{ws}).\n')
       f.write('\n% RELATIONS: \n')
-      for svo,occs in self.to_svos().items() :
+      for svo,occs in self.svos.items() :
         s,v,o=svo
         occs=sorted(occs)
         f.write(f'svo{s,v,o,occs}.\n')
@@ -593,9 +602,16 @@ class Talker :
 
   def show_rels(self):
     print('RELATIONS:')
-    for svoi in self.to_svos().items():
+    for svoi in self.svos.items():
        print(svoi)
 
+  def show_svos(self):
+    g = self.to_svo_graph()
+    seeds = take(subgraph_size,
+          [x for x, r in rank_sort(self.pr) if isinstance(x, str)])
+    g = g.subgraph(seeds)
+    fname=self.from_file[:-4] + "_svo.gv"
+    gshow(g, file_name=fname,attr='rel', show=show_pics)
 
   def show_all(self):
     self.show_summary()
@@ -607,6 +623,9 @@ class Talker :
       self.to_prolog()
     if show_pics and self.from_file:
       pshow(self, file_name=self.from_file)
+      self.show_svos()
+
+
 
   def show_stats(self):
     print('VERTICES:', self.g.number_of_nodes())
