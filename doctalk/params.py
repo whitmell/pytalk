@@ -33,8 +33,13 @@ to_prolog=0
 #def join(*xs) : return ' '.join(xs)
 def join(*xs) : return xs
 
-from inspect import currentframe
+
+from inspect import getframeinfo, stack
+
 def ppp(*args) :
-  cf = currentframe()
-  print('DEBUG: line-->',cf.f_back.f_lineno,end=': ')
+  caller = getframeinfo(stack()[1][0])
+
+  print('DEBUG!!!',
+        caller.filename.split('/')[-1],
+        '->',caller.lineno,end=': ')
   print(*args)

@@ -107,6 +107,7 @@ def rel_from(d):
     if f>=0:
       for u in range(*ux):
         yield lemma[u],tag[u]
+  def lems(xs) : return tuple(x[0] for x in xs)
   rs,svos=set(),set()
   for ts in d[IE] :
     for t in ts :
@@ -133,6 +134,9 @@ def rel_from(d):
       svo=s,v,o
       if () in svo or s==o : continue
       svos.add(svo)
+      if len(sub)>1 : svos.add((s,'subject_in',lems(sub)))
+      if len(ob) > 1 : svos.add((o, 'object_in', lems(ob)))
+      if len(rel)>1 : svos.add((v, 'verb_in', lems(rel)))
 
   return tuple(rs),tuple(svos)
 
@@ -171,7 +175,7 @@ def sub_centered(id,dep) :
     yield (f, id)  # subject to sent
     yield (t, f)  # pred to subject
   elif r in ['nsubj', 'dobj', 'iobj'] : #or t_[0] == 'V':
-    if not t in stop_words and not f in stop_words :
+    if good_word(t) and good_word(f) :
       yield f, t  # arg to pred
       yield t, id  # pred to sent
   # elif r == 'ROOT': yield (f, t)
@@ -184,8 +188,8 @@ def pred_mediated(id,dep) :
     pass
   elif r in ['nsubj', 'dobj', 'iobj'] or t_[0] == 'V':
     yield (id, f)  # sent to predicate
-    if not f in stop_words: yield t,f  #  pred to arg
-    if not t in stop_words : yield id, t  # sent to pred
+    if good_word(t) and good_word(f) : yield t,f  #  pred to arg
+    if good_word(t) : yield id, t  # sent to pred
     yield (f, id)  # arg to sent
   elif r == 'ROOT':
     yield (t, f)
@@ -262,6 +266,7 @@ def materialize(db) :
 
 def wn_from(l2occ) :
   for w in l2occ :
+    if not good_word(w) : continue
     for s,v,o in wn_svo(2,10,w,'n') :
       if l2occ.get(o) :
         yield (s,v,o)
@@ -298,7 +303,7 @@ def answer_quest(q,talker,max_answers=max_answers) :
     for j,q_lemma in enumerate(q_sent_data[0][LEMMA]):
        q_tag=q_sent_data[0][TAG][j]
        if q_tag[0] not in "NVJ" : continue # ppp(q_lemma,q_tag)
-       if q_lemma in stop_words or q_lemma in ".?" : continue
+       if not good_word(q_lemma) or q_lemma in ".?" : continue
 
        ys = l2occ.get(q_lemma)
 
@@ -310,7 +315,7 @@ def answer_quest(q,talker,max_answers=max_answers) :
        if expand_query > 0:
          related = wn_all(expand_query, 10, q_lemma, wn_tag(q_tag))
          for r_lemma in related:
-           if r_lemma in stop_words : continue
+           if  not good_word(q_lemma) : continue
            zs=l2occ.get(r_lemma)
            if not zs : continue
            for r_sent,_r_pos in zs :
@@ -318,11 +323,12 @@ def answer_quest(q,talker,max_answers=max_answers) :
            if zs and not ys :
              if q_lemma in unknowns : unknowns.pop()
            tprint('EXPANDED:',q_lemma,'-->',r_lemma)
+    tprint('')
     if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
 
     best=[]
     if pers :
-      d={x:r for x,r in answerer.pr.items() if x not in stop_words}
+      d={x:r for x,r in answerer.pr.items() if good_word(x)}
       '''
       for near in nears.values() :
          for n,l in near :
@@ -415,6 +421,10 @@ def interact(q,talker):
   print('')
   ### answer is computed here ###
   answers,_=answer_quest(q, talker)
+  show_answers(answers)
+
+def show_answers(answers) :
+  print('ANSWERS:')
   for info, sent, rank, shared in answers:
     print(info,end=': ')
     say(nice(sent))
@@ -542,7 +552,7 @@ class Talker :
         if s!=o and good_word(s) and good_word(o) :
            d[(s, v2rel(v), o)].add(i)
       for x, e in ners:
-        d[(x, 'kind_of', e2rel(e))].add(i)
+        d[(e2rel(e), 'is_kind_of', x)].add(i)
 
       for a, b in comps:
         c = join(a, b)
@@ -610,8 +620,7 @@ class Talker :
     seeds = take(subgraph_size,
           [x for x, r in rank_sort(self.pr) if isinstance(x, str)])
     g = g.subgraph(seeds)
-    fname=self.from_file[:-4] + "_svo.gv"
-    gshow(g, file_name=fname,attr='rel', show=show)
+    show_svo_graph(g,file_name=self.from_file,show=show)
 
   def show_all(self,show=show_pics):
     self.show_summary()
@@ -625,12 +634,18 @@ class Talker :
       pshow(self, file_name=self.from_file)
       self.show_svos(show=show)
 
-
-
   def show_stats(self):
     print('VERTICES:', self.g.number_of_nodes())
     print('EDGES:',self.g.number_of_edges())
     print('')
+
+def show_svo_graph(g,file_name='temp.txt',size=subgraph_size,show=show_pics):
+  if size>0:
+     pr=nx.pagerank(g)
+     best=set(take(size,[x[0] for x in rank_sort(pr)]))
+     g=g.subgraph(best)
+  fname=file_name[:-4] + "_svo.gv"
+  gshow(g, file_name=fname,attr='rel', show=show)
 
 # helpers
 def nice(ws) :
@@ -655,7 +670,8 @@ def normalize_sent(r,sent_len,avg_len):
   return r*factor
 
 def good_word(w) :
-  return isinstance(w,str) and w.isalpha() and w not in stop_words
+  return isinstance(w,str) and len(w)>1 and w.isalpha() \
+         and w not in stop_words
 
 def good_tag(tag,starts="NVJA"):
   c=tag[0]
