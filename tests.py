@@ -69,11 +69,6 @@ def mtest() :
     pprint.pprint(comps)
     print('')
 
-def stest() :
-  fname = 'examples/test.txt'
-  for svo in file_svos(fname) :
-    print(svo)
-
 def qtest() :
   fname='examples/geo'
   run_with(fname,query=True,show=True)

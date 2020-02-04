@@ -34,32 +34,39 @@ def chat_about(fname,qs=None,show_pics=show_pics) :
 
 
 def tprint(*args) :
+  ''' custom print when trance on'''
   if trace : print(*args)
 
 def say(what) :
+  ''' prints and ptionally says it, unless set to quiet'''
   print(what)
   if not quiet : subprocess.run(["say", what])
 
 def tload(infile) :
+  ''' load a .txt file'''
   tprint('LOADING:',infile,'\n')
   with open(infile, 'r') as f: text = f.read()
   return digest(text)
 
 def jload(infile) :
+  ''' loads .json file, preprocessed from a .txt file'''
   with open(infile, 'r') as f:
     res = json.load(f)
     return res
 
 def jsave(infile,outfile):
+  '''preprocesses a .txt file to a .json file'''
   d=tload(infile)
   with open(outfile,'w') as g:
     json.dump(d,g,indent=0)
 
 def exists_file(fname) :
+  '''true when a file exists'''
   path = Path(fname)
   return path.is_file()
 
 def load(fname) :
+  '''loads a .txt file or its .json file if it exists'''
   if fname[-4:]==".txt":
     if force:
       db = tload(fname)
@@ -73,6 +80,7 @@ def load(fname) :
   return db
 
 def get_quests(qs) :
+  ''' decodes questions from list or file'''
   if not isinstance(qs,list) :
     qfname=qs
     with open(qfname,'r') as f:
@@ -80,8 +88,10 @@ def get_quests(qs) :
   return qs
 
 def digest(text) :
+  ''' process text with the NLP toolkit'''
   l2occ = defaultdict(list)
   sent_data=[]
+  # calls server here
   for i,xss in enumerate(client.extract(text)) :
     lexs,deps,ies=xss
     sent,lemma,tag,ner=[],[],[],[]
@@ -96,12 +106,12 @@ def digest(text) :
     d=(tuple(sent),tuple(lemma),tuple(tag),
        tuple(ner),tuple(deps),tuple(ies))
     sent_data.append(d)
-  #tprint('DIGESTED')
   return sent_data,l2occ
 
 SENT,LEMMA,TAG,NER,DEP,IE=0,1,2,3,4,5
 
 def rel_from(d):
+  ''' extracts several relations as SVO triplets'''
   def to_lems(ux):
     f,t=ux
     if f>=0:
@@ -141,6 +151,7 @@ def rel_from(d):
   return tuple(rs),tuple(svos)
 
 def dep_from(id,d):
+  ''' extracts dependenciy relations deom given sentece id'''
   deps=d[DEP]
   lemmas=d[LEMMA]
   tags=d[TAG]
@@ -152,21 +163,24 @@ def dep_from(id,d):
     yield res
 
 def deps_from(id,d) :
+  ''' extracts all dependency relations as nexted tuples'''
   return tuple(t for t in dep_from(id,d))
 
 def comp_from(id,d) :
+  '''turns compound annotations into pairs'''
   for x in dep_from(id,d) :
     f,tf,rel,t,tt=x
-    #ppp(f,t)
     if rel in ('compound', 'amod', 'conj:and') and \
        good_word(f) and good_word(t) and \
        good_tag(tf) and good_tag(tt) :
       yield (f,t)
 
 def comps_from(id,d) :
+  ''' returns compounds in sentence id as nested tuples of positions'''
   return tuple(t for t in comp_from(id,d) if t)
 
 def sub_centered(id,dep) :
+  '''builds dependency graphs centered on subjects and sentences'''
   f, f_, r, t, t_ = dep
   if r == 'punct' or f == t:
     pass
@@ -183,6 +197,7 @@ def sub_centered(id,dep) :
     yield (f, t)
 
 def pred_mediated(id,dep) :
+  '''build dependency graphs mediated by predicates'''
   f, f_, r, t, t_ = dep
   if r == 'punct' or f==t:
     pass
@@ -196,57 +211,42 @@ def pred_mediated(id,dep) :
   else:
     yield (f, t)
 
+def to_edges_in(id,sd) :
+  '''yields edges from dependency structure of sentence id'''
+  for dep in dep_from(id, sd):
+    if subject_centered:
+      yield from sub_centered(id, dep)
+    else:
+      yield from pred_mediated(id, dep)
+  if compounds:
+    for ft in comps_from(id, sd):
+      f, t = ft
+      yield f, ft  # parts to compound
+      yield t, ft
+      yield ft, id  # compound to sent
 
 def to_edges(db) :
+  '''yields all edges from syntactic dependency structure'''
   sent_data,l2occ=db
   for id,sd in enumerate(sent_data) :
-    for dep in dep_from(id,sd):
-      if subject_centered :
-        yield from sub_centered(id,dep)
-      else :
-        yield from pred_mediated(id,dep)
-    if compounds :
-      for ft in comps_from(id, sd):
-          f,t=ft
-          yield f, ft #parts to compound
-          yield t, ft
-          yield ft,id # compound to sent
+     yield from to_edges_in(id,sd)
 
 def get_avg_len(db) :
+  ''' returns average length of sentences'''
   sent_data,_=db
   lens=[len(x[LEMMA]) for x in sent_data]
   n=len(lens)
   s=sum(lens)
   return round(s/n)
 
-def to_graph(db,svos,personalization=None) :
-  g = nx.DiGraph()
-  for e in to_edges(db) :
-    f,t=e
-    g.add_edge(f,t)
-  if  svo_edges:
-    for s,v,o in svos :
-      if s==o : continue
-      if v in ('is_a','part_of','is_like') :
-        g.add_edge(o,s)
-        g.add_edge(s,o)
-        #ppp(s,v,o)
-      elif v == 'as_in' :
-        g.add_edge(s,o)
-  try :
-     pr=nx.pagerank(g,personalization=personalization)
-  except :
-    n=g.number_of_nodes()
-    pr=dict()
-    for l in db[1] : pr[l]=1/n
-  return g,pr
-
 def rank_sort(pr) :
+  ''' sort dict by ranks associatied to its keys'''
   by_rank=[(x,r) for (x,r) in pr.items()]
   by_rank.sort(key=lambda x : x[1],reverse=True)
   return by_rank
 
 def ners_from(d):
+  ''' extracts useful named entities'''
   ners=[]
   for j, ner in enumerate(d[NER]):
     lemma = d[LEMMA][j]
@@ -254,6 +254,7 @@ def ners_from(d):
   return tuple(ners)
 
 def materialize(db) :
+  '''converts relations from positions to actual lemmas'''
   sent_data,l2occ= db
   for i,d in enumerate(sent_data) :
       rels,svos = rel_from(d)
@@ -264,6 +265,7 @@ def materialize(db) :
             ners,rels,svos,deps,comps
 
 def wn_from(l2occ) :
+  '''extracts likely WordNet relations between lemmas'''
   for w in l2occ :
     if not good_word(w) : continue
     for s,v,o in wn_svo(2,10,w,'n') :
@@ -277,94 +279,87 @@ def wn_from(l2occ) :
         yield (s, v, o)
 
 def v2rel(v) :
+  '''rewrites "be" lemma to is_a'''
   if v=='be' : return 'is_a'
   return v
 
 def e2rel(e) :
+  '''turns NER tags into common words'''
   if e=='MISC' : return 'entity'
   return e.lower()
 
-
-
-
-def file_svos(fname) :
-  t=Talker(from_file=fname)
-  yield from t.svos.items()
-
 def answer_quest(q,talker,max_answers=max_answers) :
-    db=talker.db
-    sent_data,l2occ=db
-    matches = defaultdict(set)
-    nears=defaultdict(set)
-    answerer=Talker(from_text=q)
-    q_sent_data,q_l2occ=answerer.db
-    unknowns=[]
-    for j,q_lemma in enumerate(q_sent_data[0][LEMMA]):
-       q_tag=q_sent_data[0][TAG][j]
-       if q_tag[0] not in "NVJ" : continue # ppp(q_lemma,q_tag)
-       if not good_word(q_lemma) or q_lemma in ".?" : continue
+  '''
+  given question q, interacts with talker and returns
+  its best answers
+  '''
+  db = talker.db
+  sent_data, l2occ = db
+  matches = defaultdict(set)
+  nears = defaultdict(set)
+  answerer = Talker(from_text=q)
+  q_sent_data, q_l2occ = answerer.db
+  unknowns = []
+  for j, q_lemma in enumerate(q_sent_data[0][LEMMA]):
+    q_tag = q_sent_data[0][TAG][j]
+    if q_tag[0] not in "NVJ": continue  # ppp(q_lemma,q_tag)
+    if not good_word(q_lemma) or q_lemma in ".?": continue
 
-       ys = l2occ.get(q_lemma)
+    ys = l2occ.get(q_lemma)
 
-       if not ys :
-         unknowns.append(q_lemma)
-       else :
-         for sent,_pos in ys:
-           matches[sent].add(q_lemma)
-       if expand_query > 0:
-         related = wn_all(expand_query, 10, q_lemma, wn_tag(q_tag))
-         for r_lemma in related:
-           if  not good_word(q_lemma) : continue
-           zs=l2occ.get(r_lemma)
-           if not zs : continue
-           for r_sent,_r_pos in zs :
-             nears[r_sent].add((r_lemma,q_lemma))
-           if zs and not ys :
-             if q_lemma in unknowns : unknowns.pop()
-           tprint('EXPANDED:',q_lemma,'-->',r_lemma)
-    tprint('')
-    if unknowns: tprint("UNKNOWNS:", unknowns,'\n')
+    if not ys:
+      unknowns.append(q_lemma)
+    else:
+      for sent, _pos in ys:
+        matches[sent].add(q_lemma)
+    if expand_query > 0:
+      related = wn_all(expand_query, 10, q_lemma, wn_tag(q_tag))
+      for r_lemma in related:
+        if not good_word(q_lemma): continue
+        zs = l2occ.get(r_lemma)
+        if not zs: continue
+        for r_sent, _r_pos in zs:
+          nears[r_sent].add((r_lemma, q_lemma))
+        if zs and not ys:
+          if q_lemma in unknowns: unknowns.pop()
+        tprint('EXPANDED:', q_lemma, '-->', r_lemma)
+  tprint('')
+  if unknowns: tprint("UNKNOWNS:", unknowns, '\n')
 
-    best=[]
-    if pers :
-      d={x:r for x,r in answerer.pr.items() if good_word(x)}
-      '''
-      for near in nears.values() :
-         for n,l in near :
-           lr=d.get(l)
-           if lr :
-             d[n]=math.log(1+lr)
-             #ppp(n,l,lr)
-      '''
-      talker.pr=nx.pagerank(talker.g,personalization=d)
+  best = []
+  if pers:
+    d = {x: r for x, r in answerer.pr.items() if good_word(x)}
+    talker.pr = nx.pagerank(talker.g, personalization=d)
 
-    for (id, shared) in matches.items() :
-      sent=sent_data[id][SENT]
-      r=answer_rank(id,shared,sent,talker,expanded=0)
-      #ppp(id,r,shared)
-      best.append((r,id,shared,sent))
-      #ppp('MATCH', id,shared, r)
+  for (id, shared) in matches.items():
+    sent = sent_data[id][SENT]
+    r = answer_rank(id, shared, sent, talker, expanded=0)
+    # ppp(id,r,shared)
+    best.append((r, id, shared, sent))
+    # ppp('MATCH', id,shared, r)
 
-    for (id,shared_source) in nears.items() :
-      shared = {x for x,_ in shared_source}
-      sent = sent_data[id][SENT]
-      r = answer_rank(id, shared, sent, talker,expanded=1)
-      best.append((r, id, shared, sent))
-      #ppp('EXPAND', id,shared, r)
+  for (id, shared_source) in nears.items():
+    shared = {x for x, _ in shared_source}
+    sent = sent_data[id][SENT]
+    r = answer_rank(id, shared, sent, talker, expanded=1)
+    best.append((r, id, shared, sent))
+    # ppp('EXPAND', id,shared, r)
 
-    best.sort(reverse=True)
+  best.sort(reverse=True)
 
-    answers=[]
-    for i,b in enumerate(best):
-      if i >= max_answers : break
-      rank, id, shared, sent = b
-      answers.append((id,sent,round(rank,4),shared))
-    if not answers_by_rank : answers.sort()
-    return answers,answerer
+  answers = []
+  for i, b in enumerate(best):
+    if i >= max_answers: break
+    rank, id, shared, sent = b
+    answers.append((id, sent, round(rank, 4), shared))
+  if not answers_by_rank: answers.sort()
+  return answers, answerer
+
 
 def sigmoid(x): return 1 / (1 + math.exp(-x))
 
 def answer_rank(id,shared,sent,talker,expanded=0) :
+  '''ranks answer sentence id using several parameters'''
 
   lshared = len(shared)
   if not lshared : return 0
@@ -400,6 +395,7 @@ def answer_rank(id,shared,sent,talker,expanded=0) :
   return r
 
 def query_with(talker,qs_or_fname)     :
+  ''' queries talker with questions from file or list'''
   if isinstance(qs_or_fname,str) :
     qs = get_quests(qs_or_fname) # file name
   else :
@@ -415,6 +411,7 @@ def query_with(talker,qs_or_fname)     :
       interact(q,talker)
 
 def interact(q,talker):
+  ''' prints/says query and answers'''
   tprint('----- QUERY ----\n')
   say(q)
   print('')
@@ -423,6 +420,7 @@ def interact(q,talker):
   show_answers(answers)
 
 def show_answers(answers) :
+  ''' prints out/says answers'''
   print('ANSWERS:')
   for info, sent, rank, shared in answers:
     print(info,end=': ')
@@ -432,8 +430,14 @@ def show_answers(answers) :
   tprint('------END-------', '\n')
 
 class Talker :
+  '''
+  class aggregating summary, keyphrase, relation extraction
+  as well as query answering in the form of extracted sentences
+  based on given file or text
+  '''
   def __init__(self,from_file=None,from_text=None,
                sk=sum_count,wk=key_count,show=show_pics):
+    '''creates data container from file or text document'''
     self.from_file=from_file
     if from_file:
        self.db=load(from_file)
@@ -448,18 +452,20 @@ class Talker :
 
     self.svos=self.to_svos()
 
-    self.g,self.pr=to_graph(self.db,self.svos)
+    self.g,self.pr=self.to_graph()
     #self.get_sum_and_words(sk,wk)
     self.summary, self.keywords = self.extract_content(sk, wk)
 
   def answer_quest(self,q,max_answers=max_answers):
+    '''answers question q'''
     return answer_quest(q,self,max_answers=max_answers)
 
   def query_with(self,qs):
+    '''answers list of questions'''
     query_with(self,qs)
 
   def get_tagged(self,w):
-
+    '''adds tags to given lemma w'''
     l2occ=self.db[1]
     sent_data=self.db[0]
     occs=l2occ.get(w)
@@ -577,6 +583,30 @@ class Talker :
       g.add_edge(s,o,rel=v,occs=occs)
     return g
 
+  def to_graph(self, personalization=None):
+    db=self.db
+    svos=self.svos
+    g = nx.DiGraph()
+    for e in to_edges(db):
+      f, t = e
+      g.add_edge(f, t)
+    if svo_edges:
+      for s, v, o in svos:
+        if s == o: continue
+        if v == 'as_in':
+          g.add_edge(s, o)
+        elif v not in {'as_in'}  : #elif v in ('is_a', 'part_of', 'is_like'):
+          g.add_edge(o, s)
+          g.add_edge(s, o)
+          # ppp(s,v,o)
+
+    try:
+      pr = nx.pagerank(g, personalization=personalization)
+    except:
+      n = g.number_of_nodes()
+      pr = dict()
+      for l in db[1]: pr[l] = 1 / n
+    return g, pr
 
   def to_prolog(self):
     if not self.from_file : return
