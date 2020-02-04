@@ -1,6 +1,5 @@
 from .talk import *
 
-
 def extend_wh(lemmas) :
   xs=set()
   if 'who' in  lemmas:
@@ -21,7 +20,7 @@ class Thinker(Talker) :
     self.svo_graph = self.to_svo_graph()
 
   def ask(self,q):
-    print('QUESTION',q,'\n')
+    print('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q,max_answers=25)
     #show_answers(take(3,answers))
     lemmas=answerer.get_lemma(0)

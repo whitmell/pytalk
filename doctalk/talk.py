@@ -481,21 +481,25 @@ class Talker :
     return words,tags
 
   def get_sentence(self,i):
+    ''' returns sentence i as list of words'''
     return  self.db[0][i][SENT]
 
   def get_lemma(self,i):
+    ''' returns lemmas of sentence i as list of words'''
     return  self.db[0][i][LEMMA]
 
   def get_tag(self,i):
+    ''' gets the POS tags of sentence i'''
     return  self.db[0][i][TAG]
 
   def get_ner(self,i):
+    ''' gets the named entity annotations of sentence i'''
     ner=  self.db[0][i][NER]
     if ner=='O' : return None
     return ner
 
   def extract_content(self,sk,wk):
-
+    '''extracts summaries and keywords'''
     def nice_word(x,good_tags='N') :
       ws_ts=self.get_tagged(x)
       if not ws_ts : return None
@@ -547,6 +551,10 @@ class Talker :
     return summary,words
 
   def to_svos(self):
+    '''
+    returns SVO relations as a dict associating to each
+    SVO tuple the set of the sentences it comes from
+    '''
     sent_data, l2occ = self.db
     d = defaultdict(set)
     for i, data in enumerate(sent_data):
@@ -577,6 +585,7 @@ class Talker :
     return d
 
   def to_svo_graph(self):
+    ''' exposes svo relations as a graph'''
     g=nx.DiGraph()
     for svo,occs in self.svos.items() :
       s,v,o=svo
@@ -584,6 +593,7 @@ class Talker :
     return g
 
   def to_graph(self, personalization=None):
+    ''' builds document graph from several link types'''
     db=self.db
     svos=self.svos
     g = nx.DiGraph()
@@ -609,6 +619,7 @@ class Talker :
     return g, pr
 
   def to_prolog(self):
+    ''' generates a Prolog representation of a document's content'''
     if not self.from_file : return
     fname=self.from_file[:-4]
     with open(fname+".pro",'w') as f :
@@ -628,6 +639,7 @@ class Talker :
         f.write(f'svo{s,v,o,occs}.\n')
 
   def show_summary(self):
+    ''' prints/says summary'''
     say('SUMMARY:')
     for r,x,ws in self.summary:
       print(x,end=': ')
@@ -635,11 +647,13 @@ class Talker :
     print('')
 
   def show_keywords(self):
+    ''' pronts keywords'''
     print('KEYWORDS:')
     print(self.keywords)
     print('')
 
   def show_rels(self):
+    ''' prints extracted relations'''
     print('RELATIONS:')
     for svoi in self.svos.items():
        print(svoi)
@@ -664,11 +678,15 @@ class Talker :
       self.show_svos(show=show)
 
   def show_stats(self):
-    print('VERTICES:', self.g.number_of_nodes())
-    print('EDGES:',self.g.number_of_edges())
+    print('SENTENCES:',len(self.db[0]))
+    print('LEMMAS:', len(self.db[1]))
+    print('GRAPH NODES:', self.g.number_of_nodes())
+    print('GRAPH EDGES:',self.g.number_of_edges())
+    print('SVO RELATIONS:', len(self.svos))
     print('')
 
 def show_svo_graph(g,file_name='temp.txt',size=subgraph_size,show=show_pics):
+  ''' depicts the subgraph of the highest ranked nodes in the SVO graph'''
   if size>0:
      pr=nx.pagerank(g)
      best=set(take(size,[x[0] for x in rank_sort(pr)]))
@@ -678,6 +696,7 @@ def show_svo_graph(g,file_name='temp.txt',size=subgraph_size,show=show_pics):
 
 # helpers
 def nice(ws) :
+  ''' aggregates word lists into a nicer looking sentence'''
   ws=[cleaned(w) for w in ws]
   sent=" ".join(ws)
   #print(sent)
@@ -690,6 +709,12 @@ def nice(ws) :
 
 
 def normalize_sent(r,sent_len,avg_len):
+  '''
+  normalizes the ranking of sentences
+  based on effect of their length on ranking
+  also reduces chances that noisy short sentences that might have
+  passed through the NLP toolkit make it into summaries or answers
+  '''
   if not r:
     r=0
   if sent_len > 2*avg_len or sent_len < min(5,avg_len/4) :
@@ -699,14 +724,19 @@ def normalize_sent(r,sent_len,avg_len):
   return r*factor
 
 def good_word(w) :
+  '''
+  ensures that most noise words are avoided
+  '''
   return isinstance(w,str) and len(w)>1 and w.isalpha() \
          and w not in stop_words
 
 def good_tag(tag,starts="NVJA"):
+  ''' true for noun,verb, adjective and adverb tags'''
   c=tag[0]
   return c in starts
 
 def distinct(g) :
+  '''ensures repetititions are removed from a generator'''
   seen=set()
   for x in g :
     if not x in seen :
@@ -714,6 +744,7 @@ def distinct(g) :
       yield x
 
 def take(k,g) :
+  ''' generates only the first k elements of a sequence'''
   for i,x in enumerate(g) :
     if i>k : break
     yield x
