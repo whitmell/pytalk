@@ -59,6 +59,8 @@ class Thinker(Talker) :
 
     S=U.subgraph(reached)
     show_svo_graph(S, size=42,show=2)
+    for e in S.edges():
+      print(e)
 
 def near_in(g,x) :
   '''
