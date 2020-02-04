@@ -210,8 +210,7 @@ def to_edges(db) :
           f,t=ft
           yield f, ft #parts to compound
           yield t, ft
-          #yield ft,id # compound to sent
-          #yield ft,ft # to self
+          yield ft,id # compound to sent
 
 def get_avg_len(db) :
   sent_data,_=db
@@ -573,9 +572,9 @@ class Talker :
 
   def to_svo_graph(self):
     g=nx.DiGraph()
-    for svo in self.svos :
+    for svo,occs in self.svos.items() :
       s,v,o=svo
-      g.add_edge(s,o,rel=v)
+      g.add_edge(s,o,rel=v,occs=occs)
     return g
 
 

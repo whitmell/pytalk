@@ -1,5 +1,20 @@
 from .talk import *
 
+
+def extend_wh(lemmas) :
+  xs=set()
+  if 'who' in  lemmas:
+    xs.update({'person', 'title', 'organization'})
+  if 'when' in lemmas:
+    xs.update({'time', 'duration', 'date'})
+  if 'where' in lemmas:
+    xs.update({'location', 'organization', 'city', 'state_or_province', 'country'})
+  if 'how' in lemmas and ('much' in lemmas or 'many' in lemmas):
+    xs.update({'money', 'number', 'ordinal'})
+  if 'what' in lemmas and 'time' in lemmas:
+    xs.update({'time', 'duration', 'date'})
+  return xs
+
 class Thinker(Talker) :
   def __init__(self,**kwargs):
     super().__init__(**kwargs)
@@ -8,10 +23,19 @@ class Thinker(Talker) :
   def ask(self,q):
     print('QUESTION',q,'\n')
     answers,answerer=self.answer_quest(q,max_answers=25)
-    show_answers(take(3,answers))
-
-    ids=dict()
-    shareds=set()
+    #show_answers(take(3,answers))
+    lemmas=answerer.get_lemma(0)
+    ids = dict()
+    shareds = set()
+    ppp('LEMMAS:',lemmas)
+    if 'who' in lemmas :
+      shareds.update({'person','title','organization'})
+    if 'when' in lemmas :
+      shareds.update({'time','duration','date'})
+    if 'where' in lemmas :
+      shareds.update({'location','organization','city','state_or_province','country'})
+    if 'how' in lemmas and ('much' in lemmas or 'many' in lemmas) :
+      shareds.update({'money','number','ordinal'})
     for answer in answers:
        id, sent,rank,shared=answer
        ids[id]=rank
@@ -24,7 +48,7 @@ class Thinker(Talker) :
     )
     no_rels=('object_in', 'verb_in','is_a'
      )
-    ppp('SHAREDS',shareds)
+    tprint('SHAREDS',shareds)
     U=self.svo_graph
     U = as_undir(U)
     #U = with_rels(U, rels)
@@ -37,7 +61,7 @@ class Thinker(Talker) :
     ppp('LEN',len(reached))
 
     S=U.subgraph(reached)
-    show_svo_graph(S, size=48,show=2)
+    show_svo_graph(S, size=42,show=2)
 
 def near_in(g,x) :
   xs1=nx.neighbors(g,x)

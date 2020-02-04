@@ -3,7 +3,7 @@ import os
 from doctalk.talk import *
 from doctalk.nlp import *
 from doctalk.sim import *
-from doctalk.pypro import *
+from doctalk.pypro import nrun
 from doctalk.think import *
 
 import pprint
@@ -134,4 +134,5 @@ if __name__== "__main__" :
   #ptest()
   #ftest()
   ttest2()
+  #ptest()
 
