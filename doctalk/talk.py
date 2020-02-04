@@ -565,7 +565,7 @@ class Talker :
         if s!=o and good_word(s) and good_word(o) :
            d[(s, v2rel(v), o)].add(i)
       for x, e in ners:
-        d[(e2rel(e), 'is_kind_of', x)].add(i)
+        d[(e2rel(e), 'has_instance', x)].add(i)
 
       for a, b in comps:
         c = join(a, b)

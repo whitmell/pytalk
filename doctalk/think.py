@@ -1,6 +1,7 @@
 from .talk import *
 
 def extend_wh(lemmas) :
+  ''' ads possible NER targets for wh words'''
   xs=set()
   if 'who' in  lemmas:
     xs.update({'person', 'title', 'organization'})
@@ -15,26 +16,23 @@ def extend_wh(lemmas) :
   return xs
 
 class Thinker(Talker) :
+  '''
+  extends Talker with multi-hop resoning over SVOs
+  using graph algorithms
+  '''
   def __init__(self,**kwargs):
     super().__init__(**kwargs)
     self.svo_graph = self.to_svo_graph()
 
   def ask(self,q):
+    ''' handler for question q asked from this Thinker'''
     print('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q,max_answers=25)
     #show_answers(take(3,answers))
     lemmas=answerer.get_lemma(0)
+    ppp('LEMMAS:', lemmas)
     ids = dict()
-    shareds = set()
-    ppp('LEMMAS:',lemmas)
-    if 'who' in lemmas :
-      shareds.update({'person','title','organization'})
-    if 'when' in lemmas :
-      shareds.update({'time','duration','date'})
-    if 'where' in lemmas :
-      shareds.update({'location','organization','city','state_or_province','country'})
-    if 'how' in lemmas and ('much' in lemmas or 'many' in lemmas) :
-      shareds.update({'money','number','ordinal'})
+    shareds = extend_wh(lemmas)
     for answer in answers:
        id, sent,rank,shared=answer
        ids[id]=rank
@@ -42,7 +40,7 @@ class Thinker(Talker) :
     rels= (
       'as_in','is_like',
        'is_a', 'part_of',
-      'is_kind_of'
+      'has_instance'
       'subject_in', 'object_in', 'verb_in'
     )
     no_rels=('object_in', 'verb_in','is_a'
@@ -63,17 +61,24 @@ class Thinker(Talker) :
     show_svo_graph(S, size=42,show=2)
 
 def near_in(g,x) :
+  '''
+  returns all 1 or 2 level neighbors of x in g
+  '''
   xs1=nx.neighbors(g,x)
   return xs1
   xs2=set(y for x in xs1 for y in nx.neighbors(g,x))
   return xs2.union(xs1)
 
-def as_undir(g) : return g.to_undirected(as_view=True)
+def as_undir(g) :
+  '''view of g as an undirected graph'''
+  return g.to_undirected(as_view=True)
 
 def with_rels(G,rels) :
+  ''''view of G that follows only links in rels'''
   return nx.subgraph_view(G,
     filter_edge=lambda x,y:G[x][y]['rel'] in rels )
 
 def without_rels(G,rels) :
+  ''''view of G that follows only links NOT in rels'''
   return nx.subgraph_view(G,
     filter_edge=lambda x,y:G[x][y]['rel'] not in rels )
