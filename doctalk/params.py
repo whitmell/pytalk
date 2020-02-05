@@ -1,40 +1,39 @@
+from inspect import getframeinfo, stack
+
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
-openie='openie' in annotators
 
-trace=1
-force=False
+class talk_params:
+  def __init__(self):
+    self.trace = 1
+    self.force = False
 
-sum_count=4
-key_count=10
-max_answers=4
-cloud_size=24
-subgraph_size=32
+    self.sum_count = 4
+    self.key_count = 10
+    self.max_answers = 4
+    self.cloud_size = 24
+    self.subgraph_size = 32
 
-quiet=True
-answers_by_rank=True
+    self.quiet = True
+    self.answers_by_rank = True
 
-from nltk.stem import PorterStemmer
-#stemmer=PorterStemmer()
-stemmer=None
-lower=True
-pers=True
-expand_query=2
+    self.lower = True
+    self.pers = True
+    self.expand_query = 2
 
-compounds=True
-svo_edges=True
-subject_centered=True
+    self.compounds = True
+    self.svo_edges = True
+    self.subject_centered = True
 
-show_pics=1 # 1 : just generate files, 2: interactive
-show_rels=1
-to_prolog=0
+    self.show_pics = 1  # 1 : just generate files, 2: interactive
+    self.show_rels = 0
+    self.to_prolog = 0
+
+params=talk_params()
 
 # decides between '_' and ' ' as separator
 #def join(*xs) : return ' '.join(xs)
 def join(*xs) : return xs
-
-
-from inspect import getframeinfo, stack
 
 def ppp(*args) :
   caller = getframeinfo(stack()[1][0])

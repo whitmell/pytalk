@@ -85,7 +85,7 @@ def go()  :
   files = sorted(glob.glob(D + "/*_quest.txt"))
   for qf in files:
     df=qf.replace("_quest.txt","")
-    run_with(df,query=True,show=True)
+    run_with(df,query=True)
 
 def ftest() :
   fname='examples/geo'  #################
@@ -110,7 +110,7 @@ def ttest2() :
 
 def think_test(F,Q) :
   T = Thinker(from_file=F)
-  T.show_all(show=2)
+  T.show_all()
   print('SVO_NODES', T.svo_graph.number_of_nodes())
   print('SVO_EDGES', T.svo_graph.number_of_edges())
   print()
@@ -128,6 +128,6 @@ if __name__== "__main__" :
   #stest()
   #ptest()
   #ftest()
-  ttest2()
+  ttest1()
   #ptest()
 

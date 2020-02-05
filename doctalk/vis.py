@@ -16,7 +16,7 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show>1)
 
-def pshow(t, k=cloud_size,file_name="temp",show=show_pics):
+def pshow(t, k=params.cloud_size,file_name="temp",show=params.show_pics):
   file_name=file_name[:-4]
   def t2s(x) :
     if isinstance(x,tuple) :
@@ -45,7 +45,7 @@ def pshow(t, k=cloud_size,file_name="temp",show=show_pics):
   #ppp('TOPG', topg.number_of_edges())
   gshow(topg,file_name=file_name+".gv",show=show)
 
-def show_ranks(rank_dict,file_name="cloud.pdf",show=show_pics) :
+def show_ranks(rank_dict,file_name="cloud.pdf",show=params.show_pics) :
   cloud=WordCloud(width=800,height=400)
   cloud.fit_words(rank_dict)
   f=plt.figure()

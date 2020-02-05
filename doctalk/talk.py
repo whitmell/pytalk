@@ -12,7 +12,7 @@ from .vis import pshow,gshow
 
 client = NLPclient()
 
-def run_with(fname,query=True,show=show_pics) :
+def run_with(fname,query=True) :
   '''
   Activates dialog about document in <fname>.txt with questions
   in <fname>_quests.txt
@@ -20,27 +20,32 @@ def run_with(fname,query=True,show=show_pics) :
   with annotators listed in params.py  available.
   '''
   t = Talker(from_file=fname+'.txt')
+  show =t. params.show_pics
   t.show_all()
   if query:
     t.query_with(fname+'_quest.txt')
     pshow(t,file_name=fname+"_quest.txt",show=show)
 
+def run_with_pdf(fname,**kwargs) :
+  pdf2txt(fname+".pdf")
+  run_with(fname, **kwargs)
 
-def chat_about(fname,qs=None,show_pics=show_pics) :
+def chat_about(fname,qs=None) :
   t = Talker(from_file=fname + '.txt')
-  t.show_all()
+  show = t.params.show_pics
+  t.show_all(show=show)
   t.query_with(qs)
 
 
 
 def tprint(*args) :
   ''' custom print when trance on'''
-  if trace : print(*args)
+  if params.trace : print(*args)
 
 def say(what) :
   ''' prints and ptionally says it, unless set to quiet'''
   print(what)
-  if not quiet : subprocess.run(["say", what])
+  if not params.quiet : subprocess.run(["say", what])
 
 def tload(infile) :
   ''' load a .txt file'''
@@ -68,7 +73,7 @@ def exists_file(fname) :
 def load(fname) :
   '''loads a .txt file or its .json file if it exists'''
   if fname[-4:]==".txt":
-    if force:
+    if params.force:
       db = tload(fname)
     else :
       jfname=fname[:-4]+".json"
@@ -211,25 +216,6 @@ def pred_mediated(id,dep) :
   else:
     yield (f, t)
 
-def to_edges_in(id,sd) :
-  '''yields edges from dependency structure of sentence id'''
-  for dep in dep_from(id, sd):
-    if subject_centered:
-      yield from sub_centered(id, dep)
-    else:
-      yield from pred_mediated(id, dep)
-  if compounds:
-    for ft in comps_from(id, sd):
-      f, t = ft
-      yield f, ft  # parts to compound
-      yield t, ft
-      yield ft, id  # compound to sent
-
-def to_edges(db) :
-  '''yields all edges from syntactic dependency structure'''
-  sent_data,l2occ=db
-  for id,sd in enumerate(sent_data) :
-     yield from to_edges_in(id,sd)
 
 def get_avg_len(db) :
   ''' returns average length of sentences'''
@@ -288,7 +274,7 @@ def e2rel(e) :
   if e=='MISC' : return 'entity'
   return e.lower()
 
-def answer_quest(q,talker,max_answers=max_answers) :
+def answer_quest(q,talker,max_answers=params.max_answers) :
   '''
   given question q, interacts with talker and returns
   its best answers
@@ -312,8 +298,8 @@ def answer_quest(q,talker,max_answers=max_answers) :
     else:
       for sent, _pos in ys:
         matches[sent].add(q_lemma)
-    if expand_query > 0:
-      related = wn_all(expand_query, 10, q_lemma, wn_tag(q_tag))
+    if talker.params.expand_query > 0:
+      related = wn_all(talker.params.expand_query, 10, q_lemma, wn_tag(q_tag))
       for r_lemma in related:
         if not good_word(q_lemma): continue
         zs = l2occ.get(r_lemma)
@@ -327,7 +313,7 @@ def answer_quest(q,talker,max_answers=max_answers) :
   if unknowns: tprint("UNKNOWNS:", unknowns, '\n')
 
   best = []
-  if pers:
+  if talker.params.pers:
     d = {x: r for x, r in answerer.pr.items() if good_word(x)}
     talker.pr = nx.pagerank(talker.g, personalization=d)
 
@@ -352,7 +338,7 @@ def answer_quest(q,talker,max_answers=max_answers) :
     if i >= max_answers: break
     rank, id, shared, sent = b
     answers.append((id, sent, round(rank, 4), shared))
-  if not answers_by_rank: answers.sort()
+  if not talker.params.answers_by_rank: answers.sort()
   return answers, answerer
 
 
@@ -435,9 +421,12 @@ class Talker :
   as well as query answering in the form of extracted sentences
   based on given file or text
   '''
-  def __init__(self,from_file=None,from_text=None,
-               sk=sum_count,wk=key_count,show=show_pics):
+  def __init__(self,from_file=None,from_text=None,params=params):
     '''creates data container from file or text document'''
+    self.params=params
+    self.show_pics=params.show_pics
+    self.sum_count = params.sum_count
+    self.key_count = params.key_count
     self.from_file=from_file
     if from_file:
        self.db=load(from_file)
@@ -446,19 +435,19 @@ class Talker :
        self.db=digest(from_text)
     else :
       assert from_file or from_text
-    self.sum_count=sk
-    self.key_count=wk
+
     self.avg_len = get_avg_len(self.db)
 
     self.svos=self.to_svos()
 
     self.g,self.pr=self.to_graph()
     #self.get_sum_and_words(sk,wk)
-    self.summary, self.keywords = self.extract_content(sk, wk)
+    self.summary, self.keywords = \
+      self.extract_content(self.sum_count, self.key_count)
 
-  def answer_quest(self,q,max_answers=max_answers):
+  def answer_quest(self,q):
     '''answers question q'''
-    return answer_quest(q,self,max_answers=max_answers)
+    return answer_quest(q,self,max_answers=self.params.max_answers)
 
   def query_with(self,qs):
     '''answers list of questions'''
@@ -592,15 +581,35 @@ class Talker :
       g.add_edge(s,o,rel=v,occs=occs)
     return g
 
+  def to_edges_in(self,id,sd):
+    '''yields edges from dependency structure of sentence id'''
+    for dep in dep_from(id, sd):
+      if self.params.subject_centered:
+        yield from sub_centered(id, dep)
+      else:
+        yield from pred_mediated(id, dep)
+    if self.params.compounds:
+      for ft in comps_from(id, sd):
+        f, t = ft
+        yield f, ft  # parts to compound
+        yield t, ft
+        yield ft, id  # compound to sent
+
+  def to_edges(self):
+    '''yields all edges from syntactic dependency structure'''
+    sent_data, l2occ = self.db
+    for id, sd in enumerate(sent_data):
+      yield from self.to_edges_in(id, sd)
+
   def to_graph(self, personalization=None):
     ''' builds document graph from several link types'''
     db=self.db
     svos=self.svos
     g = nx.DiGraph()
-    for e in to_edges(db):
+    for e in self.to_edges():
       f, t = e
       g.add_edge(f, t)
-    if svo_edges:
+    if self.params.svo_edges:
       for s, v, o in svos:
         if s == o: continue
         if v == 'as_in':
@@ -658,24 +667,26 @@ class Talker :
     for svoi in self.svos.items():
        print(svoi)
 
-  def show_svos(self,show=show_pics):
+  def show_svos(self):
+    show = self.params.show_pics
     g = self.to_svo_graph()
-    seeds = take(subgraph_size,
+    seeds = take(self.params.subgraph_size,
           [x for x, r in rank_sort(self.pr) if isinstance(x, str)])
     g = g.subgraph(seeds)
-    show_svo_graph(g,file_name=self.from_file,show=show)
+    self.show_svo_graph(g,file_name=self.from_file)
 
-  def show_all(self,show=show_pics):
+  def show_all(self):
+    show = self.params.show_pics
     self.show_summary()
     self.show_keywords()
     self.show_stats()
-    if show_rels:
+    if self.params.show_rels:
       self.show_rels()
-    if to_prolog :
+    if self.params.to_prolog :
       self.to_prolog()
     if show and self.from_file:
       pshow(self, file_name=self.from_file)
-      self.show_svos(show=show)
+      self.show_svos()
 
   def show_stats(self):
     print('SENTENCES:',len(self.db[0]))
@@ -685,14 +696,17 @@ class Talker :
     print('SVO RELATIONS:', len(self.svos))
     print('')
 
-def show_svo_graph(g,file_name='temp.txt',size=subgraph_size,show=show_pics):
-  ''' depicts the subgraph of the highest ranked nodes in the SVO graph'''
-  if size>0:
-     pr=nx.pagerank(g)
-     best=set(take(size,[x[0] for x in rank_sort(pr)]))
-     g=g.subgraph(best)
-  fname=file_name[:-4] + "_svo.gv"
-  gshow(g, file_name=fname,attr='rel', show=show)
+  def show_svo_graph(self,g,file_name='temp.txt'):
+    ''' depicts the subgraph of the highest ranked nodes in the SVO graph'''
+    size = self.params.subgraph_size
+    show = self.params.show_pics
+    if size > 0:
+      pr = nx.pagerank(g)
+      best = set(take(size, [x[0] for x in rank_sort(pr)]))
+      g = g.subgraph(best)
+    fname = file_name[:-4] + "_svo.gv"
+    gshow(g, file_name=fname, attr='rel', show=show)
+
 
 # helpers
 def nice(ws) :
@@ -748,3 +762,21 @@ def take(k,g) :
   for i,x in enumerate(g) :
     if i>k : break
     yield x
+
+# pdf to txt conversion with external tool - optional
+
+def pdf2txt(fname) :
+  subprocess.run(["pdftotext", fname])
+
+# extracts file name from path
+def path2fname(path) :
+  return path.split('/')[-1]
+
+# trimms suffix
+def trimSuf(path) :
+  return ''.join(path.split('.')[:-1])
+
+def justFname(path) :
+  return trimSuf(path2fname(path))
+
+

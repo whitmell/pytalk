@@ -27,13 +27,13 @@ class Thinker(Talker) :
   def ask(self,q):
     ''' handler for question q asked from this Thinker'''
     print('QUESTION:',q,'\n')
-    answers,answerer=self.answer_quest(q,max_answers=25)
-    #show_answers(take(3,answers))
+    answers,answerer=self.answer_quest(q)
+    show_answers(take(4,answers))
     self.reason_about(answers,answerer)
 
   def reason_about(self,answers,answerer):
     lemmas = answerer.get_lemma(0)
-    ppp('LEMMAS:', lemmas)
+    tprint('LEMMAS:', lemmas)
     ids = dict()
     shareds = extend_wh(lemmas)
 
@@ -62,7 +62,7 @@ class Thinker(Talker) :
     tprint('TOTAL REACHED',len(reached))
 
     S=U.subgraph(reached)
-    show_svo_graph(S, size=42,show=2)
+    self.show_svo_graph(S)
 
 def near_in(g,x) :
   '''
