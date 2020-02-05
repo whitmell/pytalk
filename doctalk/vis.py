@@ -16,13 +16,13 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show>1)
 
-def pshow(t, k=params.cloud_size,file_name="temp",show=params.show_pics):
+def pshow(t, file_name="temp",cloud_size=24,show=1):
   file_name=file_name[:-4]
   def t2s(x) :
     if isinstance(x,tuple) :
       return " ".join(x)
     return x
-  sum, kws = t.extract_content(5, k)
+  sum, kws = t.extract_content(5, cloud_size)
   #for x in t.by_rank:ppp(x)
   d=dict()
   s=set()
@@ -45,7 +45,7 @@ def pshow(t, k=params.cloud_size,file_name="temp",show=params.show_pics):
   #ppp('TOPG', topg.number_of_edges())
   gshow(topg,file_name=file_name+".gv",show=show)
 
-def show_ranks(rank_dict,file_name="cloud.pdf",show=params.show_pics) :
+def show_ranks(rank_dict,file_name="cloud.pdf",show=1) :
   cloud=WordCloud(width=800,height=400)
   cloud.fit_words(rank_dict)
   f=plt.figure()
@@ -54,7 +54,3 @@ def show_ranks(rank_dict,file_name="cloud.pdf",show=params.show_pics) :
   if show>1 : plt.show()
   f.savefig(file_name,bbox_inches='tight')
   plt.close('all')
-
-if __name__=="__main__":
-  d = {'a': 0.1, 'b': 0.2, 'c': 0.33, 'd': 0.2}
-  show_ranks(d)

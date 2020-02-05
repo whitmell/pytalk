@@ -25,7 +25,7 @@ class NatTalker(Talker) :
         yield answer
 
   def ask(self,q):
-    answers,answerer=self.answer_quest(q,max_answers=25)
+    answers,answerer=self.answer_quest(q)
 
     ids=dict()
     shareds=set()
@@ -60,7 +60,7 @@ class NatTalker(Talker) :
      print('ANSWERS:')
      for i, r in take(5, ids):
        print(i, r, end=': ')
-       say(nice(self.get_sentence(i)))
+       self.say(nice(self.get_sentence(i)))
      print('-----------------------\n')
 
 

@@ -21,10 +21,13 @@ def run_with(fname,query=True) :
   '''
   t = Talker(from_file=fname+'.txt')
   show =t. params.show_pics
+
   t.show_all()
   if query:
     t.query_with(fname+'_quest.txt')
-    pshow(t,file_name=fname+"_quest.txt",show=show)
+    pshow(t,file_name=fname+"_quest.txt",
+          cloud_size=t.params.cloud_size,
+          show=t.params.show_pics)
 
 def run_with_pdf(fname,**kwargs) :
   pdf2txt(fname+".pdf")
@@ -33,19 +36,15 @@ def run_with_pdf(fname,**kwargs) :
 def chat_about(fname,qs=None) :
   t = Talker(from_file=fname + '.txt')
   show = t.params.show_pics
-  t.show_all(show=show)
+  t.show_all()
   t.query_with(qs)
 
 
 
 def tprint(*args) :
   ''' custom print when trance on'''
-  if params.trace : print(*args)
+  if trace : print(*args)
 
-def say(what) :
-  ''' prints and ptionally says it, unless set to quiet'''
-  print(what)
-  if not params.quiet : subprocess.run(["say", what])
 
 def tload(infile) :
   ''' load a .txt file'''
@@ -70,10 +69,10 @@ def exists_file(fname) :
   path = Path(fname)
   return path.is_file()
 
-def load(fname) :
+def load(fname,force=0) :
   '''loads a .txt file or its .json file if it exists'''
   if fname[-4:]==".txt":
-    if params.force:
+    if force:
       db = tload(fname)
     else :
       jfname=fname[:-4]+".json"
@@ -274,11 +273,12 @@ def e2rel(e) :
   if e=='MISC' : return 'entity'
   return e.lower()
 
-def answer_quest(q,talker,max_answers=params.max_answers) :
+def answer_quest(q,talker) :
   '''
   given question q, interacts with talker and returns
   its best answers
   '''
+  max_answers = talker.params.max_answers
   db = talker.db
   sent_data, l2occ = db
   matches = defaultdict(set)
@@ -399,18 +399,18 @@ def query_with(talker,qs_or_fname)     :
 def interact(q,talker):
   ''' prints/says query and answers'''
   tprint('----- QUERY ----\n')
-  say(q)
+  talker.say(q)
   print('')
   ### answer is computed here ###
   answers,_=answer_quest(q, talker)
-  show_answers(answers)
+  show_answers(talker,answers)
 
-def show_answers(answers) :
+def show_answers(talker,answers) :
   ''' prints out/says answers'''
   print('ANSWERS:')
   for info, sent, rank, shared in answers:
     print(info,end=': ')
-    say(nice(sent))
+    talker.say(nice(sent))
     tprint('  ', shared, rank)
   print('')
   tprint('------END-------', '\n')
@@ -421,7 +421,7 @@ class Talker :
   as well as query answering in the form of extracted sentences
   based on given file or text
   '''
-  def __init__(self,from_file=None,from_text=None,params=params):
+  def __init__(self,from_file=None,from_text=None,params=talk_params()):
     '''creates data container from file or text document'''
     self.params=params
     self.show_pics=params.show_pics
@@ -429,7 +429,7 @@ class Talker :
     self.key_count = params.key_count
     self.from_file=from_file
     if from_file:
-       self.db=load(from_file)
+       self.db=load(from_file,self.params.force)
        self.from_file=from_file
     elif from_text :
        self.db=digest(from_text)
@@ -447,7 +447,7 @@ class Talker :
 
   def answer_quest(self,q):
     '''answers question q'''
-    return answer_quest(q,self,max_answers=self.params.max_answers)
+    return answer_quest(q,self)
 
   def query_with(self,qs):
     '''answers list of questions'''
@@ -647,12 +647,18 @@ class Talker :
         occs=sorted(occs)
         f.write(f'svo{s,v,o,occs}.\n')
 
+  def say(self,what):
+    ''' prints and ptionally says it, unless set to quiet'''
+    print(what)
+    if not self.params.quiet: subprocess.run(["say", what])
+
+
   def show_summary(self):
     ''' prints/says summary'''
-    say('SUMMARY:')
+    self.say('SUMMARY:')
     for r,x,ws in self.summary:
       print(x,end=': ')
-      say(nice(ws))
+      self.say(nice(ws))
     print('')
 
   def show_keywords(self):

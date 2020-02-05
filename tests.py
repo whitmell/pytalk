@@ -75,7 +75,7 @@ def qtest() :
 
 def do(qf) :
     df=qf.replace("_quest.txt","")
-    run_with(df,query=True,show=True)
+    run_with(df,query=True)
 
 def qftest() :
   do('examples/const_quest.txt')
@@ -89,7 +89,7 @@ def go()  :
 
 def ftest() :
   fname='examples/geo'  #################
-  run_with(fname,query=False,show=True)
+  run_with(fname,query=False)
 
 
 def ptest() :
@@ -119,15 +119,12 @@ def think_test(F,Q) :
 if __name__== "__main__" :
   #nlp_test()
   #go()
-  #ttest()
-  #mtest()
   #mtest()
   #qftest()
   #simtest()
   #canned_test()
-  #stest()
-  #ptest()
   #ftest()
-  ttest1()
   #ptest()
+  ttest2()
+
 

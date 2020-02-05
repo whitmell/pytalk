@@ -28,7 +28,7 @@ class Thinker(Talker) :
     ''' handler for question q asked from this Thinker'''
     print('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q)
-    show_answers(take(4,answers))
+    show_answers(self,take(4,answers))
     self.reason_about(answers,answerer)
 
   def reason_about(self,answers,answerer):

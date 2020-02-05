@@ -34,7 +34,7 @@ def lexs_of(sentence):
     l = cleaned(tok['lemma'])
     t = tok['pos']
     n = tok['ner']
-    if params.lower : l=l.lower()
+    l=l.lower()
     yield (w, l, t, n)
 
 def to_json(infile,outfile):

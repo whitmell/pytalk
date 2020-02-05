@@ -2,10 +2,10 @@ from inspect import getframeinfo, stack
 
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
+trace=1
 
 class talk_params:
   def __init__(self):
-    self.trace = 1
     self.force = False
 
     self.sum_count = 4
@@ -17,7 +17,6 @@ class talk_params:
     self.quiet = True
     self.answers_by_rank = True
 
-    self.lower = True
     self.pers = True
     self.expand_query = 2
 
@@ -29,16 +28,15 @@ class talk_params:
     self.show_rels = 0
     self.to_prolog = 0
 
-params=talk_params()
-
 # decides between '_' and ' ' as separator
 #def join(*xs) : return ' '.join(xs)
 def join(*xs) : return xs
 
 def ppp(*args) :
+  if trace<1 : return
   caller = getframeinfo(stack()[1][0])
 
-  print('DEBUG!!!',
+  print('!!!',
         caller.filename.split('/')[-1],
         '->',caller.lineno,end=': ')
   print(*args)
