@@ -29,10 +29,14 @@ class Thinker(Talker) :
     print('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q,max_answers=25)
     #show_answers(take(3,answers))
-    lemmas=answerer.get_lemma(0)
+    self.reason_about(answers,answerer)
+
+  def reason_about(self,answers,answerer):
+    lemmas = answerer.get_lemma(0)
     ppp('LEMMAS:', lemmas)
     ids = dict()
     shareds = extend_wh(lemmas)
+
     for answer in answers:
        id, sent,rank,shared=answer
        ids[id]=rank
@@ -55,12 +59,10 @@ class Thinker(Talker) :
       if sh in U.nodes() :
         reached.update(near_in(U,sh))
     reached.update(shareds)
-    ppp('LEN',len(reached))
+    tprint('TOTAL REACHED',len(reached))
 
     S=U.subgraph(reached)
     show_svo_graph(S, size=42,show=2)
-    for e in S.edges():
-      print(e)
 
 def near_in(g,x) :
   '''

@@ -26,7 +26,7 @@ svo_edges=True
 subject_centered=True
 
 show_pics=1 # 1 : just generate files, 2: interactive
-show_rels=0
+show_rels=1
 to_prolog=0
 
 # decides between '_' and ' ' as separator
