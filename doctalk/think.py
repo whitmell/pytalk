@@ -24,32 +24,29 @@ class Thinker(Talker) :
     super().__init__(**kwargs)
     self.svo_graph = self.to_svo_graph()
 
+  def walk(self):
+    pass
+
   def ask(self,q):
     ''' handler for question q asked from this Thinker'''
     print('QUESTION:',q,'\n')
+    self.params.max_answers,to_show=20,5
     answers,answerer=self.answer_quest(q)
-    show_answers(self,take(4,answers))
+    show_answers(self,take(to_show,answers))
     self.reason_about(answers,answerer)
 
   def reason_about(self,answers,answerer):
     lemmas = answerer.get_lemma(0)
-    tprint('LEMMAS:', lemmas)
-    ids = dict()
-    shareds = extend_wh(lemmas)
-
-    for answer in answers:
-       id, sent,rank,shared=answer
-       ids[id]=rank
-       shareds.update(shared)
+    tags=answerer.get_tag(0)
+    lts=zip(lemmas,tags)
+    good_lemmas=[l for (l,t) in lts if good_word(l) and good_tag(t)]
+    shareds=set(good_lemmas)
+    if self.params.guess_wh_word_NERs : shareds.update(extend_wh(lemmas))
     rels= (
-      'as_in','is_like',
-       'is_a', 'part_of',
-      'has_instance'
-      'subject_in', 'object_in', 'verb_in'
-    )
-    no_rels=('object_in', 'verb_in','is_a'
-     )
-    tprint('SHAREDS',shareds)
+      'as_in','is_like','is_a', 'part_of','has_instance'
+      'subject_in', 'object_in', 'verb_in')
+    no_rels=() #('object_in', 'verb_in','is_a')
+    tprint('SHAREDS:',shareds)
     U=self.svo_graph
     U = as_undir(U)
     #U = with_rels(U, rels)
@@ -60,8 +57,8 @@ class Thinker(Talker) :
         reached.update(near_in(U,sh))
     reached.update(shareds)
     tprint('TOTAL REACHED',len(reached))
-
     S=U.subgraph(reached)
+    #for x in S : ppp(x)
     self.show_svo_graph(S)
 
 def near_in(g,x) :

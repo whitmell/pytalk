@@ -334,8 +334,10 @@ def answer_quest(q,talker) :
   best.sort(reverse=True)
 
   answers = []
+  #ppp(max_answers)
   for i, b in enumerate(best):
     if i >= max_answers: break
+    #ppp(i,b)
     rank, id, shared, sent = b
     answers.append((id, sent, round(rank, 4), shared))
   if not talker.params.answers_by_rank: answers.sort()
@@ -468,6 +470,9 @@ class Talker :
       words.add(word)
       tags.add(tag)
     return words,tags
+
+  def get_occs(self,lemma):
+    return self.db[1].get(lemma)
 
   def get_sentence(self,i):
     ''' returns sentence i as list of words'''
@@ -766,7 +771,7 @@ def distinct(g) :
 def take(k,g) :
   ''' generates only the first k elements of a sequence'''
   for i,x in enumerate(g) :
-    if i>k : break
+    if i>=k : break
     yield x
 
 # pdf to txt conversion with external tool - optional

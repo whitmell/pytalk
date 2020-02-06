@@ -10,7 +10,7 @@ class talk_params:
 
     self.sum_count = 4
     self.key_count = 10
-    self.max_answers = 4
+    self.max_answers = 10
     self.cloud_size = 24
     self.subgraph_size = 32
 
@@ -19,6 +19,7 @@ class talk_params:
 
     self.pers = True
     self.expand_query = 2
+    self.guess_wh_word_NERs=0
 
     self.compounds = True
     self.svo_edges = True

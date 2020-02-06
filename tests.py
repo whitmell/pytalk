@@ -106,7 +106,9 @@ def ttest1() :
 
 def ttest2() :
   think_test('examples/geo.txt',
-    'What are the source rocks in the Permian Basin ?')
+    'What are the source rocks in the Permian Basin ?'
+    #'What are the flying pigs fighting lame ducks?'
+  )
 
 def think_test(F,Q) :
   T = Thinker(from_file=F)
