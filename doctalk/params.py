@@ -12,7 +12,7 @@ class talk_params:
     self.key_count = 10
     self.max_answers = 10
     self.cloud_size = 24
-    self.subgraph_size = 32
+    self.subgraph_size = 38
 
     self.quiet = True
     self.answers_by_rank = True
@@ -25,7 +25,7 @@ class talk_params:
     self.svo_edges = True
     self.subject_centered = True
 
-    self.show_pics = 1  # 1 : just generate files, 2: interactive
+    self.show_pics = 2  # 1 : just generate files, 2: interactive
     self.show_rels = 0
     self.to_prolog = 0
 

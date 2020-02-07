@@ -24,9 +24,6 @@ class Thinker(Talker) :
     super().__init__(**kwargs)
     self.svo_graph = self.to_svo_graph()
 
-  def walk(self):
-    pass
-
   def ask(self,q):
     ''' handler for question q asked from this Thinker'''
     print('QUESTION:',q,'\n')
@@ -35,31 +32,73 @@ class Thinker(Talker) :
     show_answers(self,take(to_show,answers))
     self.reason_about(answers,answerer)
 
+  def walks(self,lemmas,g):
+    lemmas=list(lemmas)
+    paths=[]
+    l = len(lemmas)
+    for i in range(l) :
+      for j in range(i) :
+        p=chain(g,lemmas[i],lemmas[j])
+        paths.extend(p)
+    return paths
+
+
   def reason_about(self,answers,answerer):
-    lemmas = answerer.get_lemma(0)
-    tags=answerer.get_tag(0)
-    lts=zip(lemmas,tags)
-    good_lemmas=[l for (l,t) in lts if good_word(l) and good_tag(t)]
-    shareds=set(good_lemmas)
-    if self.params.guess_wh_word_NERs : shareds.update(extend_wh(lemmas))
     rels= (
       'as_in','is_like','is_a', 'part_of','has_instance'
       'subject_in', 'object_in', 'verb_in')
     no_rels=() #('object_in', 'verb_in','is_a')
-    tprint('SHAREDS:',shareds)
+
+    lemmas = answerer.get_lemma(0)
+    tags=answerer.get_tag(0)
+    lts=zip(lemmas,tags)
+    good_lemmas={l for (l,t) in lts if good_word(l) and good_tag(t)}
+
+    roots={p for p in self.walks(good_lemmas,self.svo_graph)}
+
+    if self.params.guess_wh_word_NERs :
+      roots.update(extend_wh(lemmas))
+
+    tprint('ROOTS:',roots)
     U=self.svo_graph
-    U = as_undir(U)
+    #U = as_undir(U)
     #U = with_rels(U, rels)
     U = without_rels(U,no_rels)
     reached=set()
-    for sh in shareds :
-      if sh in U.nodes() :
-        reached.update(near_in(U,sh))
-    reached.update(shareds)
+    for l in roots :
+      if l in U.nodes() :
+        reached.update(near_in(U,l))
+    reached.update(roots)
+
     tprint('TOTAL REACHED',len(reached))
     S=U.subgraph(reached)
-    #for x in S : ppp(x)
+    for x in S : ppp(x)
     self.show_svo_graph(S)
+
+'''
+def walk(lemmas,g):
+    path=[]
+    orbit=list(reversed(lemmas))
+    while(orbit) :
+      here = orbit.pop()
+      if not orbit :
+        return path
+      there=orbit.pop()
+      try :
+         p=nx.shortest_path(g,here,there)
+      except:
+        p=None
+      if p :
+        path.append(p)
+    return path
+'''
+
+def chain(g, here, there):
+    try:
+      p = nx.shortest_path(g, here, there)
+    except:
+      p = []
+    return p
 
 def near_in(g,x) :
   '''
