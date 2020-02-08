@@ -264,8 +264,8 @@ def wn_from(l2occ) :
         yield (s, v, o)
 
 def v2rel(v) :
-  '''rewrites "be" lemma to is_a'''
-  if v=='be' : return 'is_a'
+  '''rewrites "be" lemma to is'''
+  if v=='be' : return 'is'
   return v
 
 def e2rel(e) :
@@ -619,7 +619,7 @@ class Talker :
         if s == o: continue
         if v == 'as_in':
           g.add_edge(s, o)
-        elif v not in {'as_in'}  : #elif v in ('is_a', 'part_of', 'is_like'):
+        elif v not in {'as_in'}  : #elif v in ('kind_of', 'part_of', 'is_like'):
           g.add_edge(o, s)
           g.add_edge(s, o)
           # ppp(s,v,o)

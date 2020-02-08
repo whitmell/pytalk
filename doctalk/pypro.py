@@ -69,7 +69,7 @@ def nrun() :
   
   rel 'is_like'.
   rel 'as_in'.
-  rel 'is_a'.
+  rel 'kind_of'.
   
   tc_search A Rel B Res : rel Rel, tc A Rel B (s (s 0)) _ Res.
   

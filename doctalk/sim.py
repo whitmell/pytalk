@@ -26,7 +26,7 @@ def wn_svo(n,k,w,t) :
   for friend in wn_rel(id,n,k,w,t) :
     if w<friend: yield (w,'is_like',friend)
   for friend in wn_rel(hypers,n,k,w,t) :
-    if w!=friend : yield (w,'is_a',friend)
+    if w!=friend : yield (w,'kind_of',friend)
   for friend in wn_rel(meros, n, k, w, t):
     if w!=friend : yield (w, 'part_of', friend)
 

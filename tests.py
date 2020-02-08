@@ -5,6 +5,7 @@ from doctalk.nlp import *
 from doctalk.sim import *
 from doctalk.pypro import nrun
 from doctalk.think import *
+from doctalk.params import force
 
 import pprint
 
@@ -128,5 +129,6 @@ if __name__== "__main__" :
   #ftest()
   #ptest()
   ttest2()
+  pass
 
 

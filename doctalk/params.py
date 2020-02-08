@@ -3,6 +3,7 @@ from inspect import getframeinfo, stack
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
 trace=1
+force=1
 
 class talk_params:
   def __init__(self):
@@ -10,7 +11,7 @@ class talk_params:
 
     self.sum_count = 4
     self.key_count = 10
-    self.max_answers = 10
+    self.max_answers = 4
     self.cloud_size = 24
     self.subgraph_size = 38
 
@@ -26,8 +27,8 @@ class talk_params:
     self.subject_centered = True
 
     self.show_pics = 2  # 1 : just generate files, 2: interactive
-    self.show_rels = 0
-    self.to_prolog = 0
+    self.show_rels = 1
+    self.to_prolog = 1
 
 # decides between '_' and ' ' as separator
 #def join(*xs) : return ' '.join(xs)

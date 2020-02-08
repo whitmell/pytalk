@@ -39,31 +39,51 @@ class Thinker(Talker) :
     for i in range(l) :
       for j in range(i) :
         p=chain(g,lemmas[i],lemmas[j])
-        paths.extend(p)
+        if p: paths.extend(p)
     return paths
+
+  def add_rel(self,ps):
+    p=ps.pop()
+
 
 
   def reason_about(self,answers,answerer):
     rels= (
-      'as_in','is_like','is_a', 'part_of','has_instance'
+      'as_in','is_like','kind_of', 'part_of','has_instance'
       'subject_in', 'object_in', 'verb_in')
-    no_rels=() #('object_in', 'verb_in','is_a')
+    no_rels=() #('object_in', 'verb_in','kind_of')
 
     lemmas = answerer.get_lemma(0)
     tags=answerer.get_tag(0)
     lts=zip(lemmas,tags)
     good_lemmas={l for (l,t) in lts if good_word(l) and good_tag(t)}
 
-    roots={p for p in self.walks(good_lemmas,self.svo_graph)}
+    ppp("GOOD_LEMMAS",len(good_lemmas),sorted(good_lemmas))
+    G=self.svo_graph
+    depth=16
+    xs=reach_from(G,depth,lemmas)
+    ppp(xs)
+    print('')
+
+    ys = reach_from(G.reverse(copy=False),
+                    depth, lemmas, reverse=True)
+    ppp(ys)
+
+    '''
+    paths = self.walks(good_lemmas,self.svo_graph)
+    ppp(len(paths),sorted(paths))
+    roots={p for ps in paths for p in ps}
 
     if self.params.guess_wh_word_NERs :
       roots.update(extend_wh(lemmas))
 
-    tprint('ROOTS:',roots)
+    ppp('ROOTS:',len(roots),sorted(roots))
+
+
     U=self.svo_graph
     #U = as_undir(U)
     #U = with_rels(U, rels)
-    U = without_rels(U,no_rels)
+    #U = without_rels(U,no_rels)
     reached=set()
     for l in roots :
       if l in U.nodes() :
@@ -72,31 +92,30 @@ class Thinker(Talker) :
 
     tprint('TOTAL REACHED',len(reached))
     S=U.subgraph(reached)
-    for x in S : ppp(x)
+    #for x in S : ppp(x)
+    '''
+    good_nodes={a for x in xs.union(ys) for a in x}
+    S=G.subgraph(good_nodes)
     self.show_svo_graph(S)
 
-'''
-def walk(lemmas,g):
-    path=[]
-    orbit=list(reversed(lemmas))
-    while(orbit) :
-      here = orbit.pop()
-      if not orbit :
-        return path
-      there=orbit.pop()
-      try :
-         p=nx.shortest_path(g,here,there)
-      except:
-        p=None
-      if p :
-        path.append(p)
-    return path
-'''
+
+def reach_from(g,k,roots,reverse=False):
+    edges=set()
+    for x in roots :
+      if not x in g.nodes() : continue
+      xs = nx.dfs_edges(g,x,depth_limit=k)
+      for e in xs :
+        a,b=e
+        if b in roots :
+          rel=g[a][b]['rel']
+          edge= (b,rel,a) if reverse  else  (a,rel,b)
+          edges.add((a,rel,b))
+    return edges
 
 def chain(g, here, there):
     try:
-      p = nx.shortest_path(g, here, there)
-    except:
+      p = list(nx.all_shortest_paths(g, here, there,method='bellman-ford'))
+    except :
       p = []
     return p
 
