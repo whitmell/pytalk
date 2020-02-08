@@ -27,8 +27,8 @@ class talk_params:
     self.subject_centered = True
 
     self.show_pics = 2  # 1 : just generate files, 2: interactive
-    self.show_rels = 1
-    self.to_prolog = 1
+    self.show_rels = 0
+    self.to_prolog = 0
 
 # decides between '_' and ' ' as separator
 #def join(*xs) : return ' '.join(xs)
@@ -38,7 +38,7 @@ def ppp(*args) :
   if trace<1 : return
   caller = getframeinfo(stack()[1][0])
 
-  print('!!!',
+  print('DEBUG:',
         caller.filename.split('/')[-1],
         '->',caller.lineno,end=': ')
   print(*args)

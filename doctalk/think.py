@@ -53,48 +53,42 @@ class Thinker(Talker) :
       'subject_in', 'object_in', 'verb_in')
     no_rels=() #('object_in', 'verb_in','kind_of')
 
-    lemmas = answerer.get_lemma(0)
+    lems = answerer.get_lemma(0)
     tags=answerer.get_tag(0)
-    lts=zip(lemmas,tags)
+    lts=zip(lems,tags)
     good_lemmas={l for (l,t) in lts if good_word(l) and good_tag(t)}
 
-    ppp("GOOD_LEMMAS",len(good_lemmas),sorted(good_lemmas))
+    ppp("GOOD_LEMMAS",len(good_lemmas),sorted(good_lemmas),'\n')
+    ppp('SENT_IDS:',self.to_ids(good_lemmas),'\n')
+
     G=self.svo_graph
-    depth=16
-    xs=reach_from(G,depth,lemmas)
-    ppp(xs)
-    print('')
+    depth=5
+    xs=reach_from(G,depth,good_lemmas)
+    #ppp('DIRECT',sorted(xs));print('')
 
-    ys = reach_from(G.reverse(copy=False),
-                    depth, lemmas, reverse=True)
-    ppp(ys)
+    R=G.reverse(copy=False)
+    ys = reach_from(R,depth, good_lemmas, reverse=True)
+    #ppp('REVERSED',sorted(ys));print('')
 
-    '''
-    paths = self.walks(good_lemmas,self.svo_graph)
-    ppp(len(paths),sorted(paths))
-    roots={p for ps in paths for p in ps}
+    zs = xs.union(ys)
+    tprint('RELATIONS FROM QUERY TO DOCUMENT:')
 
-    if self.params.guess_wh_word_NERs :
-      roots.update(extend_wh(lemmas))
+    for r in sorted(zs):
+      s,v,o=r
+      tprint(s,v,o)
+    tprint('')
 
-    ppp('ROOTS:',len(roots),sorted(roots))
+    good_nodes={a for x in zs for a in (x[0],x[2])}
+    shared={x for x in good_lemmas if self.get_occs(x)}
 
+    good_nodes.update(shared)
 
-    U=self.svo_graph
-    #U = as_undir(U)
-    #U = with_rels(U, rels)
-    #U = without_rels(U,no_rels)
-    reached=set()
-    for l in roots :
-      if l in U.nodes() :
-        reached.update(near_in(U,l))
-    reached.update(roots)
+    ppp('NODES',sorted(good_nodes),len(good_nodes),'\n')
 
-    tprint('TOTAL REACHED',len(reached))
-    S=U.subgraph(reached)
-    #for x in S : ppp(x)
-    '''
-    good_nodes={a for x in xs.union(ys) for a in x}
+    ids=self.to_ids(good_nodes)
+
+    ppp('IDS',ids)
+
     S=G.subgraph(good_nodes)
     self.show_svo_graph(S)
 
@@ -103,7 +97,7 @@ def reach_from(g,k,roots,reverse=False):
     edges=set()
     for x in roots :
       if not x in g.nodes() : continue
-      xs = nx.dfs_edges(g,x,depth_limit=k)
+      xs = nx.bfs_edges(g,x,depth_limit=k)
       for e in xs :
         a,b=e
         if b in roots :

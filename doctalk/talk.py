@@ -474,6 +474,9 @@ class Talker :
   def get_occs(self,lemma):
     return self.db[1].get(lemma)
 
+  def to_ids(self,nodes) :
+    return {occ[0] for w in nodes for occ in self.get_occs(w)}
+
   def get_sentence(self,i):
     ''' returns sentence i as list of words'''
     return  self.db[0][i][SENT]
