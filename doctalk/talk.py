@@ -299,7 +299,7 @@ def answer_quest(q,talker) :
       for sent, _pos in ys:
         matches[sent].add(q_lemma)
     if talker.params.expand_query > 0:
-      related = wn_all(talker.params.expand_query, 10, q_lemma, wn_tag(q_tag))
+      related = wn_all(talker.params.expand_query, 3, q_lemma, wn_tag(q_tag))
       for r_lemma in related:
         if not good_word(q_lemma): continue
         zs = l2occ.get(r_lemma)

@@ -23,13 +23,17 @@ class Thinker(Talker) :
   def __init__(self,**kwargs):
     super().__init__(**kwargs)
     self.svo_graph = self.to_svo_graph()
+    self.rels= (
+      'as_in','is_like','kind_of', 'part_of','has_instance'
+      'subject_in', 'object_in', 'verb_in')
+    self.no_rels=('kind_of',) #('object_in', 'verb_in','kind_of')
+
 
   def ask(self,q):
     ''' handler for question q asked from this Thinker'''
     print('QUESTION:',q,'\n')
-    self.params.max_answers,to_show=20,5
     answers,answerer=self.answer_quest(q)
-    show_answers(self,take(to_show,answers))
+    show_answers(self,answers)
     self.reason_about(answers,answerer)
 
   def walks(self,lemmas,g):
@@ -42,55 +46,63 @@ class Thinker(Talker) :
         if p: paths.extend(p)
     return paths
 
-  def add_rel(self,ps):
-    p=ps.pop()
+  def get_roots(self,lems,tags):
+    lts = zip(lems, tags)
+    good_lemmas = {l for (l, t) in lts if good_word(l) and good_tag(t)}
 
+    ppp("GOOD_LEMMAS", len(good_lemmas), sorted(good_lemmas), '\n')
+    # ppp('SENT_IDS:',self.to_ids(good_lemmas),'\n')
 
+    G = without_rels(self.svo_graph, self.no_rels)
+    depth = 6
+    xs = reach_from(G, depth, good_lemmas)
+    R = G.reverse(copy=False)
+    ys = reach_from(R, depth, good_lemmas, reverse=True)
+    rels = xs.union(ys)
+
+    good_nodes = {a for x in rels for a in (x[0], x[2])}
+    shared = {x for x in good_lemmas if self.get_occs(x)}
+    good_nodes.update(shared)
+    return G,good_nodes,rels
+
+  def rerank_answers(self,G,good_nodes,answerer):
+    ids = self.to_ids(good_nodes)
+    reached = good_nodes.union(ids)
+    ReachedG = self.g.subgraph(reached)
+    pers_dict = {x: r for (x, r) in answerer.pr.items() if good_word(x)}
+    pr = nx.pagerank(ReachedG, personalization=pers_dict)
+    best = take(self.params.max_answers,
+                [x for x in rank_sort(pr) if isinstance(x[0], int)])
+
+    return best,ReachedG
 
   def reason_about(self,answers,answerer):
-    rels= (
-      'as_in','is_like','kind_of', 'part_of','has_instance'
-      'subject_in', 'object_in', 'verb_in')
-    no_rels=() #('object_in', 'verb_in','kind_of')
-
+    ''' adds relational resoning, shows  answers and raltions'''
     lems = answerer.get_lemma(0)
     tags=answerer.get_tag(0)
-    lts=zip(lems,tags)
-    good_lemmas={l for (l,t) in lts if good_word(l) and good_tag(t)}
 
-    ppp("GOOD_LEMMAS",len(good_lemmas),sorted(good_lemmas),'\n')
-    ppp('SENT_IDS:',self.to_ids(good_lemmas),'\n')
+    G,good_nodes,rels=self.get_roots(lems,tags)
 
-    G=self.svo_graph
-    depth=5
-    xs=reach_from(G,depth,good_lemmas)
-    #ppp('DIRECT',sorted(xs));print('')
+    best,U=self.rerank_answers(G,good_nodes,answerer)
 
-    R=G.reverse(copy=False)
-    ys = reach_from(R,depth, good_lemmas, reverse=True)
-    #ppp('REVERSED',sorted(ys));print('')
+    if self.params.show_pics>0 :
+      S = G.subgraph(good_nodes)
+      self.show_svo_graph(S)
 
-    zs = xs.union(ys)
-    tprint('RELATIONS FROM QUERY TO DOCUMENT:')
+    print('RELATIONS FROM QUERY TO DOCUMENT:\n')
+    for r in sorted(rels): print(r)
+    print('')
 
-    for r in sorted(zs):
-      s,v,o=r
-      tprint(s,v,o)
-    tprint('')
+    print('RELATION NODES:',len(good_nodes),
+      sorted(good_nodes),'\n')
 
-    good_nodes={a for x in zs for a in (x[0],x[2])}
-    shared={x for x in good_lemmas if self.get_occs(x)}
+    print('\nDISTILLED ANSWERS:\n')
+    for x in best :
+      print(x[0],nice(self.get_sentence(x[0])))
 
-    good_nodes.update(shared)
+    gshow(U,file_name='reached.gv',show=self.params.show_pics)
 
-    ppp('NODES',sorted(good_nodes),len(good_nodes),'\n')
 
-    ids=self.to_ids(good_nodes)
-
-    ppp('IDS',ids)
-
-    S=G.subgraph(good_nodes)
-    self.show_svo_graph(S)
 
 
 def reach_from(g,k,roots,reverse=False):

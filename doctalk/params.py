@@ -11,7 +11,7 @@ class talk_params:
 
     self.sum_count = 4
     self.key_count = 10
-    self.max_answers = 4
+    self.max_answers = 6
     self.cloud_size = 24
     self.subgraph_size = 38
 
