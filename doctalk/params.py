@@ -29,6 +29,8 @@ class talk_params:
     self.show_pics = 2  # 1 : just generate files, 2: interactive
     self.show_rels = 0
     self.to_prolog = 0
+    
+    self.think_depth=10
 
 # decides between '_' and ' ' as separator
 #def join(*xs) : return ' '.join(xs)

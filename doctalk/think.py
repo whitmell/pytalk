@@ -46,6 +46,14 @@ class Thinker(Talker) :
         if p: paths.extend(p)
     return paths
 
+  def extract_rels(self,G,good_lemmas):
+    depth = self.params.think_depth
+    xs = reach_from(G, depth, good_lemmas)
+    R = G.reverse(copy=False)
+    ys = reach_from(R, depth, good_lemmas, reverse=True)
+    rels = xs.union(ys)
+    return rels
+
   def get_roots(self,lems,tags):
     lts = zip(lems, tags)
     good_lemmas = {l for (l, t) in lts if good_word(l) and good_tag(t)}
@@ -54,11 +62,8 @@ class Thinker(Talker) :
     # ppp('SENT_IDS:',self.to_ids(good_lemmas),'\n')
 
     G = without_rels(self.svo_graph, self.no_rels)
-    depth = 6
-    xs = reach_from(G, depth, good_lemmas)
-    R = G.reverse(copy=False)
-    ys = reach_from(R, depth, good_lemmas, reverse=True)
-    rels = xs.union(ys)
+
+    rels=self.extract_rels(G,good_lemmas)
 
     good_nodes = {a for x in rels for a in (x[0], x[2])}
     shared = {x for x in good_lemmas if self.get_occs(x)}
@@ -90,15 +95,15 @@ class Thinker(Talker) :
       self.show_svo_graph(S)
 
     print('RELATIONS FROM QUERY TO DOCUMENT:\n')
-    for r in sorted(rels): print(r)
+    for r in rels: print(r)
     print('')
 
     print('RELATION NODES:',len(good_nodes),
-      sorted(good_nodes),'\n')
+      good_nodes,'\n')
 
     print('\nDISTILLED ANSWERS:\n')
     for x in best :
-      print(x[0],nice(self.get_sentence(x[0])))
+      print(x[0],nice(self.get_sentence(x[0])),'\n')
 
     gshow(U,file_name='reached.gv',show=self.params.show_pics)
 
@@ -112,7 +117,8 @@ def reach_from(g,k,roots,reverse=False):
       xs = nx.bfs_edges(g,x,depth_limit=k)
       for e in xs :
         a,b=e
-        if b in roots :
+        #ppp(e)
+        if b in roots or a in roots :
           rel=g[a][b]['rel']
           edge= (b,rel,a) if reverse  else  (a,rel,b)
           edges.add((a,rel,b))
