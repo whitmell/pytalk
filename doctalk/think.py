@@ -58,9 +58,6 @@ class Thinker(Talker) :
     lts = zip(lems, tags)
     good_lemmas = {l for (l, t) in lts if good_word(l) and good_tag(t)}
 
-    ppp("GOOD_LEMMAS", len(good_lemmas), sorted(good_lemmas), '\n')
-    # ppp('SENT_IDS:',self.to_ids(good_lemmas),'\n')
-
     G = without_rels(self.svo_graph, self.no_rels)
 
     rels=self.extract_rels(G,good_lemmas)
@@ -68,7 +65,7 @@ class Thinker(Talker) :
     good_nodes = {a for x in rels for a in (x[0], x[2])}
     shared = {x for x in good_lemmas if self.get_occs(x)}
     good_nodes.update(shared)
-    return G,good_nodes,rels
+    return G,good_lemmas,good_nodes,rels
 
   def rerank_answers(self,G,good_nodes,answerer):
     ids = self.to_ids(good_nodes)
@@ -86,13 +83,25 @@ class Thinker(Talker) :
     lems = answerer.get_lemma(0)
     tags=answerer.get_tag(0)
 
-    G,good_nodes,rels=self.get_roots(lems,tags)
+    G,good_lemmas,good_nodes,rels=self.get_roots(lems,tags)
 
     best,U=self.rerank_answers(G,good_nodes,answerer)
 
+    S = G.subgraph(good_nodes)
+
+    for x in good_lemmas:
+       for ps in nx.single_source_shortest_path(S,x,
+                 cutoff=self.params.think_depth):
+         if isinstance(ps, tuple) :
+           print('REASONING_PATH:',x,':',ps)
+       print('')
+    print('')
+
     if self.params.show_pics>0 :
-      S = G.subgraph(good_nodes)
       self.show_svo_graph(S)
+
+    print('ROOT LEMMAS:')
+    print(good_lemmas,'\n')
 
     print('RELATIONS FROM QUERY TO DOCUMENT:\n')
     for r in rels: print(r)
