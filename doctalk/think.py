@@ -26,7 +26,7 @@ class Thinker(Talker) :
     self.rels= (
       'as_in','is_like','kind_of', 'part_of','has_instance'
       'subject_in', 'object_in', 'verb_in')
-    self.no_rels=('kind_of',) #('object_in', 'verb_in','kind_of')
+    self.no_rels=() #'kind_of',) #('object_in', 'verb_in','kind_of')
 
 
   def ask(self,q):

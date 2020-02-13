@@ -3,7 +3,7 @@ from inspect import getframeinfo, stack
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
 trace=1
-force=1
+force=0
 
 class talk_params:
   def __init__(self):

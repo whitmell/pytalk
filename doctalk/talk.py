@@ -565,13 +565,13 @@ class Talker :
       rels, svos = rel_from(data)
       comps = comps_from(i, data)  # or directly from deps
       ners = ners_from(data)
-      for s, v, o in svos:
+      for s, v, o in svos: #ok
         if s!=o and good_word(s) and good_word(o) :
            d[(s, v2rel(v), o)].add(i)
-      for x, e in ners:
+      for x, e in ners: #ok
         d[(e2rel(e), 'has_instance', x)].add(i)
 
-      for a, b in comps:
+      for a, b in comps: #ok
         c = join(a, b)
         d[(a, 'as_in', c)].add(i)
         d[(b, 'as_in', c)].add(i)
@@ -579,12 +579,15 @@ class Talker :
     for svo in wn_from(l2occ):
       s,v,o=svo
       if s==o : continue
-      occs=set()
+      s_occs=set()
+      o_occs=set()
       for  id,_ in l2occ.get(s) :
-        occs.add(id)
+        s_occs.add(id)
       for id, _ in l2occ.get(o):
-        occs.add(id)
-      d[svo]=occs
+        o_occs.add(id)
+      shared_occs=s_occs.intersection(o_occs)
+      if shared_occs :
+        d[svo]=s_occs.intersection(o_occs)
 
     return d
 
