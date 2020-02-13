@@ -12,7 +12,9 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
   for e in g.edges():
     f, t = e
     if not attr : w= ''
-    else : w = g[f][t][attr]
+    else :
+      w = g[f][t].get(attr)
+      if not w : w=''
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show>1)
 

@@ -20,7 +20,7 @@ def run_with(fname,query=True) :
   with annotators listed in params.py  available.
   '''
   t = Talker(from_file=fname+'.txt')
-  show =t. params.show_pics
+  show =t.params.show_pics
 
   t.show_all()
   if query:
@@ -406,6 +406,7 @@ def interact(q,talker):
   ### answer is computed here ###
   answers,_=answer_quest(q, talker)
   show_answers(talker,answers)
+  talker.distill(q)
 
 def show_answers(talker,answers) :
   ''' prints out/says answers'''
@@ -554,6 +555,13 @@ class Talker :
             words.remove(w)
     return summary,words
 
+    def distill(self,q) :
+      '''
+      superclasses can do here additional
+      processing of question q
+      '''
+      pass
+
   def to_svos(self):
     '''
     returns SVO relations as a dict associating to each
@@ -700,6 +708,7 @@ class Talker :
     self.show_svo_graph(g,file_name=self.from_file)
 
   def show_all(self):
+    ''' prints out sevaral results'''
     show = self.params.show_pics
     self.show_summary()
     self.show_keywords()
@@ -713,6 +722,7 @@ class Talker :
       self.show_svos()
 
   def show_stats(self):
+    ''' prints out some staistics'''
     print('SENTENCES:',len(self.db[0]))
     print('LEMMAS:', len(self.db[1]))
     print('GRAPH NODES:', self.g.number_of_nodes())

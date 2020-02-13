@@ -1,7 +1,9 @@
 from .down import ensure_nlk_downloads
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
-
+'''
+wordnet interface - mostly similarity relations
+'''
 stop_words=set(stopwords.words('english')).union({'|(){}[]%'})
 
 # basic wordnet relations
@@ -23,6 +25,7 @@ def wn_all(n,k,w,t) :
   return res
 
 def wn_svo(n,k,w,t) :
+  ''' wraps relations as S,V,O triplets'''
   for friend in wn_rel(id,n,k,w,t) :
     if w<friend: yield (w,'is_like',friend)
   for friend in wn_rel(hypers,n,k,w,t) :
@@ -50,6 +53,10 @@ def wn_tag(T) :
   else : return None
 
 def wn_rel(f,n,k,w,t) :
+  '''
+  word-to-word relations, by limited
+  expansion of synset-to-synset relation f
+  '''
   related = set()
   if w in stop_words : return related
   for i,syns in enumerate(wn.synsets(w,pos=t)):

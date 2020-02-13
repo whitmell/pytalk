@@ -117,7 +117,19 @@ def think_test(F,Q) :
   print('SVO_NODES', T.svo_graph.number_of_nodes())
   print('SVO_EDGES', T.svo_graph.number_of_edges())
   print()
-  T.ask(Q)
+  T.distill(Q)
+
+def tftest():
+  fname='examples/geo'  #################
+  reason_with(fname,query=True)
+
+def tgo()  :
+  D=doc_dir
+  files = sorted(glob.glob(D + "/*_quest.txt"))
+  for qf in files:
+    df=qf.replace("_quest.txt","")
+    reason_with(df,query=True)
+
 
 if __name__== "__main__" :
   #nlp_test()
@@ -128,7 +140,8 @@ if __name__== "__main__" :
   #canned_test()
   #ftest()
   #ptest()
-  ttest2()
+  #ttest2()
+  tftest()
   pass
 
 

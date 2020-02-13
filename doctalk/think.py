@@ -29,22 +29,12 @@ class Thinker(Talker) :
     self.no_rels=() #'kind_of',) #('object_in', 'verb_in','kind_of')
 
 
-  def ask(self,q):
+  def distill(self,q):
     ''' handler for question q asked from this Thinker'''
     print('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q)
     show_answers(self,answers)
     self.reason_about(answers,answerer)
-
-  def walks(self,lemmas,g):
-    lemmas=list(lemmas)
-    paths=[]
-    l = len(lemmas)
-    for i in range(l) :
-      for j in range(i) :
-        p=chain(g,lemmas[i],lemmas[j])
-        if p: paths.extend(p)
-    return paths
 
   def extract_rels(self,G,good_lemmas):
     depth = self.params.think_depth
@@ -83,22 +73,25 @@ class Thinker(Talker) :
     lems = answerer.get_lemma(0)
     tags=answerer.get_tag(0)
 
-    G,good_lemmas,good_nodes,rels=self.get_roots(lems,tags)
+    SVO_G,good_lemmas,good_nodes,rels=self.get_roots(lems,tags)
 
-    best,U=self.rerank_answers(G,good_nodes,answerer)
-
-    S = G.subgraph(good_nodes)
-
+    best,ReachedG=self.rerank_answers(SVO_G,good_nodes,answerer)
+    ReachedNodesG = ReachedG.subgraph(good_nodes)
+    #S = G.subgraph(good_nodes)
+    ppp(SVO_G.number_of_edges())
+    for x,y in SVO_G.edges() :
+      ppp(x,y,SVO_G[x][y]['rel'])
+    ppp(ReachedG.number_of_edges())
+    ppp(ReachedNodesG.number_of_edges())
     for x in good_lemmas:
-       for ps in nx.single_source_shortest_path(S,x,
+      if x in ReachedNodesG.nodes():
+       for ps in nx.single_source_shortest_path(ReachedNodesG,x,
                  cutoff=self.params.think_depth):
          if isinstance(ps, tuple) :
            print('REASONING_PATH:',x,':',ps)
        print('')
     print('')
 
-    if self.params.show_pics>0 :
-      self.show_svo_graph(S)
 
     print('ROOT LEMMAS:')
     print(good_lemmas,'\n')
@@ -114,7 +107,9 @@ class Thinker(Talker) :
     for x in best :
       print(x[0],nice(self.get_sentence(x[0])),'\n')
 
-    gshow(U,file_name='reached.gv',show=self.params.show_pics)
+    if self.params.show_pics>0 :
+      self.show_svo_graph(SVO_G)
+      gshow(ReachedG,file_name='reached.gv',show=self.params.show_pics)
 
 
 
@@ -162,3 +157,34 @@ def without_rels(G,rels) :
   ''''view of G that follows only links NOT in rels'''
   return nx.subgraph_view(G,
     filter_edge=lambda x,y:G[x][y]['rel'] not in rels )
+
+# unused
+'''
+  def walks(self, lemmas, g):
+    lemmas = list(lemmas)
+    paths = []
+    l = len(lemmas)
+    for i in range(l):
+      for j in range(i):
+        p = chain(g, lemmas[i], lemmas[j])
+        if p: paths.extend(p)
+    return paths
+'''
+
+
+def reason_with(fname,query=True) :
+  '''
+  Activates dialog about document in <fname>.txt with questions
+  in <fname>_quests.txt
+  Assumes stanford corenlp server listening on port 9000
+  with annotators listed in params.py  available.
+  '''
+  t = Thinker(from_file=fname+'.txt')
+  show =t.params.show_pics
+
+  t.show_all()
+  if query:
+    t.query_with(fname+'_quest.txt')
+    pshow(t,file_name=fname+"_quest.txt",
+          cloud_size=t.params.cloud_size,
+          show=t.params.show_pics)
