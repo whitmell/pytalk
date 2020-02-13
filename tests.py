@@ -120,7 +120,7 @@ def think_test(F,Q) :
   T.distill(Q)
 
 def tftest():
-  fname='examples/geo'  #################
+  fname='examples/bfr'  #################
   reason_with(fname,query=True)
 
 def tgo()  :

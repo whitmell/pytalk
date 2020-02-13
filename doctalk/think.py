@@ -31,9 +31,9 @@ class Thinker(Talker) :
 
   def distill(self,q):
     ''' handler for question q asked from this Thinker'''
-    print('QUESTION:',q,'\n')
+    ppp('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q)
-    show_answers(self,answers)
+    #show_answers(self,answers)
     self.reason_about(answers,answerer)
 
   def extract_rels(self,G,good_lemmas):
@@ -78,11 +78,10 @@ class Thinker(Talker) :
     best,ReachedG=self.rerank_answers(SVO_G,good_nodes,answerer)
     ReachedNodesG = ReachedG.subgraph(good_nodes)
     #S = G.subgraph(good_nodes)
-    ppp(SVO_G.number_of_edges())
-    for x,y in SVO_G.edges() :
-      ppp(x,y,SVO_G[x][y]['rel'])
-    ppp(ReachedG.number_of_edges())
-    ppp(ReachedNodesG.number_of_edges())
+    #ppp(SVO_G.number_of_edges())
+    #for x,y in SVO_G.edges() : ppp(x,y,SVO_G[x][y]['rel'])
+    #ppp(ReachedG.number_of_edges())
+    #ppp(ReachedNodesG.number_of_edges())
     for x in good_lemmas:
       if x in ReachedNodesG.nodes():
        for ps in nx.single_source_shortest_path(ReachedNodesG,x,
