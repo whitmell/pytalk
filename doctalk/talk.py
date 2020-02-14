@@ -688,10 +688,21 @@ class Talker :
     print('')
 
   def show_keywords(self):
-    ''' pronts keywords'''
+    ''' prints keywords'''
     print('KEYWORDS:')
     print(self.keywords)
     print('')
+
+
+  def save_summary(self,out_file):
+    with open(out_file,'w') as g:
+      for _, _, ws in self.summary:
+        print(nice(ws),file=g)
+
+  def save_keywords(self,out_file):
+    with open(out_file,'w') as g:
+      for w in self.keywords:
+        print(w,file=g)
 
   def show_rels(self):
     ''' prints extracted relations'''
