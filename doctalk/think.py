@@ -63,8 +63,10 @@ class Thinker(Talker) :
     ReachedG = self.g.subgraph(reached)
     pers_dict = {x: r for (x, r) in answerer.pr.items() if good_word(x)}
     pr = nx.pagerank(ReachedG, personalization=pers_dict)
+    ppp('HERE')
+    npr=self.adjust_sent_ranks(pr)
     best = take(self.params.max_answers,
-                [x for x in rank_sort(pr) if isinstance(x[0], int)])
+                [x for x in rank_sort(npr) if isinstance(x[0], int)])
 
     return best,ReachedG
 
@@ -87,19 +89,19 @@ class Thinker(Talker) :
        for ps in nx.single_source_shortest_path(ReachedNodesG,x,
                  cutoff=self.params.think_depth):
          if isinstance(ps, tuple) :
-           print('REASONING_PATH:',x,':',ps)
-       print('')
-    print('')
+           tprint('REASONING_PATH:',x,':',ps)
+       tprint('')
+    tprint('')
 
 
-    print('ROOT LEMMAS:')
-    print(good_lemmas,'\n')
+    tprint('ROOT LEMMAS:')
+    tprint(good_lemmas,'\n')
 
-    print('RELATIONS FROM QUERY TO DOCUMENT:\n')
-    for r in rels: print(r)
-    print('')
+    tprint('RELATIONS FROM QUERY TO DOCUMENT:\n')
+    for r in rels: tprint(r)
+    tprint('')
 
-    print('RELATION NODES:',len(good_nodes),
+    tprint('RELATION NODES:',len(good_nodes),
       good_nodes,'\n')
 
     print('\nDISTILLED ANSWERS:\n')

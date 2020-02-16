@@ -1,8 +1,5 @@
 import glob
 import os
-from doctalk.talk import *
-from doctalk.nlp import *
-from doctalk.sim import *
 from doctalk.pypro import nrun
 from doctalk.think import *
 from doctalk.params import force

@@ -11,7 +11,7 @@ class talk_params:
 
     self.sum_count = 4
     self.key_count = 10
-    self.max_answers = 6
+    self.max_answers = 4
     self.cloud_size = 24
     self.subgraph_size = 38
 
@@ -26,9 +26,9 @@ class talk_params:
     self.svo_edges = True
     self.subject_centered = True
 
-    self.show_pics = 0  # 1 : just generate files, 2: interactive
+    self.show_pics = 1  # 1 : just generate files, 2: interactive
     self.show_rels = 0
-    self.to_prolog = 0
+    self.to_prolog = 1
     
     self.think_depth=5
 

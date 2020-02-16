@@ -485,6 +485,16 @@ class Talker :
     #return {occ[0] for w in nodes for occ in self.get_occs(w)}
     return ids
 
+
+  def adjust_sent_ranks(self,pr):
+    npr = dict()
+    for x, r in pr.items():
+      if isinstance(x, int):
+        ws = self.db[0][x][SENT]
+        r = normalize_sent(r, len(ws), self.avg_len)
+      npr[x] = r
+    return npr
+
   def get_sentence(self,i):
     ''' returns sentence i as list of words'''
     return  self.db[0][i][SENT]
@@ -520,12 +530,17 @@ class Talker :
       else:
         return None
     sents,words=list(),set()
+
+    '''
     npr=dict()
     for x,r in self.pr.items() :
       if isinstance(x,int) :
         ws = self.db[0][x][SENT]
         r=normalize_sent(r,len(ws),self.avg_len)
       npr[x]=r
+    '''
+    npr=self.adjust_sent_ranks(self.pr)
+
     by_rank=rank_sort(npr)
     for i  in range(len(by_rank)):
       x,r=by_rank[i]
@@ -673,6 +688,9 @@ class Talker :
         occs=sorted(occs)
         f.write(f'svo{s,v,o,occs}.\n')
 
+  def distill(self, q):
+    pass
+
   def say(self,what):
     ''' prints and ptionally says it, unless set to quiet'''
     print(what)
@@ -720,6 +738,8 @@ class Talker :
 
   def show_all(self):
     ''' prints out sevaral results'''
+    if self.from_file :
+      print('\n--------------  FILE:',self.from_file,'-----------\n')
     show = self.params.show_pics
     self.show_summary()
     self.show_keywords()
