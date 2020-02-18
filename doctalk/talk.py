@@ -676,11 +676,11 @@ class Talker :
       sent_data,l2occ=self.db
       f.write('% SENTENCES: \n')
       for i,data in enumerate(sent_data) :
-        ws=data[SENT]
+        ws=list(data[SENT])
         f.write(f'sent({i},{ws}).\n')
       f.write('\n% LEMMAS: \n')
       for i, data in enumerate(sent_data):
-        ws = data[LEMMA]
+        ws = list(data[LEMMA])
         f.write(f'lemma({i},{ws}).\n')
       f.write('\n% RELATIONS: \n')
       for svo,occs in self.svos.items() :
