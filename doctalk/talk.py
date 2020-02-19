@@ -401,6 +401,7 @@ def query_with(talker,qs_or_fname)     :
 def interact(q,talker):
   ''' prints/says query and answers'''
   tprint('----- QUERY ----\n')
+  print("QUESTION: ",end='')
   talker.say(q)
   print('')
   ### answer is computed here ###

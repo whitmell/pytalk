@@ -2,7 +2,6 @@ import glob
 import os
 from doctalk.pypro import nrun
 from doctalk.think import *
-from doctalk.params import force
 
 import pprint
 
@@ -31,7 +30,7 @@ def clean_path(path) :
   for f in files:
     os.remove(f)
 
-def clean()  :
+def clean(force=False)  :
   D=doc_dir
   if force :
     files = glob.glob(D + "/*.json")

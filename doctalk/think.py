@@ -31,7 +31,7 @@ class Thinker(Talker) :
 
   def distill(self,q):
     ''' handler for question q asked from this Thinker'''
-    ppp('QUESTION:',q,'\n')
+    #ppp('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q)
     #show_answers(self,answers)
     self.reason_about(answers,answerer)
@@ -41,8 +41,15 @@ class Thinker(Talker) :
     xs = reach_from(G, depth, good_lemmas)
     R = G.reverse(copy=False)
     ys = reach_from(R, depth, good_lemmas, reverse=True)
-    rels = xs.union(ys)
-    return rels
+
+    # adding relations in the right s,v,o order
+    for e in ys :
+      o,v,s=e
+      r=s,v,o
+      #if not r in xs : ppp('!!!!',r)
+      xs.add(r)
+
+    return xs
 
   def get_roots(self,lems,tags):
     lts = zip(lems, tags)
@@ -63,7 +70,7 @@ class Thinker(Talker) :
     ReachedG = self.g.subgraph(reached)
     pers_dict = {x: r for (x, r) in answerer.pr.items() if good_word(x)}
     pr = nx.pagerank(ReachedG, personalization=pers_dict)
-    ppp('HERE')
+
     npr=self.adjust_sent_ranks(pr)
     best = take(self.params.max_answers,
                 [x for x in rank_sort(npr) if isinstance(x[0], int)])
@@ -84,14 +91,15 @@ class Thinker(Talker) :
     #for x,y in SVO_G.edges() : ppp(x,y,SVO_G[x][y]['rel'])
     #ppp(ReachedG.number_of_edges())
     #ppp(ReachedNodesG.number_of_edges())
-    for x in good_lemmas:
-      if x in ReachedNodesG.nodes():
-       for ps in nx.single_source_shortest_path(ReachedNodesG,x,
+    if trace>1 :
+      for x in good_lemmas:
+        if x in ReachedNodesG.nodes():
+          tprint('REASONING_PATH FROM:', x)
+          for ps in nx.single_source_shortest_path(ReachedNodesG,x,
                  cutoff=self.params.think_depth):
-         if isinstance(ps, tuple) :
-           tprint('REASONING_PATH:',x,':',ps)
-       tprint('')
-    tprint('')
+            tprint('\t',ps)
+          tprint('')
+      tprint('')
 
 
     tprint('ROOT LEMMAS:')
@@ -104,7 +112,7 @@ class Thinker(Talker) :
     tprint('RELATION NODES:',len(good_nodes),
       good_nodes,'\n')
 
-    print('\nDISTILLED ANSWERS:\n')
+    print('\nINFERRED ANSWERS:\n')
     for x in best :
       print(x[0],nice(self.get_sentence(x[0])),'\n')
 

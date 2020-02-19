@@ -2,8 +2,7 @@ from inspect import getframeinfo, stack
 
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
-trace=1
-force=0
+trace=0
 
 class talk_params:
   def __init__(self):
@@ -26,11 +25,11 @@ class talk_params:
     self.svo_edges = True
     self.subject_centered = True
 
-    self.show_pics = 2  # 1 : just generate files, 2: interactive
+    self.show_pics = 1  # 1 : just generate files, 2: interactive
     self.show_rels = 0
     self.to_prolog = 1
     
-    self.think_depth=5
+    self.think_depth=4
 
 # decides between '_' and ' ' as separator
 #def join(*xs) : return ' '.join(xs)
