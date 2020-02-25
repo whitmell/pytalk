@@ -52,8 +52,9 @@ def clean_text(text) :
 def cleaned(w) :
   if w in ['-LRB-','-lrb-'] : return '('
   if w in ['-RRB-','-rrb-'] : return ')'
+  if w in ['-LSB-', '-lsb-']: return '['
+  if w in ['-RSB-', '-rsb-']: return ']'
   return w
-
 
 class NLPclient:
   def __init__(self, core_nlp_version = '2018-10-05'):
