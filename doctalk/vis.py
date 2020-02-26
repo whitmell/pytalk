@@ -30,6 +30,8 @@ def pshow(t, file_name="temp",cloud_size=24,show=1):
   s=set()
   for kw in kws:
     if isinstance(kw,tuple) :
+      if any(isinstance(t,tuple) for t in kw) :
+          continue
       kw0=tuple(map(lambda x: x.lower(),kw))
       d[t2s(kw)]=t.pr[kw0]
       s.add(kw0)

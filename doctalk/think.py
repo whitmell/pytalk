@@ -194,6 +194,7 @@ def reason_with(fname,query=True) :
   t.show_all()
   if query:
     t.query_with(fname+'_quest.txt')
-    pshow(t,file_name=fname+"_quest.txt",
+    if show :
+      pshow(t,file_name=fname+"_quest.txt",
           cloud_size=t.params.cloud_size,
           show=t.params.show_pics)

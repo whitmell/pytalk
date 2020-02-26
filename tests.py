@@ -116,7 +116,7 @@ def think_test(F,Q) :
   T.distill(Q)
 
 def tftest():
-  fname='examples/bfr'  #################
+  fname='examples/cats'  #################
   reason_with(fname,query=True)
 
 def tgo()  :

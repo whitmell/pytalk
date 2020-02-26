@@ -25,7 +25,8 @@ def run_with(fname,query=True) :
   t.show_all()
   if query:
     t.query_with(fname+'_quest.txt')
-    pshow(t,file_name=fname+"_quest.txt",
+    if show :
+      pshow(t,file_name=fname+"_quest.txt",
           cloud_size=t.params.cloud_size,
           show=t.params.show_pics)
 
@@ -519,7 +520,14 @@ class Talker :
 
   def extract_content(self,sk,wk):
     '''extracts summaries and keywords'''
-    def nice_word(x,good_tags='N') :
+
+    def maybe_cap(x) :
+        ws,_ = self.get_tagged(x)
+        cx = x.capitalize()
+        if cx in ws and x not in ws: x = cx
+        return x
+
+    def nice_word(x,good_tags='N',lift=False) :
       ws_ts=self.get_tagged(x)
       if not ws_ts : return None
       ws, tags = ws_ts
@@ -527,22 +535,24 @@ class Talker :
       for tag in tags:
         if tag[0] in good_tags:
           ncount += 1
-      if ncount > len(tags) // 2:
-        cx = x.capitalize()
-        if cx in ws: x = cx
+      if ncount > len(tags) / 2:
+        ns=self.g.adj.get(x)
+        if lift and ns and not isinstance(x,tuple):
+          min_rank=self.pr[x] / self.params.prioritize_compounds
+          xss=[(n,self.pr[n])
+               for n in ns
+                 if isinstance(n,tuple) and x==n[1] and
+                   self.pr[n] >  min_rank
+              ]
+          if xss:
+            xss.sort(key=lambda v: v[1], reverse=True)
+            xs=xss[0][0]
+            return xs
         return x
       else:
         return None
-    sents,words=list(),set()
 
-    '''
-    npr=dict()
-    for x,r in self.pr.items() :
-      if isinstance(x,int) :
-        ws = self.db[0][x][SENT]
-        r=normalize_sent(r,len(ws),self.avg_len)
-      npr[x]=r
-    '''
+    sents,words=list(),set()
     npr=self.adjust_sent_ranks(self.pr)
 
     by_rank=rank_sort(npr)
@@ -553,26 +563,33 @@ class Talker :
         sk-=1
         sents.append((r,x,ws))
       elif wk and good_word(x) :
-        x=nice_word(x)
+        x=nice_word(x,lift=True)
         if x:
           wk -= 1
           words.add(x)
       elif wk and isinstance(x,tuple) :
           xs=tuple(map(nice_word,x))
           if all(xs) :
-            #ppp('KWD', x, 1000 * r)
-
             wk -= 1
             words.add(xs)
     sents.sort(key=lambda x: x[1])
     summary=[(r,x,ws) for (r,x,ws) in sents]
     self.by_rank=by_rank # to be used when needed
+
+    # remove word if in a tuple that is also selected
     for xs in words.copy() :
       if isinstance(xs,tuple) :
         for w in xs:
           if w in words:
             words.remove(w)
-    return summary,words
+    clean_words=set()
+    for xs in words :
+      if isinstance(xs,tuple) :
+        clean_words.add(tuple(map(maybe_cap,xs)))
+      else :
+        clean_words.add(maybe_cap(xs))
+
+    return summary,clean_words
 
     def distill(self,q) :
       '''
@@ -599,7 +616,7 @@ class Talker :
         d[(e2rel(e), 'has_instance', x)].add(i)
 
       for a, b in comps: #ok
-        c = join(a, b)
+        c = (a, b)
         d[(a, 'as_in', c)].add(i)
         d[(b, 'as_in', c)].add(i)
 
@@ -676,7 +693,6 @@ class Talker :
         elif v not in {'as_in'}  : #elif v in ('kind_of', 'part_of', 'is_like'):
           g.add_edge(o, s)
           g.add_edge(s, o)
-          # ppp(s,v,o)
 
     try:
       pr = nx.pagerank(g, personalization=personalization)
@@ -726,7 +742,8 @@ class Talker :
   def show_keywords(self):
     ''' prints keywords'''
     print('KEYWORDS:')
-    print(self.keywords)
+    for w in nice_keys(self.keywords) :
+      print(w)
     print('')
 
 
@@ -737,7 +754,7 @@ class Talker :
 
   def save_keywords(self,out_file):
     with open(out_file,'w') as g:
-      for w in self.keywords:
+      for w in nice_keys(self.keywords) :
         print(w,file=g)
 
   def show_rels(self):
@@ -792,6 +809,15 @@ class Talker :
 
 
 # helpers
+
+def nice_keys(keywords):
+    for w in keywords:
+      if isinstance(w,tuple) :
+        yield " ".join(w)
+      else :
+        yield w
+
+
 def nice(ws) :
   ''' aggregates word lists into a nicer looking sentence'''
   ws=[cleaned(w) for w in ws]
