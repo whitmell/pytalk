@@ -183,7 +183,7 @@ def comps_from(id,d) :
   ''' returns compounds in sentence id as nested tuples of positions'''
   return tuple(t for t in comp_from(id,d) if t)
 
-def sub_centered(id,dep) :
+def sub_centered(id,dep,all_to_sent=True) :
   '''builds dependency graphs centered on subjects and sentences'''
   f, f_, r, t, t_ = dep
   if r == 'punct' or f == t:
@@ -199,6 +199,9 @@ def sub_centered(id,dep) :
   # elif r == 'ROOT': yield (f, t)
   else:
     yield (f, t)
+    if all_to_sent:
+      yield (f,id)
+
 
 def pred_mediated(id,dep) :
   '''build dependency graphs mediated by predicates'''
@@ -627,7 +630,7 @@ class Talker :
     '''yields edges from dependency structure of sentence id'''
     for dep in dep_from(id, sd):
       if self.params.subject_centered:
-        yield from sub_centered(id, dep)
+        yield from sub_centered(id, dep,all_to_sent=self.params.all_to_sent)
       else:
         yield from pred_mediated(id, dep)
     if self.params.compounds:
@@ -637,11 +640,25 @@ class Talker :
         yield t, ft
         yield ft, id  # compound to sent
 
+
   def to_edges(self):
     '''yields all edges from syntactic dependency structure'''
     sent_data, l2occ = self.db
     for id, sd in enumerate(sent_data):
       yield from self.to_edges_in(id, sd)
+    # nouns may also point to the first sent where they are "defined"
+    if self.params.use_to_def:
+      for lemma,occs in l2occ.items() :
+        if occs and good_word(lemma):
+          id,pos=occs[0]
+          tag = sent_data[id][TAG][pos]
+          if  good_tag(tag) : #,starts='N') :
+            yield lemma,id
+            # pumping senteces through word towards first
+            # in which it occurs
+            for i,occ in enumerate(occs) :
+              if i>0:
+                yield occ[0],lemma
 
   def to_graph(self, personalization=None):
     ''' builds document graph from several link types'''

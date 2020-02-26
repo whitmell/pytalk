@@ -8,7 +8,7 @@ class talk_params:
   def __init__(self):
     self.force = False
 
-    self.sum_count = 4
+    self.sum_count = 9
     self.key_count = 10
     self.max_answers = 4
     self.cloud_size = 24
@@ -24,10 +24,12 @@ class talk_params:
     self.compounds = True
     self.svo_edges = True
     self.subject_centered = True
+    self.all_to_sent=False
+    self.use_to_def=True
 
-    self.show_pics = 1  # 1 : just generate files, 2: interactive
+    self.show_pics = 0  # 1 : just generate files, 2: interactive
     self.show_rels = 0
-    self.to_prolog = 1
+    self.to_prolog = 0
     
     self.think_depth=4
 
