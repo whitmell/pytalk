@@ -22,7 +22,9 @@ class Thinker(Talker) :
   '''
   def __init__(self,**kwargs):
     super().__init__(**kwargs)
+
     self.svo_graph = self.to_svo_graph()
+
     self.rels= (
       'as_in','is_like','kind_of', 'part_of','has_instance'
       'subject_in', 'object_in', 'verb_in')
@@ -34,7 +36,12 @@ class Thinker(Talker) :
     #ppp('QUESTION:',q,'\n')
     answers,answerer=self.answer_quest(q)
     #show_answers(self,answers)
-    self.reason_about(answers,answerer)
+    best=self.reason_about(answers,answerer)
+
+    print('\nINFERRED ANSWERS:\n')
+    for x in best:
+      print(x[0],end=': ')
+      print(nice(self.get_sentence(x[0])), '\n')
 
   def extract_rels(self,G,good_lemmas):
     depth = self.params.think_depth
@@ -112,16 +119,11 @@ class Thinker(Talker) :
     tprint('RELATION NODES:',len(good_nodes),
       good_nodes,'\n')
 
-    print('\nINFERRED ANSWERS:\n')
-    for x in best :
-      print(x[0],nice(self.get_sentence(x[0])),'\n')
-
     if self.params.show_pics>0 :
       self.show_svo_graph(SVO_G)
       gshow(ReachedG,file_name='reached.gv',show=self.params.show_pics)
 
-
-
+    return best
 
 def reach_from(g,k,roots,reverse=False):
     edges=set()

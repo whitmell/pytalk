@@ -2,7 +2,7 @@ from inspect import getframeinfo, stack
 
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
-trace=1
+trace=0
 
 class talk_params:
   def __init__(self):
@@ -33,6 +33,13 @@ class talk_params:
     self.to_prolog = 0
     
     self.think_depth=4
+
+  def __repr__(self):
+    return str(self.__dict__)
+
+  def show(self):
+    for x,y in self.__dict__.items():
+      print(x,'=',y)
 
 def ppp(*args) :
   if trace<1 : return

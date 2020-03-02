@@ -415,12 +415,12 @@ def interact(q,talker):
 
 def show_answers(talker,answers) :
   ''' prints out/says answers'''
-  print('ANSWERS:')
+  print('ANSWERS:\n')
   for info, sent, rank, shared in answers:
     print(info,end=': ')
     talker.say(nice(sent))
     tprint('  ', shared, rank)
-  print('')
+    print('')
   tprint('------END-------', '\n')
 
 class Talker :
@@ -447,6 +447,7 @@ class Talker :
     self.avg_len = get_avg_len(self.db)
 
     self.svos=self.to_svos()
+    self.svo_graph=None
 
     self.g,self.pr=self.to_graph()
     #self.get_sum_and_words(sk,wk)
@@ -637,6 +638,7 @@ class Talker :
 
   def to_svo_graph(self):
     ''' exposes svo relations as a graph'''
+    if self.svo_graph: return self.svo_graph
     g=nx.DiGraph()
     for svo,occs in self.svos.items() :
       s,v,o=svo
@@ -690,9 +692,8 @@ class Talker :
         if s == o: continue
         if v == 'as_in':
           g.add_edge(s, o)
-        elif v not in {'as_in'}  : #elif v in ('kind_of', 'part_of', 'is_like'):
+        else:
           g.add_edge(o, s)
-          g.add_edge(s, o)
 
     try:
       pr = nx.pagerank(g, personalization=personalization)
@@ -737,7 +738,7 @@ class Talker :
     for r,x,ws in self.summary:
       print(x,end=': ')
       self.say(nice(ws))
-    print('')
+      print('')
 
   def show_keywords(self):
     ''' prints keywords'''
