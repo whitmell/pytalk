@@ -119,6 +119,10 @@ def tftest():
   fname='examples/hindenburg'  #################
   reason_with(fname,query=True)
 
+def t12():
+  fname='examples/heli'  #################
+  reason_with(fname,query=True)
+
 def tgo()  :
   D=doc_dir
   files = sorted(glob.glob(D + "/*_quest.txt"))
@@ -137,7 +141,7 @@ if __name__== "__main__" :
   #ftest()
   #ptest()
   #ttest2()
-  tftest()
+  t12()
   pass
 
 
