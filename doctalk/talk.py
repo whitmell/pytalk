@@ -766,6 +766,7 @@ class Talker :
 
   def show_svos(self):
     show = self.params.show_pics
+    ppp('SHOWING SVOS')
     g = self.to_svo_graph()
     seeds = take(self.params.subgraph_size,
           [x for x, r in rank_sort(self.pr) if isinstance(x, str)])

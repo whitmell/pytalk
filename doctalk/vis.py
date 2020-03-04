@@ -8,6 +8,15 @@ def showGraph(dot, show=True, file_name='textgraph.gv'):
   dot.render(file_name, view=show)
 
 def gshow(g, attr=None, file_name='temp.gv', show=1):
+  size=g.number_of_edges()
+  if size < 3 :
+    ppp('GRAPH TOO SMALL TO SHOW:', file_name, 'edges:', size)
+    return
+  elif size <80 :
+    ppp('SHOWING:',file_name, 'edges:',size)
+  else:
+    ppp('TOO BIG TO SHOW:',file_name, 'edges:',size)
+    return
   dot = DotGraph()
   for e in g.edges():
     f, t = e
@@ -45,8 +54,7 @@ def pshow(t, file_name="temp",cloud_size=24,show=1):
   if t.g.number_of_edges()<80:
     topg=t.g
   else :
-     topg=t.g.subgraph(s)
-  #ppp('TOPG', topg.number_of_edges())
+    topg=t.g.subgraph(s)
   gshow(topg,file_name=file_name+".gv",show=show)
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=1) :

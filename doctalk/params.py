@@ -12,7 +12,7 @@ class talk_params:
     self.key_count = 10
     self.max_answers = 4
     self.cloud_size = 24
-    self.subgraph_size = 38
+    self.subgraph_size = 11
 
     self.quiet = True
     self.answers_by_rank = True

@@ -116,7 +116,7 @@ class Thinker(Talker) :
     for r in rels: tprint(r)
     tprint('')
 
-    tprint('RELATION NODES:',len(good_nodes),
+    if trace>1 : tprint('RELATION NODES:',len(good_nodes),
       good_nodes,'\n')
 
     if self.params.show_pics>0 :
