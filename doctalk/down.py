@@ -10,6 +10,7 @@ def ensure_nlk_downloads() :
       ssl._create_default_https_context = _create_unverified_https_context    
     nltk.download('wordnet')
     nltk.download('stopwords')
+    nltk.download('words')
     print('')
 ensure_nlk_downloads()
 

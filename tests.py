@@ -141,7 +141,8 @@ if __name__== "__main__" :
   #ftest()
   #ptest()
   #ttest2()
-  t12()
+  #t12()
+  tftest()
   pass
 
 

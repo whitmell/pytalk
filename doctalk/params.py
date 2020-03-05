@@ -8,8 +8,8 @@ class talk_params:
   def __init__(self):
     self.force = False
 
-    self.sum_count = 9
-    self.key_count = 10
+    self.sum_count = 4
+    self.key_count = 6
     self.max_answers = 4
     self.cloud_size = 24
     self.subgraph_size = 11

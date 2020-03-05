@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 import math
 import networkx as nx
+from nltk.corpus import words as wn_words
 import statistics as stat
 from pprint import pprint
 
@@ -11,6 +12,8 @@ from .sim import *
 from .vis import pshow,gshow
 
 client = NLPclient()
+
+words = set(wn_words.words())
 
 def run_with(fname,query=True) :
   '''
@@ -543,6 +546,8 @@ class Talker :
           xss=[(n,self.pr[n])
                for n in ns
                  if isinstance(n,tuple) and x==n[1] and
+                   #self.pr[n[0]] > self.pr[n[1]]/2 and
+                   n[0] != n[1] and
                    self.pr[n] >  min_rank
               ]
           if xss:
@@ -555,12 +560,14 @@ class Talker :
 
     sents,words=list(),set()
     npr=self.adjust_sent_ranks(self.pr)
-
     by_rank=rank_sort(npr)
+
     for i  in range(len(by_rank)):
       x,r=by_rank[i]
       if sk and isinstance(x,int) :
         ws=self.db[0][x][SENT]
+        ls=self.db[0][x][LEMMA]
+        if not is_clean_sent(ls) : continue
         sk-=1
         sents.append((r,x,ws))
       elif wk and good_word(x) :
@@ -819,6 +826,9 @@ def nice_keys(keywords):
       else :
         yield w
 
+def is_clean_sent(ws) :
+  goods=[w for w in ws if w in words]
+  return len(goods)>0.8*len(ws)
 
 def nice(ws) :
   ''' aggregates word lists into a nicer looking sentence'''
