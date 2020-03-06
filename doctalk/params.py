@@ -8,8 +8,19 @@ class talk_params:
   def __init__(self):
     self.force = False
 
+    # content extraction related
+    self.compounds = True
+    self.svo_edges = True
+    self.subject_centered = True
+    self.all_to_sent = False
+    self.use_to_def = True
+    self.prioritize_compounds = 100
+
     self.sum_count = 4
     self.key_count = 6
+
+    # query answering related
+
     self.max_answers = 4
     self.cloud_size = 24
     self.subgraph_size = 11
@@ -21,18 +32,15 @@ class talk_params:
     self.expand_query = 2
     self.guess_wh_word_NERs=0
 
-    self.compounds = True
-    self.svo_edges = True
-    self.subject_centered = True
-    self.all_to_sent=False
-    self.use_to_def=True
-    self.prioritize_compounds = 100
+    self.think_depth=4
+
+    # visualization / verbosity control
 
     self.show_pics = 0  # 1 : just generate files, 2: interactive
     self.show_rels = 0
     self.to_prolog = 0
     
-    self.think_depth=4
+
 
   def __repr__(self):
     return str(self.__dict__)

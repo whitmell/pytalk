@@ -664,6 +664,7 @@ class Talker :
         f, t = ft
         yield f, ft  # parts to compound
         yield t, ft
+        yield f,t
         yield ft, id  # compound to sent
 
 
@@ -826,9 +827,9 @@ def nice_keys(keywords):
       else :
         yield w
 
-def is_clean_sent(ws) :
-  goods=[w for w in ws if w in words]
-  return len(goods)>0.8*len(ws)
+def is_clean_sent(ls) :
+  goods=[w for w in ls if w.isalpha() and w in words]
+  return len(goods)>0.8*len(ls)
 
 def nice(ws) :
   ''' aggregates word lists into a nicer looking sentence'''
@@ -862,7 +863,7 @@ def good_word(w) :
   '''
   ensures that most noise words are avoided
   '''
-  return isinstance(w,str) and len(w)>1 and w.isalpha() \
+  return isinstance(w,str) and len(w)>2 and w.isalpha() \
          and w not in stop_words
 
 def good_tag(tag,starts="NVJA"):
