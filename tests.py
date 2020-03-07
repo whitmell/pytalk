@@ -1,7 +1,9 @@
 import glob
 import os
 from doctalk.pypro import nrun
+from doctalk.talk import *
 from doctalk.think import *
+from doctalk.vis import *
 
 import pprint
 
@@ -65,6 +67,13 @@ def mtest() :
     #pprint.pprint(svos)
     pprint.pprint(comps)
     print('')
+
+def otest() :
+  fname = 'examples/relativity.txt'
+  t=Talker(from_file=fname)
+  rs=t.to_word_orbit('field')
+  #rs = t.to_sent_orbit(333)
+  plot_rank_orbit(rs)
 
 def qtest() :
   fname='examples/geo'
@@ -142,7 +151,8 @@ if __name__== "__main__" :
   #ptest()
   #ttest2()
   #t12()
-  tftest()
+  #tftest()
+  otest()
   pass
 
 

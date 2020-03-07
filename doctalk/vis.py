@@ -66,3 +66,11 @@ def show_ranks(rank_dict,file_name="cloud.pdf",show=1) :
   if show>1 : plt.show()
   f.savefig(file_name,bbox_inches='tight')
   plt.close('all')
+
+def plot_rank_orbit(rs) :
+  if not rs :
+    print('empty plot')
+    return
+  xs,ys=zip(*rs)
+  plt.plot(xs,ys)
+  plt.show()

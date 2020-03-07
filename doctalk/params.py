@@ -50,7 +50,7 @@ class talk_params:
       print(x,'=',y)
 
 def ppp(*args) :
-  if trace<1 : return
+  if trace<0 : return
   caller = getframeinfo(stack()[1][0])
 
   print('DEBUG:',

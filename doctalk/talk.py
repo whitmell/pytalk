@@ -512,6 +512,10 @@ class Talker :
     ''' returns lemmas of sentence i as list of words'''
     return  self.db[0][i][LEMMA]
 
+  def get_word(self,i):
+    ''' returns words of sentence i as list'''
+    return  self.db[0][i][SENT]
+
   def get_tag(self,i):
     ''' gets the POS tags of sentence i'''
     return  self.db[0][i][TAG]
@@ -642,6 +646,26 @@ class Talker :
         d[svo]=s_occs.intersection(o_occs)
 
     return d
+
+  def to_word_orbit(self,lemma):
+    _, l2occ = self.db
+    occs=l2occ.get(lemma)
+    if not occs : return None
+    sranks=[(id,self.pr[id]) for (id,_) in occs]
+    return sranks
+
+  def to_sent_orbit(self,id):
+    def pr_of(x) :
+      r=self.pr.get(x)
+      if r : return r
+      return 0
+
+    sent_data, _ = self.db
+    ls=self.get_lemma(id)
+    if not ls: return None
+    ws=self.get_word(id)
+    for i,l in enumerate(ls) :
+      yield ws[i],pr_of(l)
 
   def to_svo_graph(self):
     ''' exposes svo relations as a graph'''
