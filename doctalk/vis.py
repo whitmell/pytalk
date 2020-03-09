@@ -68,6 +68,7 @@ def show_ranks(rank_dict,file_name="cloud.pdf",show=1) :
   plt.close('all')
 
 def plot_rank_orbit(rs) :
+  #plt.xscale('log')
   if not rs :
     print('empty plot')
     return

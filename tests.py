@@ -71,8 +71,8 @@ def mtest() :
 def otest() :
   fname = 'examples/relativity.txt'
   t=Talker(from_file=fname)
-  rs=t.to_word_orbit('field')
-  #rs = t.to_sent_orbit(333)
+  #rs=t.to_word_orbit('field')
+  rs = t.to_sent_orbit(333)
   plot_rank_orbit(rs)
 
 def qtest() :
