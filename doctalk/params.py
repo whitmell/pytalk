@@ -16,16 +16,16 @@ class talk_params:
     self.use_to_def = True
     self.prioritize_compounds = 100
 
-    self.sum_count = 4
+    self.sum_count = 2
     self.key_count = 6
 
     # query answering related
 
-    self.max_answers = 4
+    self.max_answers = 2
     self.cloud_size = 24
     self.subgraph_size = 11
 
-    self.quiet = True
+    self.quiet = False
     self.answers_by_rank = True
 
     self.pers = True
@@ -36,7 +36,7 @@ class talk_params:
 
     # visualization / verbosity control
 
-    self.show_pics = 0  # 1 : just generate files, 2: interactive
+    self.show_pics = 2  # 1 : just generate files, 2: interactive
     self.show_rels = 0
     self.to_prolog = 0
     
