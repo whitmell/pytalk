@@ -129,7 +129,7 @@ def tftest():
   reason_with(fname,query=True)
 
 def t12():
-  fname='examples/heli'  #################
+  fname='examples/red'  #################
   reason_with(fname,query=True)
 
 def tgo()  :

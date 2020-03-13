@@ -16,12 +16,12 @@ class talk_params:
     self.use_to_def = True
     self.prioritize_compounds = 100
 
-    self.sum_count = 2
+    self.sum_count = 4
     self.key_count = 6
 
     # query answering related
 
-    self.max_answers = 2
+    self.max_answers = 3
     self.cloud_size = 24
     self.subgraph_size = 11
 
