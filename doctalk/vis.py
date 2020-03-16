@@ -2,20 +2,24 @@ from .params import *
 from graphviz import Digraph as DotGraph
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import networkx as nx
 
 
 def showGraph(dot, show=True, file_name='textgraph.gv'):
   dot.render(file_name, view=show)
 
 def gshow(g, attr=None, file_name='temp.gv', show=1):
+
   size=g.number_of_edges()
+  nsize=g.number_of_nodes()
+
   if size < 3 :
-    ppp('GRAPH TOO SMALL TO SHOW:', file_name, 'edges:', size)
+    ppp('GRAPH TOO SMALL TO SHOW:', file_name, 'nodes:',nsize,'edges:', size)
     return
-  elif size <80 :
-    ppp('SHOWING:',file_name, 'edges:',size)
+  elif size <300 :
+    ppp('SHOWING:',file_name, 'nodes:',nsize,'edges:', size)
   else:
-    ppp('TOO BIG TO SHOW:',file_name, 'edges:',size)
+    ppp('TOO BIG TO SHOW:',file_name, 'nodes:',nsize,'edges:', size)
     return
   dot = DotGraph()
   for e in g.edges():
@@ -50,12 +54,24 @@ def pshow(t, file_name="temp",cloud_size=24,show=1):
       s.add(lkw)
   #ppp("CLOUD",d)
   show_ranks(d,file_name=file_name+"_cloud.pdf",show=show)
+  '''
   #ppp('SUBGRAPH',s)
   if t.g.number_of_edges()<80:
     topg=t.g
   else :
-    topg=t.g.subgraph(s)
+    topg=nx.DiGraph()
+    for x in s :
+      for y in t.g[x] :
+        if isinstance(y,int) : continue
+        topg.add_edge(x,y)
+        zs=t.g[y]
+        if zs :
+          for z in zs :
+            if z in s :
+              topg.add_edge(y,z)
+
   gshow(topg,file_name=file_name+".gv",show=show)
+  '''
 
 def show_ranks(rank_dict,file_name="cloud.pdf",show=1) :
   cloud=WordCloud(width=800,height=400)

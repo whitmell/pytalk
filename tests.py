@@ -128,6 +128,10 @@ def tftest():
   fname='examples/hindenburg'  #################
   reason_with(fname,query=True)
 
+def t1() :
+    fname = 'examples/bfr'
+    run_with(fname, query=True)
+
 def t12():
   fname='examples/red'  #################
   reason_with(fname,query=True)
@@ -150,9 +154,10 @@ if __name__== "__main__" :
   #ftest()
   #ptest()
   #ttest2()
-  t12()
+  #t12()
   #tftest()
   #otest()
+  t1()
   pass
 
 

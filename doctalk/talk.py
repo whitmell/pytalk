@@ -27,9 +27,10 @@ def run_with(fname,query=True) :
 
   t.show_all()
   if query:
-    t.query_with(fname+'_quest.txt')
+    fshown=fname+'_quest.txt'
+    t.query_with(fshown)
     if show :
-      pshow(t,file_name=fname+"_quest.txt",
+      pshow(t,file_name=fshown,
           cloud_size=t.params.cloud_size,
           show=t.params.show_pics)
 
@@ -39,7 +40,6 @@ def run_with_pdf(fname,**kwargs) :
 
 def chat_about(fname,qs=None) :
   t = Talker(from_file=fname + '.txt')
-  show = t.params.show_pics
   t.show_all()
   t.query_with(qs)
 
@@ -798,7 +798,6 @@ class Talker :
 
   def show_svos(self):
     show = self.params.show_pics
-    ppp('SHOWING SVOS')
     g = self.to_svo_graph()
     seeds = take(self.params.subgraph_size,
           [x for x, r in rank_sort(self.pr) if isinstance(x, str)])

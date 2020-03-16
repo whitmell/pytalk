@@ -23,9 +23,9 @@ class talk_params:
 
     self.max_answers = 3
     self.cloud_size = 24
-    self.subgraph_size = 11
+    self.subgraph_size = 32
 
-    self.quiet = False
+    self.quiet = True
     self.answers_by_rank = True
 
     self.pers = True
