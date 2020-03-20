@@ -14,16 +14,6 @@ quest_files = sorted(glob.glob(doc_dir+"*_quest.txt"))
 def quest2doc(qf) :
   return qf.replace('_quest.txt','.txt')
 
-def process_docs() :
-  for quest_file in quest_files :
-    process_doc(quest_file)
-
-def process_doc(quest_file) :
-    print(quest_file)
-    doc_file=quest2doc(quest_file)
-    print(doc_file,'-->',quest_file,'?')
-    query(doc_file,quest_file)
-
 #clean files at given directory path
 def clean_path(path) :
   os.makedirs(path,exist_ok=True)
@@ -131,6 +121,11 @@ def tftest():
 def t1() :
     fname = 'examples/bfr'
     run_with(fname, query=True)
+
+
+def t3():
+  fname = 'examples/const'
+  run_with(fname, query=True)
 
 def t12():
   fname='examples/red'  #################
