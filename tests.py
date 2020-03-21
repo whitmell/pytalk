@@ -123,16 +123,33 @@ def t1() :
     run_with(fname, query=True)
 
 
+def t2():
+  fname = 'examples/hindenburg'
+  run_with(fname, query=True)
+
+
 def t3():
   fname = 'examples/const'
+  run_with(fname, query=True)
+
+def t4():
+  fname = 'examples/logrank'
+  run_with(fname, query=True)
+
+def t5():
+  fname = 'examples/heaven'
   run_with(fname, query=True)
 
 def t12():
   fname='examples/red'  #################
   reason_with(fname,query=True)
 
+def t13():
+  fname='examples/heli'
+  reason_with(fname,query=True)
+
 def t14():
-  fname='examples/covid'  #################
+  fname='examples/covid'
   reason_with(fname,query=True)
 
 def tgo()  :
