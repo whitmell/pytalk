@@ -14,7 +14,8 @@ class talk_params:
     self.subject_centered = True
     self.all_to_sent = False
     self.use_to_def = True
-    self.prioritize_compounds = 100
+    self.prioritize_compounds = 64
+    self.use_line_graph = 0 # spreads using line_graph
 
     self.sum_count = 4
     self.key_count = 6
@@ -36,7 +37,7 @@ class talk_params:
 
     # visualization / verbosity control
 
-    self.show_pics = 2  # 1 : just generate files, 2: interactive
+    self.show_pics = 1  # 1 : just generate files, 2: interactive
     self.show_rels = 0
     self.to_prolog = 0
     

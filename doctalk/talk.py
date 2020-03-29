@@ -727,12 +727,16 @@ class Talker :
         else:
           g.add_edge(o, s)
 
-    try:
       pr = nx.pagerank(g, personalization=personalization)
-    except:
-      n = g.number_of_nodes()
-      pr = dict()
-      for l in db[1]: pr[l] = 1 / n
+      if self.params.use_line_graph and g.number_of_edges()<20000 :
+        lg=nx.line_graph(g)
+        lpr= nx.pagerank(lg)
+        for xy,r in lpr.items() :
+          x,y=xy
+          if isinstance(x,str) and isinstance(y,str):
+            pr[x]=pr[x]+r
+            pr[y]=pr[y]+r
+
     return g, pr
 
   def to_prolog(self):
