@@ -1,24 +1,36 @@
 # doctalk
-Simple Python-based query  answering system with optional voice output
+Python-based summary and keyword extractor and question answering system with optional BERT-based post-processing filter and spoken output
 
 USAGE:
 
 ```
 python3 -i
 
->>> from doctalk import run_with
+>>> from doctalk.talk import run_with
 >>> run_with(fname)
+>>> from doctalk.think import reason_with
+>>> reason_with(fname)
 ```
-This ctivates dialog about document in ```<fname>.txt``` with questions in ```<fname>_quests.txt```
+This activates dialog about document in ```<fname>.txt``` with questions in ```<fname>_quests.txt```
+
+See some examples at : 
+
+[https://github.com/ptarau/pytalk](https://github.com/ptarau/pytalk) , where, after installing the system, you can run
+
+```
+python3 -i tests.py
+>>> go()
+>>> tgo()
+```
   
-It assumes Stanford Corenlp Server listening on port 9000 with all annotators in params.py started with something like:
+To run the system one will neet to start the Stanford Corenlp Server, listening on port 9000 with all annotators in params.py started, i.e., with something like:
 
 ```
 java -mx16g -cp "stanford-corenlp-full-2018-10-05/*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer 
 -preload tokenize,ssplit,pos,lemma,depparse,natlog,openie
 ```
 
-See some examples at : https://github.com/ptarau/pytalk .
+To play with various parameter settings, edit the ```doctalk/params.py``` file.
 
 Please see the install hints for stanfordnlp, that might involve torch binaries, and require anaconda on some systems.
 
