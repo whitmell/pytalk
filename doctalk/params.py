@@ -20,11 +20,12 @@ class talk_params:
     self.with_refiner = True # <==================
 
     # summary, and keyphrase set sizes
-    self.max_sum = 42
-    self.max_keys = 12
 
     self.top_sum = 10
     self.top_keys = 9
+
+    self.max_sum = self.top_sum*(self.top_sum-1)/2
+    self.max_keys = 1+2*self.top_keys
 
     # query answering related
     self.max_answers = 4
