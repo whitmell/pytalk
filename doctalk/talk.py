@@ -462,18 +462,6 @@ class Talker :
     #self.get_sum_and_words(sk,wk)
     self.summary, self.keywords = \
       self.extract_content(self.params.max_sum, self.params.max_keys)
-    if self.params.with_refiner:
-      sents=[]
-      for r, id, ws in self.summary:
-        sents.append(nice(ws))
-      input=" ".join(sents)
-      output=refine(input)
-      #ppp('!!!!',output)
-      wss=list(to_sents(output))
-      xss = []
-      for ws in wss:
-         xss.append((0,0,ws))
-      self.summary=xss
 
 
   def answer_quest(self,q):
@@ -620,6 +608,19 @@ class Talker :
       else :
         clean_words.add(maybe_cap(xs))
 
+    if self.params.with_refiner:
+      sents = []
+      for r, id, ws in summary:
+        sents.append(nice(ws))
+      input = " ".join(sents)
+      output = refine(input)
+      # ppp('!!!!',output)
+      wss = list(to_sents(output))
+      xss = []
+      for ws in wss:
+        xss.append((0, 0, ws))
+      ppp('!!!!!!', len(summary), len(xss))
+      summary = xss
     return summary,clean_words
 
     def distill(self,q) :

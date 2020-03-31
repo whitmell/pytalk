@@ -40,7 +40,7 @@ class Thinker(Talker) :
 
     print('\nINFERRED ANSWERS:\n')
     for x in take(self.params.top_sum,best):
-      if self.params.with_refiner:
+      if not self.params.with_refiner:
         print(x[0],end=': ')
       print(nice(self.get_sentence(x[0])), '\n')
 

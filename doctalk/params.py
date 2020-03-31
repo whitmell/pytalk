@@ -15,19 +15,19 @@ class talk_params:
     self.all_to_sent = False
     self.use_to_def = True
     self.prioritize_compounds = 64
-    self.use_line_graph = 0 # spreads using line_graph
+    self.use_line_graph = False # spreads using line_graph
 
-    self.with_refiner = True
+    self.with_refiner = True # <==================
 
     # summary, and keyphrase set sizes
     self.max_sum = 42
-    self.max_keys = 42
+    self.max_keys = 12
 
     self.top_sum = 10
     self.top_keys = 9
 
     # query answering related
-    self.max_answers = 42
+    self.max_answers = 4
     self.top_answers = 3
 
     self.cloud_size = 24

@@ -4,3 +4,4 @@ wordcloud
 matplotlib
 natlog
 stanfordnlp
+bert-extractive-summarizer
