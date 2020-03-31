@@ -17,12 +17,19 @@ class talk_params:
     self.prioritize_compounds = 64
     self.use_line_graph = 0 # spreads using line_graph
 
-    self.sum_count = 4
-    self.key_count = 6
+    self.with_refiner = True
+
+    # summary, and keyphrase set sizes
+    self.max_sum = 42
+    self.max_keys = 42
+
+    self.top_sum = 10
+    self.top_keys = 9
 
     # query answering related
+    self.max_answers = 42
+    self.top_answers = 3
 
-    self.max_answers = 3
     self.cloud_size = 24
     self.subgraph_size = 32
 

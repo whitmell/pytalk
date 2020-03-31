@@ -39,8 +39,9 @@ class Thinker(Talker) :
     best=self.reason_about(answers,answerer)
 
     print('\nINFERRED ANSWERS:\n')
-    for x in best:
-      print(x[0],end=': ')
+    for x in take(self.params.top_sum,best):
+      if self.params.with_refiner:
+        print(x[0],end=': ')
       print(nice(self.get_sentence(x[0])), '\n')
 
   def extract_rels(self,G,good_lemmas):
@@ -200,3 +201,4 @@ def reason_with(fname,query=True) :
       pshow(t,file_name=fname+"_quest.txt",
           cloud_size=t.params.cloud_size,
           show=t.params.show_pics)
+

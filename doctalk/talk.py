@@ -9,6 +9,7 @@ from pprint import pprint
 
 from .nlp import *
 from .sim import *
+from .refiner import refine
 from .vis import pshow,gshow
 
 client = NLPclient()
@@ -117,6 +118,11 @@ def digest(text) :
   return sent_data,l2occ
 
 SENT,LEMMA,TAG,NER,DEP,IE=0,1,2,3,4,5
+
+def to_sents (text) :
+  sent_data,_= digest(text)
+  for x in sent_data :
+    yield x[SENT]
 
 def rel_from(d):
   ''' extracts several relations as SVO triplets'''
@@ -419,10 +425,12 @@ def interact(q,talker):
 def show_answers(talker,answers) :
   ''' prints out/says answers'''
   print('ANSWERS:\n')
-  for info, sent, rank, shared in answers:
-    print(info,end=': ')
+  for info, sent, rank, shared in take(talker.params.top_answers,answers):
+    if not talker.params.with_refiner :
+       print(info,end=': ')
     talker.say(nice(sent))
-    tprint('  ', shared, rank)
+    if not talker.params.with_refiner:
+      tprint('  ', shared, rank)
     print('')
   tprint('------END-------', '\n')
 
@@ -435,9 +443,7 @@ class Talker :
   def __init__(self,from_file=None,from_text=None,params=talk_params()):
     '''creates data container from file or text document'''
     self.params=params
-    self.show_pics=params.show_pics
-    self.sum_count = params.sum_count
-    self.key_count = params.key_count
+
     self.from_file=from_file
     if from_file:
        self.db=load(from_file,self.params.force)
@@ -455,7 +461,20 @@ class Talker :
     self.g,self.pr=self.to_graph()
     #self.get_sum_and_words(sk,wk)
     self.summary, self.keywords = \
-      self.extract_content(self.sum_count, self.key_count)
+      self.extract_content(self.params.max_sum, self.params.max_keys)
+    if self.params.with_refiner:
+      sents=[]
+      for r, id, ws in self.summary:
+        sents.append(nice(ws))
+      input=" ".join(sents)
+      output=refine(input)
+      #ppp('!!!!',output)
+      wss=list(to_sents(output))
+      xss = []
+      for ws in wss:
+         xss.append((0,0,ws))
+      self.summary=xss
+
 
   def answer_quest(self,q):
     '''answers question q'''
@@ -771,27 +790,28 @@ class Talker :
   def show_summary(self):
     ''' prints/says summary'''
     self.say('SUMMARY:')
-    for r,x,ws in self.summary:
-      print(x,end=': ')
+    for r,x,ws in take(self.params.top_sum,self.summary):
+      if not self.params.with_refiner :
+        print(x,end=': ')
       self.say(nice(ws))
       print('')
 
   def show_keywords(self):
     ''' prints keywords'''
     print('KEYWORDS:')
-    for w in nice_keys(self.keywords) :
+    for w in take(self.params.top_keys,nice_keys(self.keywords)) :
       print(w)
     print('')
 
 
   def save_summary(self,out_file):
     with open(out_file,'w') as g:
-      for _, _, ws in self.summary:
+      for _, _, ws in take(self.params.top_sum, self.summary):
         print(nice(ws),file=g)
 
   def save_keywords(self,out_file):
     with open(out_file,'w') as g:
-      for w in nice_keys(self.keywords) :
+      for w in take(self.params.top_keys,nice_keys(self.keywords)) :
         print(w,file=g)
 
   def show_rels(self):

@@ -179,6 +179,7 @@ examples/*.gv.pdf
 examples/*_cloud.pdf
 examples/*.pro
 
+bert/
 
 pdfs/*.pro
 pdfs/*.gv

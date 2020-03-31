@@ -159,7 +159,6 @@ def tgo()  :
     df=qf.replace("_quest.txt","")
     reason_with(df,query=True)
 
-
 if __name__== "__main__" :
   #nlp_test()
   #go()
