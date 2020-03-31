@@ -347,15 +347,28 @@ def answer_quest(q,talker) :
   best.sort(reverse=True)
 
   answers = []
-  #ppp(max_answers)
   for i, b in enumerate(best):
     if i >= max_answers: break
     #ppp(i,b)
     rank, id, shared, sent = b
     answers.append((id, sent, round(rank, 4), shared))
   if not talker.params.answers_by_rank: answers.sort()
+  #ppp('#####',answers)
+  if talker.params.with_refiner:
+    wss =  [ws for (_,ws,_,_) in answers]
+    wss=refine_wss(wss)
+    answers=[(0,ws,0,set()) for ws in wss]
+
   return answers, answerer
 
+def refine_wss(wss):
+    sents = []
+    for ws in wss:
+      sents.append(nice(ws))
+    input = " ".join(sents)
+    output = refine(input)  # <====== calling refiner
+    xss = list(to_sents(output))
+    return xss
 
 def sigmoid(x): return 1 / (1 + math.exp(-x))
 
@@ -610,17 +623,11 @@ class Talker :
 
     if self.params.with_refiner:
       sents = []
-      for r, id, ws in summary:
-        sents.append(nice(ws))
-      input = " ".join(sents)
-      output = refine(input)
-      # ppp('!!!!',output)
-      wss = list(to_sents(output))
-      xss = []
-      for ws in wss:
-        xss.append((0, 0, ws))
-      ppp('!!!!!!', len(summary), len(xss))
+      wss=[ws for (_,_,ws) in summary]
+      wss=refine_wss(wss)
+      xss = [(0,0,ws) for ws in wss]
       summary = xss
+
     return summary,clean_words
 
     def distill(self,q) :

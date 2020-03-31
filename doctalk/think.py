@@ -39,10 +39,15 @@ class Thinker(Talker) :
     best=self.reason_about(answers,answerer)
 
     print('\nINFERRED ANSWERS:\n')
-    for x in take(self.params.top_sum,best):
-      if not self.params.with_refiner:
+    wss=[self.get_sentence(x[0]) for x in take(self.params.top_sum,best)]
+    if self.params.with_refiner:
+      wss=refine_wss(wss)
+      for ws in wss:
+        print(nice(ws),'\n')
+    else :
+      for x in take(self.params.top_sum,best):
         print(x[0],end=': ')
-      print(nice(self.get_sentence(x[0])), '\n')
+        print(nice(self.get_sentence(x[0])), '\n')
 
   def extract_rels(self,G,good_lemmas):
     depth = self.params.think_depth

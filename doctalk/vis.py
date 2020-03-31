@@ -14,12 +14,14 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
   nsize=g.number_of_nodes()
 
   if size < 3 :
-    ppp('GRAPH TOO SMALL TO SHOW:', file_name, 'nodes:',nsize,'edges:', size)
+    #ppp('GRAPH TOO SMALL TO SHOW:', file_name, 'nodes:',nsize,'edges:', size)
+    pass
     return
   elif size <300 :
-    ppp('SHOWING:',file_name, 'nodes:',nsize,'edges:', size)
+    #ppp('SHOWING:',file_name, 'nodes:',nsize,'edges:', size)
+    pass
   else:
-    ppp('TOO BIG TO SHOW:',file_name, 'nodes:',nsize,'edges:', size)
+    #ppp('TOO BIG TO SHOW:',file_name, 'nodes:',nsize,'edges:', size)
     return
   dot = DotGraph()
   for e in g.edges():
