@@ -41,7 +41,7 @@ class Thinker(Talker) :
     print('\nINFERRED ANSWERS:\n')
     wss=[self.get_sentence(x[0]) for x in take(self.params.top_sum,best)]
     if self.params.with_refiner:
-      wss=refine_wss(wss)
+      wss=refine_wss(wss,self)
       for ws in wss:
         print(nice(ws),'\n')
     else :

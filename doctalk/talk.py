@@ -356,18 +356,19 @@ def answer_quest(q,talker) :
 
   if talker.params.with_refiner:
     wss =  [ws for (_,ws,_,_) in answers]
-    wss=refine_wss(wss)
+    wss=refine_wss(wss,talker)
     answers=[(0,ws,0,set()) for ws in wss]
 
   return answers, answerer
 
-def refine_wss(wss):
+def refine_wss(wss,talker):
     sents = []
     for ws in wss:
       sents.append(nice(ws))
     if not wss: return wss
     input = " ".join(sents)
-    output = refine(input)  # <====== calling refiner
+    how=talker.params.with_refiner
+    output = refine(input,how)  # <====== calling refiner
     xss = list(to_sents(output))
     return xss
 
@@ -625,7 +626,7 @@ class Talker :
     if self.params.with_refiner:
       sents = []
       wss=[ws for (_,_,ws) in summary]
-      wss=refine_wss(wss)
+      wss=refine_wss(wss,self)
       xss = [(0,0,ws) for ws in wss]
       summary = xss
 

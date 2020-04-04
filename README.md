@@ -23,7 +23,7 @@ python3 -i tests.py
 >>> tgo()
 ```
   
-To run the system one will neet to start the Stanford Corenlp Server, listening on port 9000 with all annotators in params.py started, i.e., with something like:
+To run the system one will need to start the Stanford Corenlp Server, listening on port 9000 with all annotators in params.py started, i.e., with something like:
 
 ```
 java -mx16g -cp "stanford-corenlp-full-2018-10-05/*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer 

@@ -17,7 +17,12 @@ class talk_params:
     self.prioritize_compounds = 64
     self.use_line_graph = False # spreads using line_graph
 
-    self.with_refiner = True # <==================
+    # 0 : no refiner, just doctalk
+    # 1 : abstractive BERT summarizer, with sumbert postprocessing
+    # 2 : extractive BERT summarizer postprocessing
+    # 3 : all of the above, concatenated
+
+    self.with_refiner = 0 # <==================
 
     # summary, and keyphrase set sizes
 
