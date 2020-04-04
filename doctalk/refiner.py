@@ -1,15 +1,14 @@
 extractor = None
 
-def refine(text) :
+def refine(doctalk_summary) :
   global extractor
   from summarizer import Summarizer
   from sumbert import summarize
   if not extractor : extractor=Summarizer()
-  summary=extractor(text)
-  absum=summarize(text)
-  return summary+"\nIN OTHER WORDS, \n"+absum
+  extractive_bert=extractor(doctalk_summary)
+  abstracive_bert=summarize(doctalk_summary)
+  d="DOCTALK: "+doctalk_summary
+  e="BERT:EXTRACTIVE: "+extractive_bert
+  a="BERT:ABSTRACTIVE: "+abstracive_bert
+  return "\n".join([d,e,a,"\n"])
 
-def refine1(text) :
-  from sumbert import summarize
-  absum=summarize(text)
-  return absum
