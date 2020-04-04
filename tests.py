@@ -140,8 +140,32 @@ def t5():
   fname = 'examples/heaven'
   run_with(fname, query=True)
 
+def t6():
+  fname = 'examples/einstein'
+  run_with(fname, query=True)
+
+def t7():
+  fname = 'examples/geo'
+  run_with(fname, query=True)
+
+def t8():
+  fname = 'examples/hindenburg'
+  run_with(fname, query=True)
+
+def t9():
+  fname = 'examples/kafka'
+  run_with(fname, query=True)
+
+def t10():
+  fname = 'examples/test'
+  run_with(fname, query=True)
+
+def t11():
+  fname = 'examples/texas'
+  run_with(fname, query=True)
+
 def t12():
-  fname='examples/red'  #################
+  fname='examples/wasteland'  #################
   reason_with(fname,query=True)
 
 def t13():
@@ -172,7 +196,7 @@ if __name__== "__main__" :
   #t12()
   #tftest()
   #otest()
-  t14()
+  t1()
   pass
 
 

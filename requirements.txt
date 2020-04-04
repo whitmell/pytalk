@@ -5,3 +5,4 @@ matplotlib
 natlog
 stanfordnlp
 bert-extractive-summarizer
+sumbert

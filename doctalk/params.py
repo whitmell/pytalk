@@ -17,7 +17,7 @@ class talk_params:
     self.prioritize_compounds = 64
     self.use_line_graph = False # spreads using line_graph
 
-    self.with_refiner = False # <==================
+    self.with_refiner = True # <==================
 
     # summary, and keyphrase set sizes
 
