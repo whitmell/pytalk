@@ -120,49 +120,49 @@ def tftest():
 
 def t1() :
     fname = 'examples/bfr'
-    run_with(fname, query=True)
+    reason_with(fname, query=True)
 
 
 def t2():
   fname = 'examples/hindenburg'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 
 def t3():
   fname = 'examples/const'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t4():
   fname = 'examples/logrank'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t5():
   fname = 'examples/heaven'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t6():
   fname = 'examples/einstein'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t7():
   fname = 'examples/geo'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t8():
   fname = 'examples/hindenburg'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t9():
   fname = 'examples/kafka'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t10():
   fname = 'examples/test'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t11():
   fname = 'examples/texas'
-  run_with(fname, query=True)
+  reason_with(fname, query=True)
 
 def t12():
   fname='examples/wasteland'  #################

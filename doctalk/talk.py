@@ -361,7 +361,6 @@ def answer_quest(q,talker) :
     wss =  [ws for (_,ws,_,_) in answers]
     wss=refine_wss(wss,talker)
     answers=[(0,ws,0,set()) for ws in wss]
-
   return answers, answerer
 
 def refine_wss(wss,talker):
@@ -443,7 +442,9 @@ def interact(q,talker):
 def show_answers(talker,answers) :
   ''' prints out/says answers'''
   print('ANSWERS:\n')
-  for info, sent, rank, shared in take(talker.params.top_answers,answers):
+  if not talker.params.with_refiner :
+    answers=take(talker.params.top_answers,answers)
+  for info, sent, rank, shared in answers:
     if not talker.params.with_refiner :
        print(info,end=': ')
     talker.say(nice(sent))
