@@ -241,6 +241,9 @@ def rank_sort(pr) :
   ''' sort dict by ranks associatied to its keys'''
   by_rank=[(x,r) for (x,r) in pr.items()]
   by_rank.sort(key=lambda x : x[1],reverse=True)
+  #for x in take(100, by_rank):
+    #if not isinstance(x, int):
+      #ppp('BY RANK', x)
   return by_rank
 
 def ners_from(d):
@@ -478,6 +481,12 @@ class Talker :
     self.summary, self.keywords = \
       self.extract_content(self.params.max_sum, self.params.max_keys)
 
+  def get_summary(self):
+    yield from take(self.params.top_sum,self.summary)
+
+  def get_keys(self):
+    yield from take(self.params.top_keys,nice_keys(self.keywords))
+
 
   def answer_quest(self,q):
     '''answers question q'''
@@ -584,10 +593,13 @@ class Talker :
       else:
         return None
 
-    sents,words=list(),set()
+    sents,words=list(),list()
     npr=self.adjust_sent_ranks(self.pr)
+    # ordering all by rank here
     by_rank=rank_sort(npr)
+    self.by_rank = by_rank
 
+    # collect best by rank, but adjusting some
     for i  in range(len(by_rank)):
       x,r=by_rank[i]
       if sk and isinstance(x,int) :
@@ -597,18 +609,26 @@ class Talker :
         sk-=1
         sents.append((r,x,ws))
       elif wk and good_word(x) :
+        #ppp('PWS', x)
         x=nice_word(x,lift=True)
         if x:
           wk -= 1
-          words.add(x)
+          #ppp('LWS', x)
+          words.append(x)
       elif wk and isinstance(x,tuple) :
           xs=tuple(map(nice_word,x))
           if all(xs) :
             wk -= 1
-            words.add(xs)
+
+            #ppp('TWS',xs)
+            words.append(xs)
+
+    # ordering sentences by id, not rank here
     sents.sort(key=lambda x: x[1])
-    summary=[(r,x,ws) for (r,x,ws) in sents]
-    self.by_rank=by_rank # to be used when needed
+    #for sss in sents : ppp(sss)
+    summary=sents
+
+    #for www in words : ppp('KWDS',www)
 
     # remove word if in a tuple that is also selected
     for xs in words.copy() :
@@ -616,12 +636,14 @@ class Talker :
         for w in xs:
           if w in words:
             words.remove(w)
-    clean_words=set()
+    clean_words=list()
     for xs in words :
       if isinstance(xs,tuple) :
-        clean_words.add(tuple(map(maybe_cap,xs)))
+        clean_words.append(tuple(map(maybe_cap,xs)))
       else :
-        clean_words.add(maybe_cap(xs))
+        clean_words.append(maybe_cap(xs))
+
+    #for www in clean_words : ppp('CWDS',www)
 
     if self.params.with_refiner:
       sents = []
@@ -800,7 +822,7 @@ class Talker :
   def show_summary(self):
     ''' prints/says summary'''
     self.say('SUMMARY:')
-    for r,x,ws in take(self.params.top_sum,self.summary):
+    for r,x,ws in self.get_summary() :
       if not self.params.with_refiner :
         print(x,end=': ')
       self.say(nice(ws))
@@ -809,19 +831,19 @@ class Talker :
   def show_keywords(self):
     ''' prints keywords'''
     print('KEYWORDS:')
-    for w in take(self.params.top_keys,nice_keys(self.keywords)) :
+    for w in self.get_keys():
       print(w)
     print('')
 
 
   def save_summary(self,out_file):
     with open(out_file,'w') as g:
-      for _, _, ws in take(self.params.top_sum, self.summary):
+      for _, _, ws in self.get_summary():
         print(nice(ws),file=g)
 
   def save_keywords(self,out_file):
     with open(out_file,'w') as g:
-      for w in take(self.params.top_keys,nice_keys(self.keywords)) :
+      for w in self.get_keys() :
         print(w,file=g)
 
   def show_rels(self):
