@@ -24,7 +24,7 @@ class talk_params:
     # 2 : extractive BERT summarizer postprocessing
     # 3 : all of the above, concatenated
 
-    self.with_refiner = 3 # <==================
+    self.with_refiner = 0 # <==================
 
     # summary, and keyphrase set sizes
 

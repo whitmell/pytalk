@@ -14,12 +14,11 @@ def refine(doctalk_summary,how) :
       return extractive_bert
   if how in {BERT_ABS,ALL} :
     from sumbert import summarize
-    abstracive_bert=summarize(doctalk_summary)
+    abstractive_bert=summarize(doctalk_summary)
     if how == BERT_ABS:
-      return abstracive_bert
+      return abstractive_bert
   if how == ALL:
-    d="DOCTALK: "+doctalk_summary
     e="BERT:EXTRACTIVE: "+extractive_bert
-    a="BERT:ABSTRACTIVE: "+abstracive_bert
-    return "\n".join([d,e,a,"\n"])
+    a="BERT:ABSTRACTIVE: "+abstractive_bert+"."
+    return "\n".join([e,a,"\n"])
 

@@ -372,7 +372,8 @@ def refine_wss(wss,talker):
     how=talker.params.with_refiner
     output = refine(input,how)  # <====== calling refiner
     xss = list(to_sents(output))
-    return xss
+    wss=list(take(talker.params.top_answers,wss))
+    return [['DOCTALK:']]+wss+xss
 
 def sigmoid(x): return 1 / (1 + math.exp(-x))
 
