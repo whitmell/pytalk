@@ -5,6 +5,7 @@ import math
 import networkx as nx
 from nltk.corpus import words as wn_words
 import statistics as stat
+from collections import OrderedDict
 from pprint import pprint
 
 from .nlp import *
@@ -355,7 +356,6 @@ def answer_quest(q,talker) :
     #ppp(i,b)
     rank, id, shared, sent = b
     answers.append((id, sent, round(rank, 4), shared))
-  if not talker.params.answers_by_rank: answers.sort()
 
   if talker.params.with_refiner:
     wss =  [ws for (_,ws,_,_) in answers]
@@ -444,6 +444,8 @@ def show_answers(talker,answers) :
   print('ANSWERS:\n')
   if not talker.params.with_refiner :
     answers=take(talker.params.top_answers,answers)
+    if not talker.params.answers_by_rank:
+      answers=sorted(answers)
   for info, sent, rank, shared in answers:
     if not talker.params.with_refiner :
        print(info,end=': ')
@@ -588,13 +590,14 @@ class Talker :
               ]
           if xss:
             xss.sort(key=lambda v: v[1], reverse=True)
+            #ppp(xss)
             xs=xss[0][0]
             return xs
         return x
       else:
         return None
 
-    sents,words=list(),list()
+    sents,words=list(),OrderedDict()
     npr=self.adjust_sent_ranks(self.pr)
     # ordering all by rank here
     by_rank=rank_sort(npr)
@@ -611,18 +614,17 @@ class Talker :
         sents.append((r,x,ws))
       elif wk and good_word(x) :
         #ppp('PWS', x)
-        x=nice_word(x,lift=True)
+        x=nice_word(x,lift=self.params.prioritize_compounds>0)
         if x:
           wk -= 1
           #ppp('LWS', x)
-          words.append(x)
+          words[x]=wk
       elif wk and isinstance(x,tuple) :
-          xs=tuple(map(nice_word,x))
-          if all(xs) :
+          x=tuple(map(nice_word,x))
+          if all(x) :
             wk -= 1
 
-            #ppp('TWS',xs)
-            words.append(xs)
+            words[x]=wk
 
     # ordering sentences by id, not rank here
     sents.sort(key=lambda x: x[1])
@@ -636,13 +638,13 @@ class Talker :
       if isinstance(xs,tuple) :
         for w in xs:
           if w in words:
-            words.remove(w)
-    clean_words=list()
+            del words[w]
+    clean_words=OrderedDict()
     for xs in words :
       if isinstance(xs,tuple) :
-        clean_words.append(tuple(map(maybe_cap,xs)))
+        clean_words[tuple(map(maybe_cap,xs))]=True
       else :
-        clean_words.append(maybe_cap(xs))
+        clean_words[maybe_cap(xs)]=True
 
     #for www in clean_words : ppp('CWDS',www)
 
@@ -653,7 +655,7 @@ class Talker :
       xss = [(0,0,ws) for ws in wss]
       summary = xss
 
-    return summary,clean_words
+    return summary,list(clean_words)
 
     def distill(self,q) :
       '''
@@ -953,11 +955,9 @@ def good_tag(tag,starts="NVJA"):
 
 def distinct(g) :
   '''ensures repetititions are removed from a generator'''
-  seen=set()
-  for x in g :
-    if not x in seen :
-      seen.add(x)
-      yield x
+  yield from OrderedDict.fromkeys(g)
+
+def remdup(seq) : return list(OrderedDict.fromkeys(seq))
 
 def take(k,g) :
   ''' generates only the first k elements of a sequence'''

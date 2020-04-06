@@ -39,13 +39,20 @@ class Thinker(Talker) :
     best=self.reason_about(answers,answerer)
 
     print('\nINFERRED ANSWERS:\n')
-    wss=[self.get_sentence(x[0]) for x in take(self.params.top_sum,best)]
+
     if self.params.with_refiner:
+      wss = [self.get_sentence(x[0])
+             for x in take(self.params.max_answers, best)]
       wss=refine_wss(wss,self)
       for ws in wss:
         print(nice(ws),'\n')
     else :
-      for x in take(self.params.top_sum,best):
+      best=take(self.params.top_answers, best)
+
+      if not self.params.answers_by_rank:
+        best=sorted(best)
+
+      for x in best:
         print(x[0],end=': ')
         print(nice(self.get_sentence(x[0])), '\n')
 

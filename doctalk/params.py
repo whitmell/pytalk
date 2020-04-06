@@ -14,7 +14,9 @@ class talk_params:
     self.subject_centered = True
     self.all_to_sent = False
     self.use_to_def = True
-    self.prioritize_compounds = 64
+
+    self.prioritize_compounds = 42
+
     self.use_line_graph = False # spreads using line_graph
 
     # 0 : no refiner, just doctalk
@@ -34,14 +36,13 @@ class talk_params:
 
     # query answering related
     self.top_answers = 4
-    self.max_answers = max(24,self.top_answers*(self.top_answers-1)/2)
-
+    self.max_answers = max(16,self.top_answers*(self.top_answers-1)/2)
 
     self.cloud_size = 24
     self.subgraph_size = 32
 
     self.quiet = True
-    self.answers_by_rank = True
+    self.answers_by_rank = False
 
     self.pers = True
     self.expand_query = 2

@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 with open("README.md","r") as f:
     long_description = f.read()
 
-version = "0.2.3"
+version = "0.2.4"
 setup(name='doctalk',
   version=version,
   description='doctalk: Dialogue agent handling queries about a given text document',
