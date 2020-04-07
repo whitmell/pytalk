@@ -123,6 +123,10 @@ def t1() :
     reason_with(fname, query=True)
 
 
+def t0():
+  fname = 'examples/bfr'
+  run_with(fname, query=True)
+
 def t2():
   fname = 'examples/hindenburg'
   reason_with(fname, query=True)
@@ -196,7 +200,7 @@ if __name__== "__main__" :
   #t12()
   #tftest()
   #otest()
-  t1()
+  t0()
   pass
 
 

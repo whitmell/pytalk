@@ -10,7 +10,7 @@ from pprint import pprint
 
 from .nlp import *
 from .sim import *
-from .refiner import refine
+from .refiner import refine, ask_bert
 from .vis import pshow,gshow
 
 client = NLPclient()
@@ -658,13 +658,6 @@ class Talker :
 
     return summary,list(clean_words)
 
-    def distill(self,q) :
-      '''
-      superclasses can do here additional
-      processing of question q
-      '''
-      pass
-
   def to_svos(self):
     '''
     returns SVO relations as a dict associating to each
@@ -815,7 +808,14 @@ class Talker :
         f.write(f'svo{s,v,o,occs}.\n')
 
   def distill(self, q):
-    pass
+    from transformers import pipeline
+    answers, answerer = self.answer_quest(q)
+    ws=[" ".join(a[1]) for a in answers]
+    #ls = [len(a[1]) for a in answers]
+    txt=" ".join(ws)
+    r=ask_bert(txt,q)
+    print('\n==============>BERT ANSWER :',r+'\n')
+
 
   def say(self,what):
     ''' prints and ptionally says it, unless set to quiet'''

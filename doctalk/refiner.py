@@ -22,3 +22,16 @@ def refine(doctalk_summary,how) :
     a="BERT:ABSTRACTIVE: "+abstractive_bert+"."
     return "\n".join([e,a,"\n"])
 
+
+
+
+
+
+nlp=None
+def ask_bert(txt,q) :
+  global nlp
+  if not nlp :
+    from transformers import pipeline
+    nlp = pipeline("question-answering")
+  r = nlp(question=q, context=txt)
+  return r['answer']
