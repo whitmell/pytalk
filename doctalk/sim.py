@@ -4,8 +4,10 @@ from nltk.corpus import stopwords
 '''
 wordnet interface - mostly similarity relations
 '''
-stop_words=set(stopwords.words('english')).union({'|(){}[]%'})
 
+stop_words=set(stopwords.words('english')).union(set('|(){}[]%'))
+
+#print(stop_words)
 # basic wordnet relations
   
 def wn_hyper(k,w,t) : return wn_rel(hypers, 2, k, w, t)

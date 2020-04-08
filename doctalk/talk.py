@@ -6,7 +6,8 @@ import networkx as nx
 from nltk.corpus import words as wn_words
 import statistics as stat
 from collections import OrderedDict
-from pprint import pprint
+#from pprint import pprint
+import json
 
 from .nlp import *
 from .sim import *
@@ -15,7 +16,22 @@ from .vis import pshow,gshow
 
 client = NLPclient()
 
-words = set(wn_words.words())
+def my_path() :
+  if __name__=='__main__' :
+    return "./"
+  else :
+    return __file__
+
+def load_freqs() :
+  fname=my_path().replace('talk.py','lemmas.json')
+  with open(fname,'r') as f: return json.load(f)
+
+wnet_words = set(wn_words.words())
+#ppp(len(wnet_words))
+freqs = load_freqs()
+
+#ppp(len(list(freqs)))
+
 
 def run_with(fname,query=True) :
   '''
@@ -384,7 +400,7 @@ def answer_rank(id,shared,sent,talker,expanded=0) :
   if not lshared : return 0
 
   sent_count=len(talker.db[0])
-  word_count=len(talker.db[1])
+  #word_count=len(talker.db[1])
 
   lsent = len(sent)
   lavg=talker.avg_len
@@ -911,7 +927,7 @@ def nice_keys(keywords):
         yield w
 
 def is_clean_sent(ls) :
-  goods=[w for w in ls if w.isalpha() and w in words]
+  goods=[w for w in ls if w.isalpha() and w in wnet_words]
   return len(goods)>0.8*len(ls)
 
 def nice(ws) :

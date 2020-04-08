@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 with open("README.md","r") as f:
     long_description = f.read()
 
-version = "0.2.4"
+version = "0.2.5"
 setup(name='doctalk',
   version=version,
   description='doctalk: Dialogue agent handling queries about a given text document',
@@ -19,7 +19,7 @@ setup(name='doctalk',
   author_USER_EMAIL='<paul.tarau@gmail.com>',
   license='Apache',
   packages=['doctalk'],
-  package_data={'doctalk': ['*.txt']},
+  package_data={'doctalk': ['*json','*.txt']},
   include_package_data=True,
   install_requires = required,
   zip_safe=False

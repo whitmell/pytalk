@@ -187,6 +187,24 @@ def tgo()  :
     df=qf.replace("_quest.txt","")
     reason_with(df,query=True)
 
+import json
+def crunch() :
+  with open('doctalk/in.txt','r') as f:
+    with  open('doctalk/lemmas.json','w') as g :
+      d=dict()
+      for l in f.readlines() :
+        ws = l.split()
+        if len(ws) == 3 :
+          _,fr,w=ws
+          if len(w)>1 and  w.replace('-','x').isalpha():
+            d[w]=float(fr)
+              #print(ws[2],ws[1],file=g)
+          else:
+            print(ws)
+        else:
+          print(ws)
+      json.dump(d,g)
+
 if __name__== "__main__" :
   #nlp_test()
   #go()
@@ -200,7 +218,10 @@ if __name__== "__main__" :
   #t12()
   #tftest()
   #otest()
-  t0()
+  #t0()
+  #crunch()
   pass
+
+
 
 
