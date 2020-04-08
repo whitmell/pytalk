@@ -106,14 +106,6 @@ def ttest2() :
     #'What are the flying pigs fighting lame ducks?'
   )
 
-def think_test(F,Q) :
-  T = Thinker(from_file=F)
-  T.show_all()
-  print('SVO_NODES', T.svo_graph.number_of_nodes())
-  print('SVO_EDGES', T.svo_graph.number_of_edges())
-  print()
-  T.distill(Q)
-
 def tftest():
   fname='examples/hindenburg'  #################
   reason_with(fname,query=True)
@@ -218,7 +210,7 @@ if __name__== "__main__" :
   #t12()
   #tftest()
   #otest()
-  #t0()
+  t0()
   #crunch()
   pass
 

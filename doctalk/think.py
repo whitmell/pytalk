@@ -31,11 +31,11 @@ class Thinker(Talker) :
     self.no_rels=() #'kind_of',) #('object_in', 'verb_in','kind_of')
 
 
-  def distill(self,q):
+  def distill(self,q,answers,answerer):
     ''' handler for question q asked from this Thinker'''
-    #ppp('QUESTION:',q,'\n')
-    answers,answerer=self.answer_quest(q)
-    #show_answers(self,answers)
+
+    self.get_gist(q, answers)
+
     best=self.reason_about(answers,answerer)
 
     print('\nINFERRED ANSWERS:\n')
@@ -52,9 +52,15 @@ class Thinker(Talker) :
       if not self.params.answers_by_rank:
         best=sorted(best)
 
+      inf_answers=[(x[0],self.get_sentence(x[0]),x[1]) for x in best]
+
       for x in best:
         print(x[0],end=': ')
         print(nice(self.get_sentence(x[0])), '\n')
+
+
+      #ppp('!!!',inf_answers)
+      self.get_gist(q,inf_answers)
 
   def extract_rels(self,G,good_lemmas):
     depth = self.params.think_depth

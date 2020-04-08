@@ -452,9 +452,9 @@ def interact(q,talker):
   talker.say(q)
   print('')
   ### answer is computed here ###
-  answers,_=answer_quest(q, talker)
+  answers,answerer=answer_quest(q, talker)
   show_answers(talker,answers)
-  talker.distill(q)
+  talker.distill(q,answers,answerer)
 
 def show_answers(talker,answers) :
   ''' prints out/says answers'''
@@ -823,14 +823,18 @@ class Talker :
         occs=sorted(occs)
         f.write(f'svo{s,v,o,occs}.\n')
 
-  def distill(self, q):
+  def get_gist(self, q,answers):
     from transformers import pipeline
-    answers, answerer = self.answer_quest(q)
     ws=[" ".join(a[1]) for a in answers]
     #ls = [len(a[1]) for a in answers]
     txt=" ".join(ws)
     r=ask_bert(txt,q)
+
     print('\n==============>BERT ANSWER :',r+'\n')
+
+
+  def distill(self,q,answers,answerer):
+    self.get_gist(q,answers)
 
 
   def say(self,what):
