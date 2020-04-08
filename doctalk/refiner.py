@@ -34,4 +34,4 @@ def ask_bert(txt,q) :
     from transformers import pipeline
     nlp = pipeline("question-answering")
   r = nlp(question=q, context=txt)
-  return r['answer']
+  return r['answer']+', with confidence ='+str(round(r['score'],3))
