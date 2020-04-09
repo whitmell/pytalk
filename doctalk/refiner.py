@@ -23,15 +23,20 @@ def refine(doctalk_summary,how) :
     return "\n".join([e,a,"\n"])
 
 
-
-
-
-
 nlp=None
 def ask_bert(txt,q) :
   global nlp
+  import os
+  import sys
+  out = sys.stdout
+  err =  sys.stderr
+  null = open(os.devnull, 'w')
+  sys.stdout = null
+  sys.stderr = null
   if not nlp :
     from transformers import pipeline
     nlp = pipeline("question-answering")
   r = nlp(question=q, context=txt)
+  sys.stdout = out
+  sys.stderr = err
   return r['answer']+', with confidence ='+str(round(r['score'],3))

@@ -389,7 +389,9 @@ def refine_wss(wss,talker):
     output = refine(input,how)  # <====== calling refiner
     xss = list(to_sents(output))
     wss=list(take(talker.params.top_answers,wss))
-    return [['DOCTALK:']]+wss+xss
+    return [['DOCTALK:']]+wss+\
+           [['BERT REFINING LARGER TEXT EXTRACTED BY DOCTALK:']]+\
+           xss
 
 def sigmoid(x): return 1 / (1 + math.exp(-x))
 
@@ -666,7 +668,7 @@ class Talker :
     #for www in clean_words : ppp('CWDS',www)
 
     if self.params.with_refiner:
-      sents = []
+      summary=sorted(summary,reverse=True,key=lambda x : x[0])
       wss=[ws for (_,_,ws) in summary]
       wss=refine_wss(wss,self)
       xss = [(0,0,ws) for ws in wss]
@@ -825,12 +827,14 @@ class Talker :
 
   def get_gist(self, q,answers):
     from transformers import pipeline
+    #ranks=[a[2] for a in answers]
+    #assert ranks==sorted(ranks,reverse=True)
     ws=[" ".join(a[1]) for a in answers]
     #ls = [len(a[1]) for a in answers]
     txt=" ".join(ws)
     r=ask_bert(txt,q)
 
-    print('\n==============>BERT ANSWER :',r+'\n')
+    print('\n==============>BERT SHORT ANSWER :',r+'\n')
 
 
   def distill(self,q,answers,answerer):
