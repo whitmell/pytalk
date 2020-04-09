@@ -34,9 +34,11 @@ class Thinker(Talker) :
   def distill(self,q,answers,answerer):
     ''' handler for question q asked from this Thinker'''
 
+    # apply BERT pipeline to italk.py answers
     self.get_gist(q, answers)
 
-    best=self.reason_about(answers,answerer)
+    best=list(self.reason_about(answers,answerer))
+    inf_answers = [(x[0], self.get_sentence(x[0]), x[1]) for x in best]
 
     print('\nINFERRED ANSWERS:\n')
 
@@ -52,15 +54,12 @@ class Thinker(Talker) :
       if not self.params.answers_by_rank:
         best=sorted(best)
 
-      inf_answers=[(x[0],self.get_sentence(x[0]),x[1]) for x in best]
-
       for x in best:
         print(x[0],end=': ')
         print(nice(self.get_sentence(x[0])), '\n')
 
-
-      #ppp('!!!',inf_answers)
-      self.get_gist(q,inf_answers)
+    # apply BERT pipeline to inferred answers
+    self.get_gist(q,inf_answers)
 
   def extract_rels(self,G,good_lemmas):
     depth = self.params.think_depth
