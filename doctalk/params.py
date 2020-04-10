@@ -2,7 +2,7 @@ from inspect import getframeinfo, stack
 
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
-trace=0
+trace=1
 
 class talk_params:
   def __init__(self):
@@ -15,6 +15,8 @@ class talk_params:
     self.all_to_sent = False
     self.use_to_def = True
 
+    self.pers_idf = True # <========
+
     self.prioritize_compounds = 42
 
     self.use_line_graph = False # spreads using line_graph
@@ -24,7 +26,8 @@ class talk_params:
     # 2 : extractive BERT summarizer postprocessing
     # 3 : all of the above, concatenated
 
-    self.with_refiner = 3 # <==================
+    self.with_refiner = 0 # <==================
+    self.with_bert_qa = 0
 
     # summary, and keyphrase set sizes
 
@@ -52,7 +55,7 @@ class talk_params:
 
     # visualization / verbosity control
 
-    self.show_pics = 1  # 1 : just generate files, 2: interactive
+    self.show_pics = 0  # 1 : just generate files, 2: interactive
     self.show_rels = 0
     self.to_prolog = 0
     

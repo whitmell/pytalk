@@ -779,7 +779,6 @@ class Talker :
 
   def to_graph(self, personalization=None):
     ''' builds document graph from several link types'''
-    db=self.db
     svos=self.svos
     g = nx.DiGraph()
     for e in self.to_edges():
@@ -793,8 +792,11 @@ class Talker :
         else:
           g.add_edge(o, s)
 
-      pr = nx.pagerank(g, personalization=personalization)
-      if self.params.use_line_graph and g.number_of_edges()<20000 :
+    if personalization == None and self.params.pers_idf :
+      personalization=self.pers_from_freq()
+
+    pr = nx.pagerank(g, personalization=personalization)
+    if self.params.use_line_graph and g.number_of_edges()<20000 :
         lg=nx.line_graph(g)
         lpr= nx.pagerank(lg)
         for xy,r in lpr.items() :
@@ -802,8 +804,24 @@ class Talker :
           if isinstance(x,str) and isinstance(y,str):
             pr[x]=pr[x]+r
             pr[y]=pr[y]+r
-
     return g, pr
+
+  def pers_from_freq(self):
+    d=dict()
+    _,l2occ=self.db
+    #ppp(l2occ)
+    for w,r in freqs.items() :
+      if w in l2occ and r>0:
+        #ppp(w,r)
+        #ppp(l2occ[w])
+        p=1/math.log(1+r)
+        d[w]=p
+        #ppp(w,p)
+    #ppp(len(d))
+    #ls=sorted(d,key=lambda x:d[x],reverse=True)
+    #for x in ls : ppp(x)
+    return d
+
 
   def to_prolog(self):
     ''' generates a Prolog representation of a document's content'''
@@ -826,15 +844,21 @@ class Talker :
         f.write(f'svo{s,v,o,occs}.\n')
 
   def get_gist(self, q,answers):
+    if not self.params.with_bert_qa : return
     from transformers import pipeline
     #ranks=[a[2] for a in answers]
     #assert ranks==sorted(ranks,reverse=True)
     ws=[" ".join(a[1]) for a in answers]
-    #ls = [len(a[1]) for a in answers]
+    lens=[len(a[1]) for a in answers]
+    token_count = sum(lens)
+
     txt=" ".join(ws)
     r=ask_bert(txt,q)
 
-    print('\n==============>BERT SHORT ANSWER :',r+'\n')
+    print('\n==============>BERT SHORT ANSWER:\n',
+          'sentences: ',len(lens),
+          #'sentence lengths:',lens,
+          'tokens:',token_count,':','\n',r+'\n')
 
 
   def distill(self,q,answers,answerer):

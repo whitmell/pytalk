@@ -210,7 +210,7 @@ if __name__== "__main__" :
   #t12()
   #tftest()
   #otest()
-  #t0()
+  t0()
   pass
 
 
