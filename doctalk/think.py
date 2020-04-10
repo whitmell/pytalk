@@ -101,7 +101,7 @@ class Thinker(Talker) :
 
     npr=self.adjust_sent_ranks(pr)
     best = take(self.params.max_answers,
-                [x for x in rank_sort(npr) if isinstance(x[0], int)])
+                (x for x in rank_sort(npr) if isinstance(x[0], int)))
 
     return best,ReachedG
 

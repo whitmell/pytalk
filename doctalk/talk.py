@@ -499,9 +499,10 @@ class Talker :
     self.svo_graph=None
 
     self.g,self.pr=self.to_graph()
-    #self.get_sum_and_words(sk,wk)
+
     self.summary, self.keywords = \
       self.extract_content(self.params.max_sum, self.params.max_keys)
+    assert self.by_rank != None
 
   def get_summary(self):
     yield from take(self.params.top_sum,self.summary)
@@ -554,7 +555,10 @@ class Talker :
       if isinstance(x, int):
         ws = self.db[0][x][SENT]
         r = normalize_sent(r, len(ws), self.avg_len)
+      else:
+        r = self.normalize_key(x,r)
       npr[x] = r
+
     return npr
 
   def get_sentence(self,i):
@@ -809,18 +813,33 @@ class Talker :
   def pers_from_freq(self):
     d=dict()
     _,l2occ=self.db
-    #ppp(l2occ)
     for w,r in freqs.items() :
       if w in l2occ and r>0:
-        #ppp(w,r)
-        #ppp(l2occ[w])
-        p=1/math.log(1+r)
+        p=(1+math.log(len(l2occ[w])))/math.log(1+r)
         d[w]=p
-        #ppp(w,p)
-    #ppp(len(d))
-    #ls=sorted(d,key=lambda x:d[x],reverse=True)
-    #for x in ls : ppp(x)
     return d
+
+  def novelty(self):
+    d = dict()
+    _, l2occ = self.db
+    for w, r in self.self.by_rank :
+      if w in l2occ and r > 0:
+        if w in freqs :
+          fr=freqs[w]
+          p = (1 + math.log(len(l2occ[w]))) / math.log(1 + fr)
+          d[w] = p
+    return d
+
+  def normalize_key(self,w,r):
+    if not self.params.use_freqs : return r
+    _, l2occ = self.db
+    if not w in freqs or not w in l2occ : return r
+    fr=freqs[w]
+    approx_tf_idf=(1+math.log(len(l2occ[w]))) / math.log(1 + fr)
+    p=(2*r*approx_tf_idf)/(r+approx_tf_idf)
+    #p=math.sqrt(p)
+    #p = r * approx_tf_idf
+    return p
 
 
   def to_prolog(self):
@@ -908,7 +927,7 @@ class Talker :
     show = self.params.show_pics
     g = self.to_svo_graph()
     seeds = take(self.params.subgraph_size,
-          [x for x, r in rank_sort(self.pr) if isinstance(x, str)])
+                 (x for x, r in self.by_rank if isinstance(x, str)))
     g = g.subgraph(seeds)
     self.show_svo_graph(g,file_name=self.from_file)
 

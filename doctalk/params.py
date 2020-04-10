@@ -15,9 +15,10 @@ class talk_params:
     self.all_to_sent = False
     self.use_to_def = True
 
-    self.pers_idf = True # <========
-
+    self.pers_idf = False # <========
+    self.use_freqs = False
     self.prioritize_compounds = 42
+
 
     self.use_line_graph = False # spreads using line_graph
 
