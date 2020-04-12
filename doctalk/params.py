@@ -22,43 +22,46 @@ class talk_params:
 
     self.use_line_graph = False # spreads using line_graph
 
-    # 0 : no refiner, just doctalk
+    # 0 : no refiner, just doctalk, but with_bert_qa might control shor snippets
     # 1 : abstractive BERT summarizer, with sumbert postprocessing
     # 2 : extractive BERT summarizer postprocessing
     # 3 : all of the above, concatenated
 
     self.with_refiner = 0 # <==================
-    self.with_bert_qa = 0
+    # controls short answer snippets via bert_qa pipeline
+    self.with_bert_qa = 0 # <==================
 
     # summary, and keyphrase set sizes
 
-    self.top_sum = 9
-    self.top_keys = 10
+    self.top_sum = 9 # default number of sentences in summary
+    self.top_keys = 10 # # default number of keyphrases
 
+    # maximum values generated when passing sentences to BERT
     self.max_sum = self.top_sum*(self.top_sum-1)/2
-    self.max_keys = 1+2*self.top_keys
+    self.max_keys = 1+2*self.top_keys # not used yet
 
     # query answering related
-    self.top_answers = 4
+    self.top_answers = 4 # max number of answers directly shown
+    # maximum answer sentences generated when passing them to BERT
     self.max_answers = max(16,self.top_answers*(self.top_answers-1)/2)
 
-    self.cloud_size = 24
-    self.subgraph_size = 32
+    self.cloud_size = 24 # word-cloud size
+    self.subgraph_size = 32 # subgraph nodes number upper limit
 
-    self.quiet = True
-    self.answers_by_rank = False
+    self.quiet = True # stops voice synthesis
+    self.answers_by_rank = False # returns answers by importance vs. natural order
 
-    self.pers = True
+    self.pers = True # enable personalization of PageRank for QA
     self.expand_query = 2
-    self.guess_wh_word_NERs=0
+    self.guess_wh_word_NERs=0 # try to treat wh-word queires as special
 
     self.think_depth=4
 
     # visualization / verbosity control
 
     self.show_pics = 0  # 1 : just generate files, 2: interactive
-    self.show_rels = 0
-    self.to_prolog = 0
+    self.show_rels = 0  # display relations inferreed from text
+    self.to_prolog = 0 # generates Prolog facts
     
 
 

@@ -17,7 +17,7 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
     #ppp('GRAPH TOO SMALL TO SHOW:', file_name, 'nodes:',nsize,'edges:', size)
     pass
     return
-  elif size <300 :
+  elif size <3000 :
     #ppp('SHOWING:',file_name, 'nodes:',nsize,'edges:', size)
     pass
   else:
@@ -30,6 +30,8 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
     else :
       w = g[f][t].get(attr)
       if not w : w=''
+    f= f.replace(':','.')
+    t = t.replace(':', '.')
     dot.edge(str(f), str(t), label=str(w))
   dot.render(file_name, view=show>1)
 

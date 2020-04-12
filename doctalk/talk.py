@@ -746,6 +746,34 @@ class Talker :
       g.add_edge(s,o,rel=v,occs=occs)
     return g
 
+
+  def to_dep_tree(self):
+    g=nx.DiGraph()
+    for f,r,t in self.dep_edge() :
+      g.add_edge(f,t,rel=r)
+      #print(f, r, t)
+    return g
+
+  def dep_edge(self):
+    sent_data, l2occ = self.db
+    for info in sent_data:
+      ws,ls,ts,_,deps,_=info
+      for dep in deps:
+        #print(dep)
+        f, r, t = dep
+        if t== -1 : #  and r=='ROOT' :
+          wt='SENT'
+          tt = 'TOP'
+        else :
+          wt = ls[t]
+          tt=ts[t]
+        tf=ts[f]
+        wf=ls[f]
+        #r=r.replace(':','*')
+        trt="_".join([tt,r,tf])
+        yield wt, trt, wf
+
+
   def to_edges_in(self,id,sd):
     '''yields edges from dependency structure of sentence id'''
     for dep in dep_from(id, sd):

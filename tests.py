@@ -59,11 +59,13 @@ def mtest() :
     print('')
 
 def otest() :
-  fname = 'examples/relativity.txt'
+  fname = 'examples/test.txt'
   t=Talker(from_file=fname)
   #rs=t.to_word_orbit('field')
-  rs = t.to_sent_orbit(333)
-  plot_rank_orbit(rs)
+  #rs = t.to_sent_orbit(333)
+  #plot_rank_orbit(rs)
+  g=t.to_dep_tree()
+  gshow(g,attr='rel',file_name='deptree.gv')
 
 def qtest() :
   fname='examples/geo'
@@ -210,7 +212,8 @@ if __name__== "__main__" :
   #t12()
   #tftest()
   #otest()
-  t0()
+  #t0()
+  otest()
   pass
 
 
