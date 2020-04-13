@@ -1,11 +1,12 @@
 from inspect import getframeinfo, stack
+import json
 
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
 trace=1
 
 class talk_params:
-  def __init__(self):
+  def __init__(self,from_dict=None,from_json=None):
     self.force = False
 
     # content extraction related
@@ -29,7 +30,7 @@ class talk_params:
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 0 # <==================
+    self.with_bert_qa = 1 # <==================
 
     # summary, and keyphrase set sizes
 
@@ -62,8 +63,19 @@ class talk_params:
     self.show_pics = 0  # 1 : just generate files, 2: interactive
     self.show_rels = 0  # display relations inferreed from text
     self.to_prolog = 0 # generates Prolog facts
-    
 
+    if from_json:
+      jd = json.loads(from_json)
+      self.digest_dict(jd)
+
+    if from_dict :
+      self.digest_dict(from_dict)
+
+  def digest_dict(self, pydict):
+    d = self.__dict__.copy()
+    for k, v in d.items():
+      if isinstance(k, str) and k in pydict:
+        self.__dict__[k] = pydict[k]
 
   def __repr__(self):
     return str(self.__dict__)
@@ -71,6 +83,7 @@ class talk_params:
   def show(self):
     for x,y in self.__dict__.items():
       print(x,'=',y)
+
 
 def ppp(*args) :
   if trace<0 : return

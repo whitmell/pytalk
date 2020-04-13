@@ -379,6 +379,7 @@ def answer_quest(q,talker) :
     answers=[(0,ws,0,set()) for ws in wss]
   return answers, answerer
 
+
 def refine_wss(wss,talker):
     sents = []
     for ws in wss:
@@ -480,7 +481,8 @@ class Talker :
   as well as query answering in the form of extracted sentences
   based on given file or text
   '''
-  def __init__(self,from_file=None,from_text=None,params=talk_params()):
+  def __init__(self,from_json=None,
+               from_file=None,from_text=None,params=talk_params()):
     '''creates data container from file or text document'''
     self.params=params
 
@@ -490,8 +492,13 @@ class Talker :
        self.from_file=from_file
     elif from_text :
        self.db=digest(from_text)
+    elif from_json :
+      xs=json.loads(from_json)
+      assert isinstance(xs,list) and len(xs)==1
+      text=xs[0]
+      self.db = digest(text)
     else :
-      assert from_file or from_text
+      assert from_file or from_text or from_json
 
     self.avg_len = get_avg_len(self.db)
 
@@ -510,6 +517,22 @@ class Talker :
   def get_keys(self):
     yield from take(self.params.top_keys,nice_keys(self.keywords))
 
+  def summary_sentences(self):
+    wss=[x[2] for x in self.get_summary()]
+    return json.dumps(wss)
+
+  def keyphrases(self):
+    ks=json.dumps(list(self.get_keys()))
+    return ks
+
+  def answer_question(self,quests):
+    if isinstance(quests, str):
+      qs = json.loads(quests)
+    else :
+      assert isinstance(quests,list)
+      qs=quests
+    answers = [a[1] for a,_ in self.answer_quest(qs)]
+    return json.dumps(answers)
 
   def answer_quest(self,q):
     '''answers question q'''

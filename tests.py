@@ -1,9 +1,11 @@
 import glob
 import os
+from doctalk.params import talk_params
 from doctalk.pypro import nrun
 from doctalk.talk import *
 from doctalk.think import *
 from doctalk.vis import *
+from doctalk.api import *
 
 import pprint
 
@@ -60,16 +62,26 @@ def mtest() :
 
 def otest() :
   fname = 'examples/test.txt'
-  t=Talker(from_file=fname)
   #rs=t.to_word_orbit('field')
   #rs = t.to_sent_orbit(333)
   #plot_rank_orbit(rs)
+  t = Talker(from_file=fname)
   g=t.to_dep_tree()
   gshow(g,attr='rel',file_name='deptree.gv')
 
 def qtest() :
-  fname='examples/geo'
-  run_with(fname,query=True,show=True)
+  d = {"quiet" : False}
+  fname = 'examples/test.txt'
+  t = Talker(from_file=fname,params=talk_params(from_dict=d))
+  t.show_all()
+
+def jtest() :
+  d = '{"quiet" : false}'
+  fname = 'examples/test.txt'
+  t = Talker(from_file=fname,params=talk_params(from_json=d))
+  t.show_all()
+
+'{"a": 1, "b": 2}'
 
 def do(qf) :
     df=qf.replace("_quest.txt","")
@@ -95,18 +107,6 @@ def ptest() :
 
 def chat_test() :
   chat_about('examples/bfr')
-
-def canned_test() :
-  chat_about('examples/bfr',["What rocket is SpaceX developing?"])
-
-def ttest1() :
-  think_test('examples/test.txt','What did Joe give to Mary?')
-
-def ttest2() :
-  think_test('examples/geo.txt',
-    'What are the source rocks in the Permian Basin ?'
-    #'What are the flying pigs fighting lame ducks?'
-  )
 
 def tftest():
   fname='examples/hindenburg'  #################
@@ -199,6 +199,34 @@ def crunch() :
           print(ws)
       json.dump(d,g)
 
+def api_test() :
+  '''
+  to be used on the server side to expose this as a web or Alexa service
+  '''
+  params=new_params(from_json='{"top_sum":3,"top_keys":6,"top_answers":3}')
+  jsonish='''["
+    The cat sits on the mat. 
+    The mat sits on the floor.
+    The floor sits on planet Earth.
+    The Earth does not sit.
+    The Earth just wanders.
+  "]
+  '''
+  from_json=jsonish.replace('\n',' ')
+
+  talker=new_talker(from_json=from_json,params=params)
+  wss=json.loads(talker.summary_sentences())
+  ks=json.loads(talker.keyphrases())
+
+  print('SUMMARY')
+  for ws in wss:
+    print(" ".join(ws))
+
+  print('KEYPHRASES')
+  for k in ks:
+    print(k)
+
+
 if __name__== "__main__" :
   #nlp_test()
   #go()
@@ -213,7 +241,8 @@ if __name__== "__main__" :
   #tftest()
   #otest()
   #t0()
-  otest()
+  #otest()
+  api_test()
   pass
 
 
