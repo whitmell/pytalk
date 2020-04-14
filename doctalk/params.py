@@ -3,7 +3,7 @@ import json
 
 annotators=['tokenize','ssplit','pos','lemma','depparse','ner']+\
            ['natlog','openie']
-trace=1
+trace=0
 
 class talk_params:
   def __init__(self,from_dict=None,from_json=None):
