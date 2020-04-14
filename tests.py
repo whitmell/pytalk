@@ -225,6 +225,14 @@ def api_test() :
   print('KEYPHRASES')
   for k in ks:
     print(k)
+  print('')
+  q='Where is the mat?'
+  print(q)
+  r=answer_question(talker,q)
+  wss=json.loads(r)
+
+  for ws in wss :
+    print(' '.join(ws))
 
 
 if __name__== "__main__" :

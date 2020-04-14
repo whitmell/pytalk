@@ -481,8 +481,7 @@ class Talker :
   as well as query answering in the form of extracted sentences
   based on given file or text
   '''
-  def __init__(self,from_json=None,
-               from_file=None,from_text=None,params=talk_params()):
+  def __init__(self,from_json=None,from_file=None,from_text=None,params=talk_params()):
     '''creates data container from file or text document'''
     self.params=params
 
@@ -525,13 +524,16 @@ class Talker :
     ks=json.dumps(list(self.get_keys()))
     return ks
 
-  def answer_question(self,quests):
-    if isinstance(quests, str):
-      qs = json.loads(quests)
+  def answer_question(self,quest,is_json=False):
+    assert isinstance(quest, str)
+    if is_json :
+      qs = json.loads(quest)
+      q=qs[0]
     else :
-      assert isinstance(quests,list)
-      qs=quests
-    answers = [a[1] for a,_ in self.answer_quest(qs)]
+      q =quest
+    xs,_=self.answer_quest(q)
+    rs=[a[1] for a in xs]
+    answers = list(take(self.params.top_answers,rs))
     return json.dumps(answers)
 
   def answer_quest(self,q):

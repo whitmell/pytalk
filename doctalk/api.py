@@ -10,17 +10,17 @@ def new_params(from_json=None) :
   '''
   return talk_params(from_json=from_json)
 
-def new_talker(from_json=None,params=None) :
-  return Talker(from_json=from_json,params=params)
+def new_talker(**kwargs) :
+  return Talker(**kwargs)
 
 def new_thinker(**kwargs) :
   return Thinker(**kwargs)
 
-def get_summary(talker) :
+def summary_sentences(talker) :
   return talker.summary_sentences()
 
-def get_keywords(talker) :
-  return talker.keywords()
+def keyphrases(talker) :
+  return talker.keyphrases()
 
 def answer_question(talker,quest) :
   return talker.answer_question(quest)
