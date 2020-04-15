@@ -931,7 +931,7 @@ class Talker :
         f.write(f'svo{s,v,o,occs}.\n')
 
   def get_gist(self, q,answers):
-    if not self.params.with_bert_qa : return
+    if self.params.with_bert_qa ==0 : return
     from transformers import pipeline
     #ranks=[a[2] for a in answers]
     #assert ranks==sorted(ranks,reverse=True)

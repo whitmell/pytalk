@@ -30,7 +30,7 @@ class talk_params:
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 0.001 # <==================
+    self.with_bert_qa = 0.000 # <==================
 
     # summary, and keyphrase set sizes
 
