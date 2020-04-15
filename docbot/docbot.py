@@ -35,7 +35,7 @@ def api_test() :
 class Bot :
   def __init__(self,textfile) :
     params=new_params(from_json=
-      '{"top_sum":4,"top_keys":7,"top_answers":3,"prioritize_compounds":10}')
+      '{"top_sum":4,"top_keys":7,"top_answers":3,"prioritize_compounds":10,"with_bert_qa":0.01}')
     self.talker=new_talker(from_file=textfile,params=params)
     wss=json.loads(self.talker.summary_sentences())
     ks=json.loads(self.talker.keyphrases())

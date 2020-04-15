@@ -47,7 +47,7 @@ class talk_params:
     self.max_answers = max(16,self.top_answers*(self.top_answers-1)/2)
 
     self.cloud_size = 24 # word-cloud size
-    self.subgraph_size = 32 # subgraph nodes number upper limit
+    self.subgraph_size = 42 # subgraph nodes number upper limit
 
     self.quiet = True # stops voice synthesis
     self.answers_by_rank = False # returns answers by importance vs. natural order

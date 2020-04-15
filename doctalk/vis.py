@@ -3,12 +3,12 @@ from graphviz import Digraph as DotGraph
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import networkx as nx
-
+import json
 
 def showGraph(dot, show=True, file_name='textgraph.gv'):
   dot.render(file_name, view=show)
 
-def gshow(g, attr=None, file_name='temp.gv', show=1):
+def gshow(g, attr=None, file_name='temp.gv', show=1,json_save=True):
 
   size=g.number_of_edges()
   nsize=g.number_of_nodes()
@@ -24,6 +24,7 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
     #ppp('TOO BIG TO SHOW:',file_name, 'nodes:',nsize,'edges:', size)
     return
   dot = DotGraph()
+  es=[]
   for e in g.edges():
     f, t = e
     if not attr : w= ''
@@ -34,7 +35,15 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
     if not isinstance(t,str) : continue
     f= f.replace(':','.')
     t = t.replace(':', '.')
-    dot.edge(str(f), str(t), label=str(w))
+    f=str(f)
+    t=str(t)
+    w=str(w)
+    dot.edge(f, t, label=w)
+    if json_save : es.append((f,t,w))
+  if json_save :
+    jfile=file_name+".json"
+    with open(jfile,'w') as jf :
+      json.dump(es,jf)
   dot.render(file_name, view=show>1)
 
 def pshow(t, file_name="temp",cloud_size=24,show=1):
