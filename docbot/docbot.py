@@ -17,8 +17,8 @@ def api_test() :
   from_json=jsonish.replace('\n',' ')
 
   talker=new_talker(from_json=from_json,params=params)
-  wss=json.loads(get_summary(talker))
-  ks=json.loads(get_keywords(talker))
+  wss=json.loads(summary_sentences(talker))
+  ks=json.loads(keyphrases(talker))
 
   print('SUMMARY')
   for ws in wss:
@@ -45,19 +45,19 @@ class Bot :
     
   def ask(self,question) :
     q=json.dumps(question)
-    
     a= answer_question(self.talker,q)
     wss= json.loads(a)
     sentences=[" ".join(ws) for ws in wss]    
     answer=" ".join(sentences)
-    return answer
+    return answer # a string
     
 def bot_test() :
     bot = Bot('examples/const.txt')
     print(bot.summary)
+    print('')
     print(bot.keyphrases)
+    print('')
     r=bot.ask('How can the President be removed from office?')
-    wss=json.loads(r)
-    for ws in wss :
-      print(' '.join(ws))
-      print('')
+    print(r)
+
+bot_test()

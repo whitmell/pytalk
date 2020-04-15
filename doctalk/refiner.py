@@ -24,7 +24,7 @@ def refine(doctalk_summary,how) :
 
 
 nlp=None
-def ask_bert(txt,q) :
+def ask_bert(txt,q,confid=0) :
   global nlp
   import os
   import sys
@@ -39,4 +39,10 @@ def ask_bert(txt,q) :
   r = nlp(question=q, context=txt)
   sys.stdout = out
   sys.stderr = err
-  return r['answer']+', with confidence ='+str(round(r['score'],3))
+  if r==None : return r
+  if confid == 0:
+    return r['answer']+', with confidence ='+str(round(r['score'],3))
+  elif r['score'] > confid :
+    return r['answer']
+  else:
+    return None

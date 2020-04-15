@@ -6,3 +6,5 @@ natlog
 stanfordnlp
 bert-extractive-summarizer
 sumbert
+Flask
+waitress

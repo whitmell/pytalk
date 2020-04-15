@@ -481,7 +481,12 @@ class Talker :
   as well as query answering in the form of extracted sentences
   based on given file or text
   '''
-  def __init__(self,from_json=None,from_file=None,from_text=None,params=talk_params()):
+  def __init__(self,
+               from_json=None,
+               from_file=None,
+               from_text=None,
+               params=talk_params()
+               ):
     '''creates data container from file or text document'''
     self.params=params
 
@@ -532,8 +537,18 @@ class Talker :
     else :
       q =quest
     xs,_=self.answer_quest(q)
-    rs=[a[1] for a in xs]
-    answers = list(take(self.params.top_answers,rs))
+    rss=[a[1] for a in xs]
+    b=None
+    if self.params.with_bert_qa > 0 :
+      wss=[' '.join(ws) for ws in rss]
+      ws = ' '.join(wss)
+      b=ask_bert(ws,q,confid=self.params.with_bert_qa)
+    answers = list(take(self.params.top_answers,rss))
+
+    if b :
+       b="Short answer : "+b+" !"
+       bs=b.split(' ')
+       answers=[bs]+answers
     return json.dumps(answers)
 
   def answer_quest(self,q):

@@ -30,6 +30,8 @@ def gshow(g, attr=None, file_name='temp.gv', show=1):
     else :
       w = g[f][t].get(attr)
       if not w : w=''
+    if not isinstance(f,str) : continue
+    if not isinstance(t,str) : continue
     f= f.replace(':','.')
     t = t.replace(':', '.')
     dot.edge(str(f), str(t), label=str(w))

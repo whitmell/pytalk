@@ -174,6 +174,10 @@ def t14():
   fname='examples/covid'
   reason_with(fname,query=True)
 
+def t15():
+  fname='examples/wolfram'
+  run_with(fname,query=True)
+
 def tgo()  :
   D=doc_dir
   files = sorted(glob.glob(D + "/*_quest.txt"))
@@ -250,7 +254,7 @@ if __name__== "__main__" :
   #otest()
   #t0()
   #otest()
-  api_test()
+  #api_test()
   pass
 
 

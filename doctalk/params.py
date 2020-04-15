@@ -30,7 +30,7 @@ class talk_params:
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 1 # <==================
+    self.with_bert_qa = 0.001 # <==================
 
     # summary, and keyphrase set sizes
 
@@ -60,7 +60,7 @@ class talk_params:
 
     # visualization / verbosity control
 
-    self.show_pics = 0  # 1 : just generate files, 2: interactive
+    self.show_pics = 1  # 1 : just generate files, 2: interactive
     self.show_rels = 0  # display relations inferreed from text
     self.to_prolog = 0 # generates Prolog facts
 
