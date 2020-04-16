@@ -22,17 +22,17 @@ def my_path() :
   else :
     return __file__
 
-def load_freqs() :
+def get_freqs() :
+  global lemma_freqs
+  if lemma_freqs : return lemma_freqs
   fname=my_path().replace('talk.py','lemmas.json')
-  with open(fname,'r') as f: return json.load(f)
+  with open(fname,'r') as f:
+    lemma_freqs=json.load(f)
+    return lemma_freqs
 
 wnet_words = set(wn_words.words())
-#ppp(len(wnet_words))
 
-freqs = load_freqs()
-
-#ppp(len(list(freqs)))
-
+lemma_freqs = None
 
 def run_with(fname,query=True) :
   '''
@@ -866,7 +866,7 @@ class Talker :
           g.add_edge(o, s)
 
     if personalization == None and self.params.pers_idf :
-      personalization=self.pers_from_freq()
+      personalization=self.pers_from_freq(get_freqs())
 
     pr = nx.pagerank(g, personalization=personalization)
     if self.params.use_line_graph and g.number_of_edges()<20000 :
@@ -879,7 +879,7 @@ class Talker :
             pr[y]=pr[y]+r
     return g, pr
 
-  def pers_from_freq(self):
+  def pers_from_freq(self,freqs):
     d=dict()
     _,l2occ=self.db
     for w,r in freqs.items() :
@@ -888,19 +888,9 @@ class Talker :
         d[w]=p
     return d
 
-  def novelty(self):
-    d = dict()
-    _, l2occ = self.db
-    for w, r in self.self.by_rank :
-      if w in l2occ and r > 0:
-        if w in freqs :
-          fr=freqs[w]
-          p = (1 + math.log(len(l2occ[w]))) / math.log(1 + fr)
-          d[w] = p
-    return d
-
   def normalize_key(self,w,r):
     if not self.params.use_freqs : return r
+    freqs=get_freqs()
     _, l2occ = self.db
     if not w in freqs or not w in l2occ : return r
     fr=freqs[w]

@@ -16,8 +16,9 @@ class talk_params:
     self.all_to_sent = False
     self.use_to_def = True
 
-    self.pers_idf = False # <========
+    self.pers_idf = True # <========
     self.use_freqs = False
+
     self.prioritize_compounds = 42
 
 
@@ -30,7 +31,7 @@ class talk_params:
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 0.000 # <==================
+    self.with_bert_qa = 0.001 # <==================
 
     # summary, and keyphrase set sizes
 
