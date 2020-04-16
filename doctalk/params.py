@@ -16,8 +16,8 @@ class talk_params:
     self.all_to_sent = False
     self.use_to_def = True
 
-    self.pers_idf = True # <========
-    self.use_freqs = False
+    self.pers_idf = False #  both reduce rouge scores
+    self.use_freqs = False # same
 
     self.prioritize_compounds = 42
 
