@@ -185,7 +185,6 @@ pdfs/*.pro
 pdfs/*.gv
 pdfs/*.gv.pdf
 
-*.json
 *.gv
 *.gv.pdf
 

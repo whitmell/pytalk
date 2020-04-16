@@ -28,6 +28,7 @@ def load_freqs() :
 
 wnet_words = set(wn_words.words())
 #ppp(len(wnet_words))
+
 freqs = load_freqs()
 
 #ppp(len(list(freqs)))
