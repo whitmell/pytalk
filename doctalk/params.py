@@ -63,7 +63,7 @@ class talk_params:
 
     # visualization / verbosity control
 
-    self.show_pics = 1  # 1 : just generate files, 2: interactive
+    self.show_pics = 0  # 1 : just generate files, 2: interactive
     self.show_rels = 0  # display relations inferreed from text
     self.to_prolog = 0 # generates Prolog facts
 
