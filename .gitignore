@@ -187,6 +187,8 @@ pdfs/*.gv.pdf
 
 *.gv
 *.gv.pdf
+*.gv.json
+
 
 
 

@@ -178,6 +178,10 @@ def t15():
   fname='examples/wolfram'
   run_with(fname,query=True)
 
+def t15a():
+  fname='examples/wolfram'
+  reason_with(fname,query=True)
+
 def tgo()  :
   D=doc_dir
   files = sorted(glob.glob(D + "/*_quest.txt"))

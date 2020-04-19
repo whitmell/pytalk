@@ -17,12 +17,20 @@ from .vis import pshow,gshow
 client = NLPclient()
 
 def my_path() :
+  '''
+  detects directory where package sources get installed
+  useful to load .json, .txt etc. resources from there
+  '''
   if __name__=='__main__' :
     return "./"
   else :
     return __file__
 
 def get_freqs() :
+  '''
+  loads .json file contining frequencies
+  for around 20k English words
+  '''
   global lemma_freqs
   if lemma_freqs : return lemma_freqs
   fname=my_path().replace('talk.py','lemmas.json')
@@ -30,8 +38,10 @@ def get_freqs() :
     lemma_freqs=json.load(f)
     return lemma_freqs
 
+# set of WordNet words
 wnet_words = set(wn_words.words())
 
+# global holder for lemma frequences, filled out on first use
 lemma_freqs = None
 
 def run_with(fname,query=True) :
@@ -65,7 +75,7 @@ def chat_about(fname,qs=None) :
 
 
 def tprint(*args) :
-  ''' custom print when trance on'''
+  ''' custom print when trace on'''
   if trace : print(*args)
 
 
@@ -135,9 +145,14 @@ def digest(text) :
     sent_data.append(d)
   return sent_data,l2occ
 
+# names of components of fileds in json array
+# collecting results of corenlp, for faster processing
 SENT,LEMMA,TAG,NER,DEP,IE=0,1,2,3,4,5
 
 def to_sents (text) :
+  '''
+  generator of sentences from text string
+  '''
   sent_data,_= digest(text)
   for x in sent_data :
     yield x[SENT]
@@ -298,7 +313,7 @@ def wn_from(l2occ) :
         yield (s, v, o)
 
 def v2rel(v) :
-  '''rewrites "be" lemma to is'''
+  '''rewrites "be" lemma to "i"s, for more natural reading of relations'''
   if v=='be' : return 'is'
   return v
 
@@ -382,6 +397,11 @@ def answer_quest(q,talker) :
 
 
 def refine_wss(wss,talker):
+    '''
+    refines a few dozen lists of lists of words (extractive summary or
+    set of answer senteces) with BERT, for a second opinion on
+    what the best shorter summary or answer would be
+    '''
     sents = []
     for ws in wss:
       sents.append(nice(ws))
@@ -480,7 +500,7 @@ class Talker :
   '''
   class aggregating summary, keyphrase, relation extraction
   as well as query answering in the form of extracted sentences
-  based on given file or text
+  based on given file or text or preprocessed json equivalent
   '''
   def __init__(self,
                from_json=None,
@@ -517,20 +537,38 @@ class Talker :
     assert self.by_rank != None
 
   def get_summary(self):
+    '''
+    function  extracting highest ranked sentences as summary
+    '''
     yield from take(self.params.top_sum,self.summary)
 
   def get_keys(self):
+    '''
+       function for extracting highest ranked keywords
+     '''
     yield from take(self.params.top_keys,nice_keys(self.keywords))
 
   def summary_sentences(self):
+    '''
+      API function  extracting highest ranked sentences as summary
+      encoded as a list of list of words in json form
+     '''
+
     wss=[x[2] for x in self.get_summary()]
     return json.dumps(wss)
 
   def keyphrases(self):
+    ''' API  function for extracting highest ranked keywords as
+        a json encoded list of words
+    '''
     ks=json.dumps(list(self.get_keys()))
     return ks
 
   def answer_question(self,quest,is_json=False):
+    '''
+    answers question given as a string,
+    returns answer possibly in jsno form
+    '''
     assert isinstance(quest, str)
     if is_json :
       qs = json.loads(quest)
@@ -580,6 +618,10 @@ class Talker :
     return self.db[1].get(lemma)
 
   def to_ids(self,nodes) :
+    '''
+    returns sentence ids for lemma nodes in the graph
+    by looking them up in the word-to-sentence occurrence map
+    '''
     ids=set()
     for w in nodes :
       occs=self.get_occs(w)
@@ -591,6 +633,10 @@ class Talker :
 
 
   def adjust_sent_ranks(self,pr):
+    '''
+    adjust sentence and jeyword ranks via heuristics
+    in normalize_sent and normalize_key
+    '''
     npr = dict()
     for x, r in pr.items():
       if isinstance(x, int):
@@ -634,6 +680,10 @@ class Talker :
         return x
 
     def nice_word(x,good_tags='N',lift=False) :
+      '''
+        heuristics for filtering and prioritizing
+        words and compound words
+      '''
       ws_ts=self.get_tagged(x)
       if not ws_ts : return None
       ws, tags = ws_ts
@@ -643,6 +693,7 @@ class Talker :
           ncount += 1
       if ncount > len(tags) / 2:
         ns=self.g.adj.get(x)
+        # lifts compounds to higher ranks if that makes sense
         if lift and ns and not isinstance(x,tuple):
           min_rank=self.pr[x] / self.params.prioritize_compounds
           xss=[(n,self.pr[n])
@@ -673,7 +724,7 @@ class Talker :
       if sk and isinstance(x,int) :
         ws=self.db[0][x][SENT]
         ls=self.db[0][x][LEMMA]
-        if not is_clean_sent(ls) : continue
+        if not is_clean_sent(ls,self.params.known_ratio) : continue
         sk-=1
         sents.append((r,x,ws))
       elif wk and good_word(x) :
@@ -695,8 +746,6 @@ class Talker :
     #for sss in sents : ppp(sss)
     summary=sents
 
-    #for www in words : ppp('KWDS',www)
-
     # remove word if in a tuple that is also selected
     for xs in words.copy() :
       if isinstance(xs,tuple) :
@@ -710,9 +759,8 @@ class Talker :
       else :
         clean_words[maybe_cap(xs)]=True
 
-    #for www in clean_words : ppp('CWDS',www)
-
     if self.params.with_refiner:
+      # mimics usual return types after refining with BERT
       summary=sorted(summary,reverse=True,key=lambda x : x[0])
       wss=[ws for (_,_,ws) in summary]
       wss=refine_wss(wss,self)
@@ -759,6 +807,10 @@ class Talker :
     return d
 
   def to_word_orbit(self,lemma):
+    '''
+    extracts orbit of given lemma through sentence space
+    as  (sentence,rank) pairs
+    '''
     _, l2occ = self.db
     occs=l2occ.get(lemma)
     if not occs : return None
@@ -766,6 +818,10 @@ class Talker :
     return sranks
 
   def to_sent_orbit(self,id):
+    '''
+    extracts orbit of given sentence
+    through lemma  space as (word,rank) pairs
+    '''
     def pr_of(x) :
       r=self.pr.get(x)
       if r : return r
@@ -789,6 +845,10 @@ class Talker :
 
 
   def to_dep_tree(self):
+    '''
+    extracts dependency graph (mostly a tree)
+    by fusing dependency trees of all sentences
+    '''
     g=nx.DiGraph()
     for f,r,t in self.dep_edge() :
       g.add_edge(f,t,rel=r)
@@ -796,6 +856,7 @@ class Talker :
     return g
 
   def dep_edge(self):
+    ''' dependency endge generator'''
     sent_data, l2occ = self.db
     for info in sent_data:
       ws,ls,ts,_,deps,_=info
@@ -851,7 +912,7 @@ class Talker :
                 yield occ[0],lemma
 
   def to_graph(self, personalization=None):
-    ''' builds document graph from several link types'''
+    ''' builds document graph from several link types '''
     svos=self.svos
     g = nx.DiGraph()
     for e in self.to_edges():
@@ -880,6 +941,7 @@ class Talker :
     return g, pr
 
   def pers_from_freq(self,freqs):
+    ''' returns personalization dictionary derived from word frequencies'''
     d=dict()
     _,l2occ=self.db
     for w,r in freqs.items() :
@@ -889,6 +951,7 @@ class Talker :
     return d
 
   def normalize_key(self,w,r):
+    ''' heuristics for normalizing keyphrase ranks'''
     if not self.params.use_freqs : return r
     freqs=get_freqs()
     _, l2occ = self.db
@@ -922,6 +985,9 @@ class Talker :
         f.write(f'svo{s,v,o,occs}.\n')
 
   def get_gist(self, q,answers):
+    ''' extract short answer from BERT
+        using query and a few dozen doctalk best answers
+    '''
     if self.params.with_bert_qa ==0 : return
     from transformers import pipeline
     #ranks=[a[2] for a in answers]
@@ -940,6 +1006,9 @@ class Talker :
 
 
   def distill(self,q,answers,answerer):
+    '''
+    overridable answer distillation opertation
+    '''
     self.get_gist(q,answers)
 
 
@@ -967,11 +1036,17 @@ class Talker :
 
 
   def save_summary(self,out_file):
+    '''
+    saves summary as plain text for ROUGE evaluation
+    '''
     with open(out_file,'w') as g:
       for _, _, ws in self.get_summary():
         print(nice(ws),file=g)
 
   def save_keywords(self,out_file):
+    '''
+      saves keyphrases one per line for ROUGE evaluation
+    '''
     with open(out_file,'w') as g:
       for w in self.get_keys() :
         print(w,file=g)
@@ -983,6 +1058,9 @@ class Talker :
        print(svoi)
 
   def show_svos(self):
+    '''
+    optionally shows highest ranked SVO relations as graph
+    '''
     show = self.params.show_pics
     g = self.to_svo_graph()
     seeds = take(self.params.subgraph_size,
@@ -1030,15 +1108,22 @@ class Talker :
 # helpers
 
 def nice_keys(keywords):
+    '''
+      joins coumpound keyphrases, if needed
+    '''
     for w in keywords:
       if isinstance(w,tuple) :
         yield " ".join(w)
       else :
         yield w
 
-def is_clean_sent(ls) :
+def is_clean_sent(ls,known_ratio) :
+  '''
+  heuristic on ensuring extracted sentences
+  contain mostly known English words
+  '''
   goods=[w for w in ls if w.isalpha() and w in wnet_words]
-  return len(goods)>0.8*len(ls)
+  return len(goods)>known_ratio*len(ls)
 
 def nice(ws) :
   ''' aggregates word lists into a nicer looking sentence'''
@@ -1084,7 +1169,11 @@ def distinct(g) :
   '''ensures repetititions are removed from a generator'''
   yield from OrderedDict.fromkeys(g)
 
-def remdup(seq) : return list(OrderedDict.fromkeys(seq))
+def remdup(seq) :
+  '''
+    removes duplicates in sequence in O(N) time
+  '''
+  return list(OrderedDict.fromkeys(seq))
 
 def take(k,g) :
   ''' generates only the first k elements of a sequence'''
@@ -1092,20 +1181,33 @@ def take(k,g) :
     if i>=k : break
     yield x
 
-# pdf to txt conversion with external tool - optional
+
 
 def pdf2txt(fname) :
+  '''
+    pdf to txt conversion with external tool - optional
+  '''
   subprocess.run(["pdftotext", fname])
 
-# extracts file name from path
+
 def path2fname(path) :
+  '''
+    extracts file name from path
+  '''
   return path.split('/')[-1]
 
-# trimms suffix
+
 def trimSuf(path) :
+  '''
+    trimms suffix of in path+file
+  '''
   return ''.join(path.split('.')[:-1])
 
 def justFname(path) :
+  '''
+     returns just the name of the file
+     no directory path, no suffix
+  '''
   return trimSuf(path2fname(path))
 
 

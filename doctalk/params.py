@@ -19,7 +19,7 @@ class talk_params:
     self.pers_idf = False #  both reduce rouge scores
     self.use_freqs = False # same
 
-    self.prioritize_compounds = 42
+    self.prioritize_compounds = 16
 
 
     self.use_line_graph = False # spreads using line_graph
@@ -31,7 +31,7 @@ class talk_params:
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 0.001 # <==================
+    self.with_bert_qa = 0.0001 # <================== should be higher - low just to debug
 
     # summary, and keyphrase set sizes
 
@@ -41,6 +41,8 @@ class talk_params:
     # maximum values generated when passing sentences to BERT
     self.max_sum = self.top_sum*(self.top_sum-1)/2
     self.max_keys = 1+2*self.top_keys # not used yet
+
+    self.known_ratio=0.8
 
     # query answering related
     self.top_answers = 4 # max number of answers directly shown
@@ -55,9 +57,9 @@ class talk_params:
 
     self.pers = True # enable personalization of PageRank for QA
     self.expand_query = 2
-    self.guess_wh_word_NERs=0 # try to treat wh-word queires as special
+    self.guess_wh_word_NERs=0 # try to treat wh-word qurieses as special
 
-    self.think_depth=4
+    self.think_depth=1 # depth of graph reach in thinker.py
 
     # visualization / verbosity control
 
