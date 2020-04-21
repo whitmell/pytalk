@@ -34,7 +34,7 @@ class NatTalker(Talker) :
        ids[id]=rank
        shareds.update(shared)
 
-    inferred=set()
+    inferred=dict()
     targets=set()
     for shared in shareds :
        for res in self.query_with_goal("tc_search "+shared+" Rel What Where?") :
@@ -42,73 +42,39 @@ class NatTalker(Talker) :
          id=where.val
          if id in ids:
             targets.add(what)
-            inferred.add(id)
-    for id in inferred :
-       ids[id]=ids[id]*2
+            inferred[id]=ids[id]
+            #ids[id]=ids[id]*2
 
-    yield rank_sort(ids),list(take(10,inferred)), shareds,targets
+    #sorted_ids=rank_sort(ids)
+    sorted_ids=sorted(ids.items())
+    inferred=rank_sort(inferred)
+    yield sorted_ids,sorted(inferred), shareds,targets
 
   def natrun(self, q):
      print('QUESTION:',q)
      for x in self.ask(q):
-        ids,inferred,shareds,targets=x
+        ids, inferred, shareds, targets = x
         print('')
-        print('SHARED:',shareds)
+        print('IDS',ids)
         print('')
-        print('MINED: ',targets)
+        print('INFS',inferred)
+        print('')
+        print('CONCEPTS IN ANSWERS:',shareds)
+        print('')
+        print('MINED CONCEPTS: ',targets)
         print('')
      print('ANSWERS:')
-     for i, r in take(5, ids):
+     top_ids=list(take(self.params.top_answers, ids))
+     for i, r in top_ids:
+       print(i, r, end=': ')
+       self.say(nice(self.get_sentence(i)))
+     print('')
+     print('NEW INFERRED ANSWERS:')
+     top_ids={i for i,_ in top_ids}
+     for k, ir in enumerate(inferred):
+       i,r=ir
+       if i in top_ids : continue
+       if k>self.params.top_answers : break
        print(i, r, end=': ')
        self.say(nice(self.get_sentence(i)))
      print('-----------------------\n')
-
-
-def nrun() :
-  natscript = '''
-  
-  rel 'is_like'.
-  rel 'as_in'.
-  rel 'kind_of'.
-  
-  tc_search A Rel B Res : rel Rel, tc A Rel B (s (s 0)) _ Res.
-  
-  tc A Rel C (s N1) N1 Res : ~ A Rel B Id, tc1 B Rel C N1 N2 Id Res.
-
-  tc1 B _Rel B N N Id Id.
-  tc1 B Rel C N1 N2 _Id Res : tc B Rel C N1 N2 Res.
-
-  similar A B Id:
-    ~ A R B Id,
-    ~ T R A Id1,
-    ~ T R B Id1.
-  '''
-
-  N=NatTalker(from_file='examples/geo.txt',
-              natscript=natscript)
-  with open('examples/geo_quest.txt','r') as f:
-    for q in f.readlines():
-      N.natrun(q)
-  #N.natrun("What deposits can be found in the Permian basin?")
-
-  '''
-  goals=[
-    #'similar deposit B Id?',
-    'tc_search permian Rel B Where ?'
-  ]
-  
-  for goal in goals:
-    print('GOAL:',goal)
-    print('')
-    ids=set()
-    for answer in N.natrun(goal):
-      print('ANSWER', answer)
-      continue
-      _,s,v,o,I=answer
-      ids.add(I.val)
-    return
-    for id in ids :
-      print(id,nice(N.get_sentence(id)))
-    print('')
-   '''
-

@@ -1,11 +1,11 @@
 import glob
 import os
 from doctalk.params import talk_params
-from doctalk.pypro import nrun
 from doctalk.talk import *
 from doctalk.think import *
 from doctalk.vis import *
 from doctalk.api import *
+from doctalk.pypro import NatTalker
 
 import pprint
 
@@ -102,8 +102,61 @@ def ftest() :
   run_with(fname,query=False)
 
 
+def nrun(fname):
+  docfile=fname+".txt"
+  questfile=fname+"_quest.txt"
+
+  natscript = '''
+
+  rel 'is_like'.
+  rel 'as_in'.
+  rel 'kind_of'.
+
+  tc_search A Rel B Res : rel Rel, tc A Rel B (s (s 0)) _ Res.
+
+  tc A Rel C (s N1) N1 Res : ~ A Rel B Id, tc1 B Rel C N1 N2 Id Res.
+
+  tc1 B _Rel B N N Id Id.
+  tc1 B Rel C N1 N2 _Id Res : tc B Rel C N1 N2 Res.
+
+  similar A B Id:
+    ~ A R B Id,
+    ~ T R A Id1,
+    ~ T R B Id1.
+  '''
+
+  N = NatTalker(from_file=docfile,
+                natscript=natscript)
+  with open(questfile, 'r') as f:
+    for q in f.readlines():
+      N.natrun(q)
+  # N.natrun("What deposits can be found in the Permian basin?")
+
+  '''
+  goals=[
+    #'similar deposit B Id?',
+    'tc_search permian Rel B Where ?'
+  ]
+
+  for goal in goals:
+    print('GOAL:',goal)
+    print('')
+    ids=set()
+    for answer in N.natrun(goal):
+      print('ANSWER', answer)
+      continue
+      _,s,v,o,I=answer
+      ids.add(I.val)
+    return
+    for id in ids :
+      print(id,nice(N.get_sentence(id)))
+    print('')
+   '''
+
+
+
 def ptest() :
-  nrun()
+  nrun('examples/wolfram')
 
 def chat_test() :
   chat_about('examples/bfr')

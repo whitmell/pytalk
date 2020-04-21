@@ -1,4 +1,5 @@
 networkx
+nltk
 graphviz
 wordcloud
 matplotlib
