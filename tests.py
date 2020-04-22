@@ -235,6 +235,26 @@ def t15a():
   fname='examples/wolfram'
   reason_with(fname,query=True)
 
+def t16():
+  fname='examples/toxi'
+  run_with(fname,query=True)
+
+def t16a():
+  fname='examples/toxi'
+  reason_with(fname,query=True)
+
+
+def t17():
+  fname = 'examples/peirce'
+  run_with(fname, query=True)
+
+
+def t17a():
+  fname = 'examples/peirce'
+  reason_with(fname, query=True)
+
+
+
 def tgo()  :
   D=doc_dir
   files = sorted(glob.glob(D + "/*_quest.txt"))
