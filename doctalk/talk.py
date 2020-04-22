@@ -1181,13 +1181,40 @@ def take(k,g) :
     if i>=k : break
     yield x
 
-
-
 def pdf2txt(fname) :
   '''
     pdf to txt conversion with external tool - optional
   '''
   subprocess.run(["pdftotext", fname])
+
+def file2string(fname):
+  with open(fname, 'r') as f:
+    return f.read()
+
+def string2file(text,fname) :
+  with open(fname,'w') as g:
+    g.write(text)
+
+def clean_text_file(fname) :
+  print('cleaning: '+fname)
+  from nltk.tokenize import sent_tokenize, word_tokenize
+  data = file2string(fname)
+  texts=sent_tokenize(data)
+  clean=[]
+  for text in texts :
+    ws=word_tokenize(text)
+    good=0
+    bad=0
+    if len(ws)>256 : continue
+    for w in ws :
+      if w.isalpha() and len(w)>1 :good+=1
+      else : bad+=1
+    if good/(1+bad+good) <0.75 : continue
+    if ws[-1] not in ".?!" : ws.append(".")
+    sent=" ".join(ws)
+    clean.append(sent)
+  new_data="\n".join(clean)
+  string2file(new_data,fname)
 
 
 def path2fname(path) :

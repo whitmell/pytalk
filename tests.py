@@ -270,6 +270,11 @@ def t18b():
   fname = 'examples/ec2'
   nrun(fname)
 
+def t19():
+  fname = 'examples/relativity'
+  run_with(fname, query=True)
+
+
 def tgo()  :
   D=doc_dir
   files = sorted(glob.glob(D + "/*_quest.txt"))
@@ -347,6 +352,7 @@ if __name__== "__main__" :
   #t0()
   #otest()
   #api_test()
+  #clean_text_file('examples/peirce.txt')
   pass
 
 

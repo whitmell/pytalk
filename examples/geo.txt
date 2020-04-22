@@ -1,566 +1,84 @@
-Permian Basin
-Wolfcamp Shale Play
-Geology review
-
-October 2018
-
-Independent Statistics & Analysis
-www.eia.gov
-
-U.S. Department of Energy
-Washington, DC 20585
-
-This report was prepared by the U.S. Energy Information Administration (EIA), the statistical and
-analytical agency within the U.S. Department of Energy. By law, EIA’s data, analyses, and forecasts are
-independent of approval by any other officer or employee of the United States Government. The views
-in this report therefore should not be construed as representing those of the U.S. Department of Energy
-or other federal agencies.
-
-U.S. Energy Information Administration | Permian Basin
-
-i
-
-October 2018
-
-Contents
-Introduction .................................................................................................................................................. 2
-Permian Basin ............................................................................................................................................... 2
-Regional tectonic setting and geologic framework ................................................................................. 2
-Regional Stratigraphy .............................................................................................................................. 4
-Paleogeography and depositional environment ..................................................................................... 6
-The Wolfcamp formation extent in the Permian Basin ................................................................................ 8
-Structure map of the Wolfcamp formation ............................................................................................. 8
-Thickness map of the Wolfcamp formation ............................................................................................ 9
-Regional stratigraphy and lithology of the Wolfcamp formation.......................................................... 10
-Total organic carbon content of the Wolfcamp formation ................................................................... 10
-Wolfcamp formation benches ............................................................................................................... 11
-Upper Wolfcamp (A and B benches) in the Delaware Basin and play boundaries ......................... 11
-Structure map of Wolfcamp A in the Delaware Basin .............................................................. 11
-Thickness map of Wolfcamp A in the Delaware Basin ............................................................. 12
-
-U.S. Energy Information Administration | Permian Basin
-
-1
-
-October 2018
-
-Introduction
-The U.S. Energy Information Administration (EIA) is adding and updating geologic information and maps
-of the major tight oil and shale gas plays for the continental United States. This document outlines
-updated information and maps for the Wolfcamp play of the Permian Basin. The geologic features
-characterized include contoured elevation of the top of formation (structure), contoured thickness
-(isopach), paleogeography elements, and tectonic structures (such as regional faults and folds), as well
-as play boundaries, well location, and initial wellhead production of wells producing from January 2005
-through September 2018.
-These geologic elements are documented and integrated into a series of maps. The Permian Basin maps
-consist of layers of geologic and production information that users can view either as separate thematic
-maps (such as Figure 1) or as interactive layers of the U.S. Energy Mapping System. Data sources include
-DrillingInfo Inc. (DI), a commercial oil and natural gas well database, the United States Geological Survey
-(USGS), Texas Bureau of Economic Geology, EIA reports, peer-reviewed research papers, and academic
-theses.
-Currently, EIA has access to well-level data, including more than 20,000 well logs from the Permian
-Basin, which are used for map construction. This report contains the Wolfcamp play section, including
-subsections on the Wolfcamp A maps in the Delaware Basin. EIA will add spatial layers for structure,
-thickness, and production maps as well as corresponding report sections describing major plays of the
-Permian Basin in the future as additional maps are created.
-
-Permian Basin
-The Permian Basin of West Texas and Southeast New Mexico has generated hydrocarbons for about 100
-years and supplied more than 33.4 billion barrels of oil and about 118 trillion cubic feet of natural gas as
-of September 2018. Implementing hydraulic fracturing, horizontal drilling, and completion technology
-advancements during the past decade has reversed the production drop in the Permian, and the basin
-has exceeded its previous peak in the early 1970s. In 2017, it accounted for 20% of the total U.S. crude
-oil production and about 9% of the total U.S. dry natural gas production. For 2016, EIA estimates
-remaining proven reserves in the Permian Basin to exceed 5 billion barrels of oil and 19.1 trillion cubic
-feet (Tcf) of natural gas, making it one of the largest hydrocarbon-producing basins in the United States
-and the world (EIA, 2017).
-
-Regional tectonic setting and geologic framework
-The Permian Basin is a complex sedimentary system located in the foreland of the Marathon–Ouachita
-orogenic belt. It covers an area of more than 75,000 square miles and extends across 52 counties in
-West Texas and Southeast New Mexico. The Permian Basin was developed in the open marine area
-known as the Tobosa Basin in the middle Carboniferous period approximately 325 million–320 million
-years ago (Galley, 1958). The ancestral Tobosa Basin was formed by an asymmetric structural flexure in
-the Precambrian basement at the southern margin of the North American plate in late Proterozoic time
-(Beamont, 1981; Jordan 1981). During consequent phases of basin development, sediments eroded
-
-U.S. Energy Information Administration | Permian Basin
-
-2
-
-October 2018
-from the surrounding highlands and were deposited in the basin (Brown et al., 1973; Dorobek et al.,
-1991).
-The Permian Basin is now an asymmetrical, northwest to southeast-trending sedimentary system
-bounded by the Marathon-Ouachita orogenic belt to the south, the Northwest shelf and Matador Arch
-to the north, the Diablo platform to the west, and the Eastern shelf to the east (Gardiner, 1990; Ewing,
-1991; Hills, 1985). The basin is comprised of several sub-basins and platforms: three main sub-divisions
-include the Delaware Basin, Central Basin Platform, and the Midland Basin (Figure 1).
-Figure 1. Major structural and tectonic features in the region of the Permian Basin
-
-Source: U.S. Energy Information Administration based on DrillingInfo Inc., U.S. Geological Survey.
-
-The tectonic history of the Midland and Delaware Basins is mostly affected by uplift of the Central Basin
-Platform and, to a less degree, by the thrusting of the Marathon-Ouachita orogenic belt. The main phase
-of the basin differentiation occurred during Pennsylvanian and Wolfcampian time because of the rapid
-subsidence in the Delaware and Midland Basins and the uplift of the Central Basin Platform, as shown by
-sudden changes in thickness and lithology of Pennsylvanian to Permian strata. In the fault zone
-surrounding the Central Basin Platform, Strawn carbonates unconformably overlie lower to middle
-Paleozoic strata. This alignment is a stratigraphic indicator that the fault zone along the Central Basin
-Platform perimeter was tectonically active during late Pennsylvanian time. Because of deferential
-movements of basement blocks, uplift of the Central Basin Platform created differential subsidence and
-variable basin geometry in the adjacent Delaware and Midland Basins. This stage of tectonic activity
-lasted until the end of the Wolfcampian time, when the fast deformation and subsidence in the sub-
-
-U.S. Energy Information Administration | Permian Basin
-
-3
-
-October 2018
-basins stopped. However, basin subsidence continued until the end of the Permian (Oriel et al., 1967;
-Robinson, K., 1988; Yang and Dorobek, 1995).
-The Delaware Basin is bounded to the north by the Northwestern shelf, to the south by the Marathon Ouachita fold belt, to the west by the Diablo Platform, and to the east by uplifted areas of the Central
-Basin Platform separating the Delaware and Midland Basins. An echelon pattern of high angle faults with
-a large vertical displacement are detected along the boundaries of the Central Basin Platform, which
-itself is an uplifted, fault-bounded structural high that is primarily carbonate in composition and is highly
-faulted.
-The Midland Basin is bounded to the east by the Eastern shelf through a series of north-south trending
-fault segments and to the north by the Northwest shelf. Southward, Midland Basin formations thin out
-into the Ozona Arch, an extension of Central Basin Platform, which separates the Delaware and Midland
-Basins (Figure 1).
-
-Regional Stratigraphy
-The age of sedimentary rocks underling the Permian system in West Texas to Southeast New Mexico
-ranges from Precambrian to Pennsylvanian. Typically, the oldest rocks immediately underlie Permian
-rocks in uplift areas such as the Central Basin Platform and the Ozona Arch. Pennsylvanian rocks are
-common across the Delaware and Midland Basins and on the Northwestern and Eastern shelves.
-Representative stratigraphic sections of all Paleozoic systems are present and reach a maximum
-combined thickness in excess of 29,000 feet in the Val Verde Basin and in the southern part of the
-Delaware Basin. The older Paleozoic systems (Cambrian through Devonian) are found in sedimentary
-rocks accumulated in the ancestral Tobosa Basin, an extensive stable marine depression. The Tobosa
-Basin extended through the entire present day Permian Basin region. Pennsylvanian and Wolfcampian
-times are characteristic of a period of transition, indicated by structural deformation, differential
-movements, increased clastic sedimentation, and development of contemporary tectonic elements. The
-Permian time is mostly characterized by a long period of sedimentation ending with cessation of tectonic
-activity (Oriel et al., 1967; Robinson, K., 1988).
-Regional stratigraphic relationships for upper Carboniferous to upper Permian strata in the Permian
-Basin are shown on a generalized stratigraphic schema (Figure 2) and three geologic cross sections
-(Figures 3–5). These cross sections indicate differences in basin geometry and the effects of differential
-uplift of the Central Basin Platform.
-Upper Pennsylvanian and Wolfcampian strata spread across the entire Permian Basin; the thickest
-accumulations, however, are located in the central and southern parts of the Delaware Basin. As shown
-on Cross Section A (Figure 3), this stratigraphic interval quickly thins out to the Central Basin Platform, in
-contrast with the more gradual thickness decrease toward the western part of the Delaware Basin and
-eastern part of the Midland Basin.
-Upper Carboniferous Pennsylvanian rocks that range in thickness from 0 feet to 3,000 feet generally
-occur in the depth between 5,000 feet and 15,000 feet. Pennsylvanian formations, including Atoka,
-Strawn, and Cisco, predominantly consist of limestone, shale, and minor quantities of sandstone and
-U.S. Energy Information Administration | Permian Basin
-
-4
-
-October 2018
-Figure 2. Generalized stratigraphic schema of upper Carboniferous through upper Permian intervals for the Permian Basin
-
-Delaware Basin
-
-Central Basin Platform
-
-Midland Basin
-
-Source: U.S. Energy Information Administration based on DrillingInfo Inc., U.S. Geological Survey.
-
-U.S. Energy Information Administration | Permian Basin
-
-1
-
-October 2018
-Figure 3. East to west geologic cross sections through the Permian Basin
-
-Delaware Basin
-
-| Central Basin Platform |
-
-Midland Basin
-
-Source: U.S. Energy Information Administration based on DrillingInfo Inc., U.S. Geological Survey.
-
-U.S. Energy Information Administration | Permian Basin
-
-2
-
-October 2018
-Figure 4. North to south geologic cross sections through the Delaware Basin
-
-Delaware Basin
-
-Source: U.S. Energy Information Administration based on DrillingInfo Inc., U.S. Geological Survey.
-
-U.S. Energy Information Administration | Permian Basin
-
-3
-
-October 2018
-Figure 5. North to south geologic cross sections through the Midland Basin
-Midland Basin
-
-C
-
-2000
-
-Depth (feet)
-
-2000
-
-0
-
-Depth (feet)
-
-C’
-
-0
-
--2000
-
--2000
-Clearfork
-
--4000
-
--4000
-
--6000
-
--6000
-
-Legend
-
-Gamma Ray Log
-0
--8000
-
-C
-
--8000
-
-0
-
-100
-
-200 Miles
-
-C’
-
-Source: U.S. Energy Information Administration based on DrillingInfo Inc., U.S. Geological Survey.
-
-U.S. Energy Information Administration | Permian Basin
-
-4
-
-200 API
-
-October 2018
-siltstone. An extensive development of reef facies accounts for a large percentage of the limestone
-deposits in shallow peripheral areas of the Delaware and Midland Basins (Dolton et al., 1979; Hills,
-1984).
-Permian rocks are extremely heterogeneous, generally grading upward from a clastic-carbonate
-sequence into an evaporate sequence. Guadalupe, Leonard, and Wolfcamp series consist of limestone
-interbedded with shale and a subjugated amount of sandstones (Oriel et al., 1967; Robinson, K., 1988).
-The cessation of tectonic activity and transition to stable marine basin fill-in stage influenced the
-depositional environment in Early Permian time. Clastic sediments were deposited in the Delaware and
-Midland Basins surrounded by peripheral reefs and carbonate shelves that graded shoreward into
-evaporitic lagoons.
-However, compared to the corresponding strata in the Delaware Basin, upper Cretaceous to upper
-Permian strata of the Midland Basin are overall thinner with no significant changes in thickness or
-lithology. Lithofacies within these stratigraphic units are also relatively uniform or alter gradually across
-the basin with some thickening adjacent to the boundary of the Central Basin Platform. Pennsylvanian
-to Wolfcampian strata in the peripheral areas of the Midland Basin consist mainly of carbonate facies
-that grade toward the basin into shale and fine-grained siliciclastic 1 facies. In the central part of the
-basin, thick Wolfcampian shales overlie shallow water carbonates of the Strawn limestone (Oriel et al.,
-1967; Robinson, K., 1988).
-
-Paleogeography and depositional environment
-Paleogeographic reconstructions of the Late Carboniferous (346 Ma 2), Middle Pennsylvanian (305 Ma),
-and Early Permian (280 Ma) exhibited at Figure 6 show present-day New Mexico, Oklahoma, and Texas as
-one open, marine area (Figure 6 c) that developed into a semi-enclosed epicontinental sea (Figure 6 b and
-a) (Brown et al.; Blakey, 2011).
-During much of Pennsylvanian time, the Permian Basin formed as a semi-enclosed depression; however,
-it was not until the Wolfcampian (Early Permian) that a carbonate shelf and margin developed around the
-edges of both the Delaware and Midland Basins. These accumulations of carbonates formed after the
-end of intense tectonic movement and widespread siliciclastic sedimentation, which began during the
-Early Pennsylvanian. By the early Leonardian, this ramp-type shelf was already developing a series of
-barriers along its seaward edge, becoming a more distinct rimmed margin. The development of this
-marginal rim influenced depositional environments on the shelf, creating the intrinsic lateral facial
-changes observed in the Leonardian and Guadalupian rocks behind the shelf edge. From the late
-Wolfcampian through Guadalupian (Late Permian), the Midland and Delaware Basins were principally
-sites of siliciclastic accumulation, whereas the platforms and shelves were sites of carbonate deposition
-(Figure 6). A major change in large-scale basin configuration occurred during the Guadalupian. During the
-middle Guadalupian, the Eastern shelf, Midland Basin, and Central Basin platform ceased to be areas of
-
-Siliciclastic rocks are composed of terrigenous material formed by the weathering of pre-existing rocks, whereas carbonate
-rocks are composed principally of sediment formed from seawater by organic activity. Siliciclastic rocks consist of clastic, silicic
-components (mostly quartz, feldspars, and heavy minerals).
-2Ma is the abbreviation for mega-annum (a million years) in Latin.
-1
-
-U.S. Energy Information Administration | Permian Basin
-
-6
-
-October 2018
-Figure 6. Paleogeographic reconstructions exhibiting the southern part of North America. a) Early
-Permian (280 Ma); b) Middle Pennsylvanian (305 Ma); c) Early Carboniferous (345 Ma). Modified after
-Blakey (2011)
-a)
-
-Permian basin contemporary footprint
-
-b)
-
-Permian basin contemporary footprint
-
-c)
-
-Permian basin contemporary footprint
-
-U.S. Energy Information Administration | Permian Basin
-
-7
-
-October 2018
-intense fine-grained siliciclastic and carbonate accumulation and instead became sites of cyclic
-deposition of sandstone, anhydrite, and halite (Oriel et al., 1967; Robinson, K., 1988; Yang and Dorobek,
-1995).
-
-The Wolfcamp formation extent in the Permian Basin
-The Wolfcamp Shale, a Wolfcampian-age organic-rich formation, extends in the subsurface under all
-three sub-basins of the Permian Basin (Delaware Basin, Midland Basin, and Central Basin Platform) and
-is the most prolific tight oil and shale gas-bearing formation contained within. The Wolfcamp Shale is
-divided into four sections, or benches, known as the Wolfcamp A, B, C, and D. The Wolfcamp D is also
-known as the Cline Shale. The most drilled targets to date are the A and B benches.
-The four benches of the Wolfcamp formation each display different characteristics in terms of lithology,
-fossil content, porosity, total organic content, and thermal maturity. Overall, basement tectonics
-patterns influence Wolfcamp structure and thickness (Gaswirth, 2017).
-
-Structure map of the Wolfcamp formation
-Figure 7. Structure map of the Wolfcamp formation
-
-Source: U.S. Energy Information Administration based on DrillingInfo Inc., U.S. Geological Survey.
-
-USGS estimates undiscovered, continuous, hydrocarbon resources of only the Wolfcamp formation in
-the Midland Basin to be in excess of 19 billion barrels of oil, 16 trillion cubic feet of natural gas, and 1.6
-billion barrels of natural gas liquids (NGL), making it one of the largest hydrocarbon plays in the United
-
-U.S. Energy Information Administration | Permian Basin
-
-8
-
-October 2018
-States (Gaswirth, et al., 2016). Like other continuous plays, key geologic and technical criteria that
-control play boundaries and productivity include thermal maturity, total organic carbon (TOC),
-formation thickness, porosity, depth, pressure, and brittleness.
-EIA constructs contoured elevation maps of subsea depth to the top of a geologic formation (also called
-structure maps) from point-measurement depth referenced to sea level (well observations) for the
-formation in the subsurface. These elevation measurements provide the third dimension for
-characterizing the depth or elevation of a reservoir on an otherwise two-dimensional map. DrillingInfo
-Inc. provides these stratigraphic picks, or formation depths, based on well log interpretation from 7,730
-wells. Subsea depth of Wolfcamp in the Delaware Basin varies from 0 feet in the west to -9,500 feet
-subsea in the central areas, and in the Midland Basin, it varies from -2,000 feet subsea in the east along
-the Eastern Shelf to -7,000 feet subsea along the basin axis near the western basin edge (Figure 7).
-
-Thickness map of the Wolfcamp formation
-Thickness maps (isopachs) show spatial distribution of the formation thickness across the formation
-footprint. Thickness values are used, in combination with reservoir petrophysical properties such as
-porosity and thermodynamic parameters (reservoir temperature and pressure), to calculate resource
-volumes, such as oil-in-place and natural gas-in-place estimates.
-Figure 8. Thickness map of the Wolfcamp formation
-
-Source: U.S. Energy Information Administration based on DrillingInfo Inc., U.S. Geological Survey.
-Note: To the east of the Central Basin Platform, stratigraphic picks for the Wolfcamp formation top are available, although
-stratigraphic picks for the Wolfcamp formation bottom are very limited.
-
-U.S. Energy Information Administration | Permian Basin
-
-9
-
-October 2018
-The isopach map for the Wolfcamp formation is constructed from subsurface point measurements from
-2,040 individual wells that include both depth to the top and to the base of the Wolfcamp formation.
-The Wolfcamp thickness varies between 200 feet to 7,050 feet across the Permian Basin. As the isopach
-map demonstrates (Figure 8), thickness ranges from about 800 feet to more than 7,000 feet thick in the
-Delaware Basin, from 400 feet to more than 1,600 feet thick in the Midland Basin, and from 200 feet to
-400 feet in the adjacent Central Basin Platform.
-
-Regional stratigraphy and lithology of the Wolfcamp formation
-Wolfcamp formation deposited during late Pennsylvanian through late Wolfcampian time is distributed
-across the entire Permian Basin. The Wolfcamp formation is a complex unit consisting mostly of organicrich shale and argillaceous carbonates intervals near the basin edges. Depth, thickness, and lithology
-vary significantly across the basin extent. Depositional and diagenetic processes control this formation
-heterogeneity. Stratigraphically, the Wolfcamp is a stacked play with four intervals, designated topdown as the A, B, C, and D benches (Gaswirth, 2017). Porosity of the Wolfcamp Formation varies
-between 2.0% and 12.0% and averages 6.0%; however, average permeability is as low as 10
-millidarcies 3, which requires multistage hydraulic fracturing. Figures 3–5 show the regional stratigraphy
-of the Permian interval, including representation of Wolfcamp benches.
-
-Total organic carbon content of the Wolfcamp formation
-Large amounts of organic material that accumulated in the deep, poorly oxygenated areas of the
-Delaware and Midland Basins later converted to hydrocarbons. Analytical results from well core samples
-indicate that TOC content in the Wolfcamp formation ranges from less than 2.0% to 8.0% (Ward, et al.,
-1986; Kvale and Rahman, 2016). Wolfcamp lithological facies vary significantly across the Permian Basin.
-The carbonate turbidites 4 originated from the Central Basin Platform, whereas the siliciclastic dominated turbidites derived from surrounding highlands. The carbonate turbidites display TOC values
-ranging from 0.6% to 6.0%, whereas the siliciclastic turbidites generally exhibit less than 1.0%. The
-interbedding, non-calcareous mudstones contain as much as 8.0% TOC. Analytical results of oil samples
-produced from Wolfcamp reservoirs also demonstrate that these oils were generated from mostly
-marine type II kerogens with a contribution from type III kerogens (Kvale and Rahman, 2016; Gupta et
-al., 2017). Known good source rocks typically contain mostly 2.0% TOC or higher. As such, the Wolfcamp
-formation has sufficient TOC content compared with other low permeability plays.
-
-A darcy (or darcy unit) and millidarcy (md or mD) are units of permeability, named after Henry Darcy. They are not SI units, but
-they are widely used in petroleum engineering and geology. Like some other measures of permeability, a darcy has dimensional
-units in length. The darcy is referenced to a mixture of unit systems. A medium with a permeability of 1 darcy permits a flow of
-1 cubic centimeter per second of a fluid with certain viscosity under a pressure gradient of 1 atmosphere per centimeter acting
-across an area of 1 square centimeter.
-4 A turbidite is a sedimentary bed deposited by a turbidity current, which is a type of sediment gravity flow responsible for
-distributing vast amounts of clastic sediment into the deep ocean. Turbidites are deposited in the ocean floor below the
-continental shelf by underwater avalanches, which slide down the steep slopes of the continental shelf edge. When the
-material comes to rest in the ocean floor, sand and other coarse material settle first, followed by mud, and eventually the very
-fine particulate matter.
-3
-
-U.S. Energy Information Administration | Permian Basin
-
-10
-
-October 2018
-
-Wolfcamp formation benches
-Upper Wolfcamp (A and B benches) in the Delaware Basin and play boundaries
-Most of the current drilling activities in the Delaware and Midland Basins target Upper Wolfcamp (A and
-B benches) rather than Lower Wolfcamp (C and D benches), which is more natural gas prone and more
-mature. The Upper Wolfcamp sections are comprised of two main facies: shallow water fine-grained
-calcareous turbidites that are often interbedded with dolomite and deep-water turbidites and
-mudstones that represent the distal accumulation (Thompson et al., 2018; Gupta et al., 2017). Distal
-turbidites and mudstones of Upper Wolfcamp are the thickest and have the best reservoir quality.
-In the Delaware Basin Wolfcamp play, boundaries are controlled by the main tectonic features of the
-Permian region (Figures 9 and 10). The play boundaries are outlined to the south by the MarathonOuachita fold and thrust belt, to the north by the Northwest shelf, and to the west by the Diablo
-Platform, and the southern play boundary traces the western margin of the Central Basin Platform. The
-changes in depth and thickness along the play boundaries reflect the amount of differential movements
-that set off subsidence within the Delaware Basin and the uplift of the surrounding highlands. EIA’s
-analysis of the well log and productivity suggests the best reservoir quality corresponds to the Upper
-Wolfcamp areas with the following characteristics:
-•
-•
-•
-•
-•
-•
-
-Thickness is more than 1,000 feet
-Subsea depth to the formation top is more than 3,000 feet
-Neutron porosity ranges from 4.0% to 8.0%
-Density ranges from 2.60 g/cm3 to 2.85 g/cm3
-Estimated total organic carbon ranges from 1.0% to 8.0%
-Deep resistivity ranges from 10 Ohm-meter to 80 Ohm-meter
-
-Structure map of Wolfcamp A in the Delaware Basin
-EIA constructed the Wolfcamp structure map in the Delaware Basin from subsurface point
-measurements (well observations) on the depth to the formation top. These stratigraphic picks include
-well log interpretations from 2,020 wells drilled in the Delaware Basin. Subsea depth of Wolfcamp in the
-Delaware Basin varies from 0 feet in the west to -9,500 feet in the Central Basin areas (Figure 9).
-
-U.S. Energy Information Administration | Permian Basin
-
-11
-
-October 2018
-Figure 9. Structure map of Wolfcamp A (Delaware Basin)
-
-Thickness map of Wolfcamp A in the Delaware Basin
-EIA constructed the Wolfcamp A thickness map from subsurface point measurements from 1880
-individual wells that include both depth to the top and to the base of the Wolfcamp A bench. Thickness
-ranges from about 100 feet to more than 700 feet thick in the Delaware Basin.
-
-U.S. Energy Information Administration | Permian Basin
-
-12
-
-October 2018
-
-Figure 10. Thickness map of Wolfcamp A (Delaware Basin)
-
-U.S. Energy Information Administration | Permian Basin
-
-13
-
-October 2018
-
-References
-Beaumont, C., 1981, Foreland basins, Geophysical Journal of the Royal Astronomical Society, v. 65, p.
-291 -329.
-Blakey, R., 2011, Paleogeography of Southwestern North America:
-http://deeptimemaps.com/southwest-north-america-map-list/, Accessed on September 13, 2018.
-Brown, L. F., J. R. , Cleaves, A. W., Erxleben , A. W. , 1973, Pennsylvanian depositional systems in NorthCentral Texas, a guide for interpreting terrigenous elastic facies in a cratonic basin: Austin, The
-University of Texas at, Austin, Bureau of Economic Geology, Guide­book 14, 122 p.
-Brown, L.F., SolisIriarte, R.F., and Johns, D.A., 1990, Regional depositional systems tracts,
-paleogeography, and sequence stratigraphy, upper Pennsylvanian and lower Permian strata, North-andWest-Central Texas, https://www.osti.gov/biblio/5000295 , Accessed on September 13, 2018.
-Dolton, G.L., Coury, A.B., Frezon, S.E ., Robinson, K., Varnes, K.L ., Vunder, J.M., and Allen, R.V., 1979,
-Estimates of undiscovered oil and gas, Permian basin, Vest Texas and Southeast New Mexico: U.S.
-Geological Survey Open-File Report 79-838, 72 p.
-Dutton, S.P., Kim, E. M., Broadhead R.F., Breton, C.L., Raatz, W.D., 2005, Play analysis and digital
-portfolio of major oil reservoirs in the Permian basin, Bureau of Economic Geology, University of Texas
-at Austin, Austin, 287 p.
-EIA, 2017, U.S. Crude Oil and Natural Gas Proved Reserves, Year-end 2016, U.S. Energy Information
-Publication report, https://www.eia.gov/naturalgas/crudeoilreserves/pdf/usreserves.pdf , Accessed on
-September 13, 2018.
-Ewing, T. E., 1991, The tectonic framework of Texas: Text to accompany "The Tectonic Map of Texas",
-Austin, Bureau of Economic Geology, The University of Texas at Austin, 36 p.
-Galley, John E., 1958, Oil and Geology in the Permian basin of Texas and New Mexico: North America:
-Habitat of Oil, AAPG special volume, p. 395-446.
-Gardiner, W. B., 1990, Fault fabric and structural subprovinces of the Central basin Platform: A model for
-strike - slip movement, in Flis, J. E., and Price. R. C., eds., Permian basin Oil and Gas Fields: Innovative
-Ideas in Exploration and Development: Mid land. West Tex.as Geological Society, 90-87, p. 15-27.
-Gaswirth, S.B., 2017, Assessment of Undiscovered Continuous Oil Resources in the Wolfcamp Shale of
-the Midland basin, West Texas, AAPG ACE proceeding, April 2017.
-Gaswirth, S.B., Marra, K.R., Lillis, P.G., Mercier, T.J., Leathers-Miller, H.M., Schenk, C.J., Klett, T.R., Le,
-P.A., Tennyson, M.E., Hawkins, S.J., Brownfield, M.E., Pitman, J.K., and Finn, T.M., 2016, Assessment of
-undiscovered continuous oil resources in the Wolfcamp shale of the Midland basin, Permian basin
-Province, Texas, 2016: U.S. Geological Survey Fact Sheet 2016–3092, 4 p.,
-https://doi.org/10.3133/fs20163092, Accessed on September 13, 2018.
-Gupta, I., Rai, C., Sondergeld, C., & Devegowda, D., 2017, Rock typing in Wolfcamp formation, Society of
-Petrophysicists and Well-Log Analysts: https://www.onepetro.org/conference-paper/SPWLA-2017D?sort=&start=0&q=total+organic+carbon+wolfcamp+&from_year=&peer_reviewed=&published_betw
-een=&fromSearchResults=true&to_year=&rows=25# , Accessed on September 13, 2018.
-
-U.S. Energy Information Administration | Permian Basin
-
-14
-
-October 2018
-Hills, J. M., l 984, Sedimentation, tectonism, and hydrocarbon generation in Delaware basin, west Texas
-and southeastern New Mexico: American Association of Petroleum Geologists Bulletin, v. 68. p. 250267.
-Hills, J. M., 1985, Structural evolution of the Permian basin of wes1 Texas and New Mexico, in Dickerson,
-P. W. , and Muehlberger, W. R., eds. , Structure and Tectonics of Trans-Pecos Texas: Mid land, West
-Texas Geological Society , 85-81 , p. 89-99.
-Jordan, T. E., 1981, Thrust loads and foreland basin development, Cretaceous western United States:
-American Association of Petroleum Geologists Bulletin, 11, 65, p. 2506-2520.
-Kvale, E. P., & Rahman, M., 2016, Depositional facies and organic content of Upper Wolfcamp formation
-(Permian) Delaware basin and implications for sequence stratigraphy and hydrocarbon source.
-Unconventional Resources Technology Conference, https://www.onepetro.org/conferencepaper/URTEC-2457495-MS , Accessed on September 13, 2018.
-Oriel, S. S., Myers, A.D., Crosby, E., 1967, West Texas Permian basin region, in McKeeand, E. and Oriel, S.,
-eds., Paleotectonic investigations of the Permian system in United States, U.S. Geological Survey
-Professional Paper 515-A, p. 21-64.
-Robinson, K., 1988, Petroleum geology and hydrocarbon plays of the Permian basin Petroleum province
-West Texas and southeast New Mexico, U.S. Geological Survey Open-File Report 88-450-Z, 53 p.,
-https://doi.org/10.3133/ofr88450Z
-Thompson, M., Desjardins, Pickering, Driskill, 2018, An Integrated View of the petrology, sedimentology,
-and sequence stratigraphy of the Wolfcamp formation, Delaware basin, Texas, URTec conference
-proceeding, July 2018.
-Ward, R. F., Kendall, C., Harris, P. M., 1986. Upper Permian (Guadalupian) facies and their association
-with hydrocarbons - Permian basin, west Texas and New Mexico, American Association of Petroleum
-Geologists Bulletin, v. 70 (3), p. 239-262.
-Yang, Kenn-Ming, Dorobek, Steven, 1995, The Permian basin of West Texas and New Mexico: Tectonic
-history of a "composite" foreland basin and its effects of stratigraphic development, p. 149-174,
-10.2110/pec.95.52.0149.
-
-U.S. Energy Information Administration | Permian Basin
-
-15
-
-
+By law , EIA ’ s data , analyses , and forecasts are independent of approval by any other officer or employee of the United States Government .
+The views in this report therefore should not be construed as representing those of the U.S. Department of Energy or other federal agencies .
+This document outlines updated information and maps for the Wolfcamp play of the Permian Basin .
+These geologic elements are documented and integrated into a series of maps .
+The Permian Basin maps consist of layers of geologic and production information that users can view either as separate thematic maps ( such as Figure 1 ) or as interactive layers of the U.S. Energy Mapping System .
+Currently , EIA has access to well-level data , including more than 20,000 well logs from the Permian Basin , which are used for map construction .
+This report contains the Wolfcamp play section , including subsections on the Wolfcamp A maps in the Delaware Basin .
+EIA will add spatial layers for structure , thickness , and production maps as well as corresponding report sections describing major plays of the Permian Basin in the future as additional maps are created .
+Permian Basin The Permian Basin of West Texas and Southeast New Mexico has generated hydrocarbons for about 100 years and supplied more than 33.4 billion barrels of oil and about 118 trillion cubic feet of natural gas as of September 2018 .
+Implementing hydraulic fracturing , horizontal drilling , and completion technology advancements during the past decade has reversed the production drop in the Permian , and the basin has exceeded its previous peak in the early 1970s .
+Regional tectonic setting and geologic framework The Permian Basin is a complex sedimentary system located in the foreland of the Marathon–Ouachita orogenic belt .
+It covers an area of more than 75,000 square miles and extends across 52 counties in West Texas and Southeast New Mexico .
+The Permian Basin was developed in the open marine area known as the Tobosa Basin in the middle Carboniferous period approximately 325 million–320 million years ago ( Galley , 1958 ) .
+The ancestral Tobosa Basin was formed by an asymmetric structural flexure in the Precambrian basement at the southern margin of the North American plate in late Proterozoic time ( Beamont , 1981 ; Jordan 1981 ) .
+Major structural and tectonic features in the region of the Permian Basin Source : U.S. Energy Information Administration based on DrillingInfo Inc. , U.S. Geological Survey .
+The tectonic history of the Midland and Delaware Basins is mostly affected by uplift of the Central Basin Platform and , to a less degree , by the thrusting of the Marathon-Ouachita orogenic belt .
+The main phase of the basin differentiation occurred during Pennsylvanian and Wolfcampian time because of the rapid subsidence in the Delaware and Midland Basins and the uplift of the Central Basin Platform , as shown by sudden changes in thickness and lithology of Pennsylvanian to Permian strata .
+In the fault zone surrounding the Central Basin Platform , Strawn carbonates unconformably overlie lower to middle Paleozoic strata .
+This alignment is a stratigraphic indicator that the fault zone along the Central Basin Platform perimeter was tectonically active during late Pennsylvanian time .
+Because of deferential movements of basement blocks , uplift of the Central Basin Platform created differential subsidence and variable basin geometry in the adjacent Delaware and Midland Basins .
+This stage of tectonic activity lasted until the end of the Wolfcampian time , when the fast deformation and subsidence in the sub- U.S. Energy Information Administration | Permian Basin 3 October 2018 basins stopped .
+The Delaware Basin is bounded to the north by the Northwestern shelf , to the south by the Marathon Ouachita fold belt , to the west by the Diablo Platform , and to the east by uplifted areas of the Central Basin Platform separating the Delaware and Midland Basins .
+An echelon pattern of high angle faults with a large vertical displacement are detected along the boundaries of the Central Basin Platform , which itself is an uplifted , fault-bounded structural high that is primarily carbonate in composition and is highly faulted .
+The Midland Basin is bounded to the east by the Eastern shelf through a series of north-south trending fault segments and to the north by the Northwest shelf .
+Southward , Midland Basin formations thin out into the Ozona Arch , an extension of Central Basin Platform , which separates the Delaware and Midland Basins ( Figure 1 ) .
+Regional Stratigraphy The age of sedimentary rocks underling the Permian system in West Texas to Southeast New Mexico ranges from Precambrian to Pennsylvanian .
+Typically , the oldest rocks immediately underlie Permian rocks in uplift areas such as the Central Basin Platform and the Ozona Arch .
+Pennsylvanian rocks are common across the Delaware and Midland Basins and on the Northwestern and Eastern shelves .
+Representative stratigraphic sections of all Paleozoic systems are present and reach a maximum combined thickness in excess of 29,000 feet in the Val Verde Basin and in the southern part of the Delaware Basin .
+The older Paleozoic systems ( Cambrian through Devonian ) are found in sedimentary rocks accumulated in the ancestral Tobosa Basin , an extensive stable marine depression .
+The Tobosa Basin extended through the entire present day Permian Basin region .
+Pennsylvanian and Wolfcampian times are characteristic of a period of transition , indicated by structural deformation , differential movements , increased clastic sedimentation , and development of contemporary tectonic elements .
+Regional stratigraphic relationships for upper Carboniferous to upper Permian strata in the Permian Basin are shown on a generalized stratigraphic schema ( Figure 2 ) and three geologic cross sections ( Figures 3–5 ) .
+These cross sections indicate differences in basin geometry and the effects of differential uplift of the Central Basin Platform .
+Upper Pennsylvanian and Wolfcampian strata spread across the entire Permian Basin ; the thickest accumulations , however , are located in the central and southern parts of the Delaware Basin .
+As shown on Cross Section A ( Figure 3 ) , this stratigraphic interval quickly thins out to the Central Basin Platform , in contrast with the more gradual thickness decrease toward the western part of the Delaware Basin and eastern part of the Midland Basin .
+Upper Carboniferous Pennsylvanian rocks that range in thickness from 0 feet to 3,000 feet generally occur in the depth between 5,000 feet and 15,000 feet .
+Generalized stratigraphic schema of upper Carboniferous through upper Permian intervals for the Permian Basin Delaware Basin Central Basin Platform Midland Basin Source : U.S. Energy Information Administration based on DrillingInfo Inc. , U.S. Geological Survey .
+North to south geologic cross sections through the Delaware Basin Delaware Basin Source : U.S. Energy Information Administration based on DrillingInfo Inc. , U.S. Geological Survey .
+The cessation of tectonic activity and transition to stable marine basin fill-in stage influenced the depositional environment in Early Permian time .
+Clastic sediments were deposited in the Delaware and Midland Basins surrounded by peripheral reefs and carbonate shelves that graded shoreward into evaporitic lagoons .
+However , compared to the corresponding strata in the Delaware Basin , upper Cretaceous to upper Permian strata of the Midland Basin are overall thinner with no significant changes in thickness or lithology .
+Lithofacies within these stratigraphic units are also relatively uniform or alter gradually across the basin with some thickening adjacent to the boundary of the Central Basin Platform .
+Pennsylvanian to Wolfcampian strata in the peripheral areas of the Midland Basin consist mainly of carbonate facies that grade toward the basin into shale and fine-grained siliciclastic 1 facies .
+During much of Pennsylvanian time , the Permian Basin formed as a semi-enclosed depression ; however , it was not until the Wolfcampian ( Early Permian ) that a carbonate shelf and margin developed around the edges of both the Delaware and Midland Basins .
+These accumulations of carbonates formed after the end of intense tectonic movement and widespread siliciclastic sedimentation , which began during the Early Pennsylvanian .
+By the early Leonardian , this ramp-type shelf was already developing a series of barriers along its seaward edge , becoming a more distinct rimmed margin .
+The development of this marginal rim influenced depositional environments on the shelf , creating the intrinsic lateral facial changes observed in the Leonardian and Guadalupian rocks behind the shelf edge .
+From the late Wolfcampian through Guadalupian ( Late Permian ) , the Midland and Delaware Basins were principally sites of siliciclastic accumulation , whereas the platforms and shelves were sites of carbonate deposition ( Figure 6 ) .
+During the middle Guadalupian , the Eastern shelf , Midland Basin , and Central Basin platform ceased to be areas of Siliciclastic rocks are composed of terrigenous material formed by the weathering of pre-existing rocks , whereas carbonate rocks are composed principally of sediment formed from seawater by organic activity .
+Paleogeographic reconstructions exhibiting the southern part of North America .
+The Wolfcamp formation extent in the Permian Basin The Wolfcamp Shale , a Wolfcampian-age organic-rich formation , extends in the subsurface under all three sub-basins of the Permian Basin ( Delaware Basin , Midland Basin , and Central Basin Platform ) and is the most prolific tight oil and shale gas-bearing formation contained within .
+The four benches of the Wolfcamp formation each display different characteristics in terms of lithology , fossil content , porosity , total organic content , and thermal maturity .
+EIA constructs contoured elevation maps of subsea depth to the top of a geologic formation ( also called structure maps ) from point-measurement depth referenced to sea level ( well observations ) for the formation in the subsurface .
+These elevation measurements provide the third dimension for characterizing the depth or elevation of a reservoir on an otherwise two-dimensional map .
+Subsea depth of Wolfcamp in the Delaware Basin varies from 0 feet in the west to -9,500 feet subsea in the central areas , and in the Midland Basin , it varies from -2,000 feet subsea in the east along the Eastern Shelf to -7,000 feet subsea along the basin axis near the western basin edge ( Figure 7 ) .
+Thickness map of the Wolfcamp formation Thickness maps ( isopachs ) show spatial distribution of the formation thickness across the formation footprint .
+Thickness values are used , in combination with reservoir petrophysical properties such as porosity and thermodynamic parameters ( reservoir temperature and pressure ) , to calculate resource volumes , such as oil-in-place and natural gas-in-place estimates .
+Note : To the east of the Central Basin Platform , stratigraphic picks for the Wolfcamp formation top are available , although stratigraphic picks for the Wolfcamp formation bottom are very limited .
+U.S. Energy Information Administration | Permian Basin 9 October 2018 The isopach map for the Wolfcamp formation is constructed from subsurface point measurements from 2,040 individual wells that include both depth to the top and to the base of the Wolfcamp formation .
+The Wolfcamp thickness varies between 200 feet to 7,050 feet across the Permian Basin .
+As the isopach map demonstrates ( Figure 8 ) , thickness ranges from about 800 feet to more than 7,000 feet thick in the Delaware Basin , from 400 feet to more than 1,600 feet thick in the Midland Basin , and from 200 feet to 400 feet in the adjacent Central Basin Platform .
+Regional stratigraphy and lithology of the Wolfcamp formation Wolfcamp formation deposited during late Pennsylvanian through late Wolfcampian time is distributed across the entire Permian Basin .
+The Wolfcamp formation is a complex unit consisting mostly of organicrich shale and argillaceous carbonates intervals near the basin edges .
+Depositional and diagenetic processes control this formation heterogeneity .
+Figures 3–5 show the regional stratigraphy of the Permian interval , including representation of Wolfcamp benches .
+Total organic carbon content of the Wolfcamp formation Large amounts of organic material that accumulated in the deep , poorly oxygenated areas of the Delaware and Midland Basins later converted to hydrocarbons .
+Wolfcamp lithological facies vary significantly across the Permian Basin .
+The carbonate turbidites 4 originated from the Central Basin Platform , whereas the siliciclastic dominated turbidites derived from surrounding highlands .
+Analytical results of oil samples produced from Wolfcamp reservoirs also demonstrate that these oils were generated from mostly marine type II kerogens with a contribution from type III kerogens ( Kvale and Rahman , 2016 ; Gupta et al. , 2017 ) .
+As such , the Wolfcamp formation has sufficient TOC content compared with other low permeability plays .
+They are not SI units , but they are widely used in petroleum engineering and geology .
+Like some other measures of permeability , a darcy has dimensional units in length .
+The darcy is referenced to a mixture of unit systems .
+4 A turbidite is a sedimentary bed deposited by a turbidity current , which is a type of sediment gravity flow responsible for distributing vast amounts of clastic sediment into the deep ocean .
+Turbidites are deposited in the ocean floor below the continental shelf by underwater avalanches , which slide down the steep slopes of the continental shelf edge .
+When the material comes to rest in the ocean floor , sand and other coarse material settle first , followed by mud , and eventually the very fine particulate matter .
+Distal turbidites and mudstones of Upper Wolfcamp are the thickest and have the best reservoir quality .
+The play boundaries are outlined to the south by the MarathonOuachita fold and thrust belt , to the north by the Northwest shelf , and to the west by the Diablo Platform , and the southern play boundary traces the western margin of the Central Basin Platform .
+The changes in depth and thickness along the play boundaries reflect the amount of differential movements that set off subsidence within the Delaware Basin and the uplift of the surrounding highlands .
+These stratigraphic picks include well log interpretations from 2,020 wells drilled in the Delaware Basin .
+Subsea depth of Wolfcamp in the Delaware Basin varies from 0 feet in the west to -9,500 feet in the Central Basin areas ( Figure 9 ) .
+Structure map of Wolfcamp A ( Delaware Basin ) Thickness map of Wolfcamp A in the Delaware Basin EIA constructed the Wolfcamp A thickness map from subsurface point measurements from 1880 individual wells that include both depth to the top and to the base of the Wolfcamp A bench .
+Thickness ranges from about 100 feet to more than 700 feet thick in the Delaware Basin .
