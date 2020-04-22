@@ -77,7 +77,7 @@ class NLPclient:
   def extract(self, text):
     tail=clean_text(text)
     while tail:
-      chunk=2**15
+      chunk=2**13
       head=tail[0:chunk]
       tail=tail[chunk:]
       #print('EXTRACTING FROM',len(head), 'chars.')

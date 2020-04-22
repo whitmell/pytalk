@@ -7,19 +7,20 @@ trace=0
 
 class talk_params:
   def __init__(self,from_dict=None,from_json=None):
-    self.force = False
+    self.force = False # if True, forces erasure of pre-parsed .json files
+    #self.chunk_size=2^15 # splits large dcouments into chunks to avoid parser overflows TODO
 
     # content extraction related
-    self.compounds = True
-    self.svo_edges = True
-    self.subject_centered = True
-    self.all_to_sent = False
-    self.use_to_def = True
+    self.compounds = True # aggregates compounds
+    self.svo_edges = True # includes SVO edges in text graph
+    self.subject_centered = True # redirects link from verb with predicate function to ists subject
+    self.all_to_sent = False # forces adding links form all lemmas to sentence id
+    self.use_to_def = True # forces adding links from sentences to where their important words occur first
 
     self.pers_idf = False #  both reduce rouge scores
     self.use_freqs = False # same
 
-    self.prioritize_compounds = 16
+    self.prioritize_compounds = 16 # elevates rank of coumpound to favor them as keyphrases
 
 
     self.use_line_graph = False # spreads using line_graph
@@ -31,7 +32,7 @@ class talk_params:
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 0.0001 # <================== should be higher - low just to debug
+    self.with_bert_qa = 0.001 # <================== should be higher - low just to debug
 
     # summary, and keyphrase set sizes
 
@@ -42,7 +43,7 @@ class talk_params:
     self.max_sum = self.top_sum*(self.top_sum-1)/2
     self.max_keys = 1+2*self.top_keys # not used yet
 
-    self.known_ratio=0.8
+    self.known_ratio=0.8 # ratio of known to unknown words in acceptable sentences
 
     # query answering related
     self.top_answers = 4 # max number of answers directly shown
@@ -56,7 +57,7 @@ class talk_params:
     self.answers_by_rank = False # returns answers by importance vs. natural order
 
     self.pers = True # enable personalization of PageRank for QA
-    self.expand_query = 2
+    self.expand_query = 2 # depth of query expansion for QA
     self.guess_wh_word_NERs=0 # try to treat wh-word qurieses as special
 
     self.think_depth=1 # depth of graph reach in thinker.py

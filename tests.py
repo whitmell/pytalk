@@ -253,7 +253,22 @@ def t17a():
   fname = 'examples/peirce'
   reason_with(fname, query=True)
 
+def t17b():
+  fname = 'examples/peirce'
+  nrun(fname)
 
+def t18():
+  fname = 'examples/ec2'
+  run_with(fname, query=True)
+
+
+def t18a():
+  fname = 'examples/ec2'
+  reason_with(fname, query=True)
+
+def t18b():
+  fname = 'examples/ec2'
+  nrun(fname)
 
 def tgo()  :
   D=doc_dir

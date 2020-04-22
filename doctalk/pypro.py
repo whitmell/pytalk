@@ -39,6 +39,7 @@ class NatTalker(Talker) :
     for shared in shareds :
        for res in self.query_with_goal("tc_search "+shared+" Rel What Where?") :
          _,_shared,rel,what,where=res
+         if isinstance(what,tuple) and what[0]==what[1] : continue
          id=where.val
          if id in ids:
             targets.add(what)
