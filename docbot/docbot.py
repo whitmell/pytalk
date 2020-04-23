@@ -52,7 +52,7 @@ class Bot :
     return answer # a string
     
 def bot_test() :
-    bot = Bot('examples/const.txt')
+    bot = Bot('../examples/const.txt')
     print(bot.summary)
     print('')
     print(bot.keyphrases)
@@ -60,4 +60,5 @@ def bot_test() :
     r=bot.ask('How can the President be removed from office?')
     print(r)
 
-bot_test()
+if __name__=="__main__" :
+  bot_test()

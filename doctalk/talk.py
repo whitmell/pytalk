@@ -1184,8 +1184,10 @@ def take(k,g) :
 def pdf2txt(fname) :
   '''
     pdf to txt conversion with external tool - optional
+    make sure you install "poppler tools" for this to work!
   '''
   subprocess.run(["pdftotext", fname])
+  clean_text_file(fname)
 
 def file2string(fname):
   with open(fname, 'r') as f:
