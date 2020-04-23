@@ -93,19 +93,25 @@
       <p>
        <h2>Doctalk: Question Answering about Documents</h2>
       </p>
+      <h4>
       <p>
-          Type <p>open  _document_name_ !</p> in the "Question?" box to choose one among
+          Type your query in the "Question?" box like in:
+          <h3>
+          <p> document_name : query ? </p>
+          </h3>
+          to chat about one of the following documents:
           covid, peirce, red, const, tesla, ec2, einstein, relativity, heli, wolfram, logrank,
           geo, wasteland, heaven, bfr, hindenburg, toxi, kafka
-          to interact with several types of documents.
-       Type summary? or keywords? in the "Question?" box for seeing those, and any other
-       questions you want to ask the document about.
+       </p>
+       <p>
+       Type document_name : summary? or document_name : keywords? in the "Question?" box for seeing those.
       </p>
+      </h4>
     </center>
     <h3>
       <p>
         For  more, check out the home page of the
-        <a href="https://github.com/ptarau/pytalk">PyTalk Dialog Agent</a>!
+        <a href="https://github.com/ptarau/pytalk">DocTalk Dialog Agent</a>!
       </p>
     </h3>
     <div class="box"></div>
@@ -121,6 +127,7 @@
         </div>
       </div>
       <script>
+        var doc_name="logrank"
         function getBotResponse() {
           var rawText = $("#textInput").val();
           var userHtml = '<p class="userText"><span>' + rawText + "</span></p>";
