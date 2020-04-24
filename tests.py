@@ -274,6 +274,9 @@ def t19():
   fname = 'examples/relativity'
   run_with(fname, query=True)
 
+def t20():
+  fname = 'examples/alice'
+  run_with(fname, query=True)
 
 def tgo()  :
   D=doc_dir

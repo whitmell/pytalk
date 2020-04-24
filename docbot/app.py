@@ -6,6 +6,7 @@ from waitress import serve
 
 # bot, covering content of given text file
 bots = {
+  "alice": None,
   "bfr"	: None,
   "heaven" : None,
   "relativity" : None,
