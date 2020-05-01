@@ -11,6 +11,7 @@ def ensure_nlk_downloads() :
     nltk.download('wordnet')
     nltk.download('stopwords')
     nltk.download('words')
+    nltk.download('punkt')
     print('')
 ensure_nlk_downloads()
 
