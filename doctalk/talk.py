@@ -332,14 +332,40 @@ def answer_quest(q,talker) :
   sent_data, l2occ = db
   matches = defaultdict(set)
   nears = defaultdict(set)
-  answerer = Talker(from_text=q)
-  q_sent_data, q_l2occ = answerer.db
+
   unknowns = []
-  for j, q_lemma in enumerate(q_sent_data[0][LEMMA]):
-    q_tag = q_sent_data[0][TAG][j]
-    if q_tag[0] not in "NVJ": continue  # ppp(q_lemma,q_tag)
+  q_lemmas=[]
+  if talker.params.with_answerer:
+    answerer = Talker(from_text=q)
+    q_sent_data,_=answerer.db
+    for j, q_lemma in enumerate(q_sent_data[0][LEMMA]):
+      q_sent_data, q_l2occ = answerer.db
+      q_tag = q_sent_data[0][TAG][j]
+      if q_tag[0] not in "NVJ": continue  # ppp(q_lemma,q_tag)
+      q_lemmas.append((q_lemma,wn_tag(q_tag)))
+  else:
+    answerer = None
+    from nltk.tokenize import word_tokenize
+    from nltk.stem import WordNetLemmatizer
+    wnl = WordNetLemmatizer()
+    toks=word_tokenize(q)
+    tag=None
+    for t in toks:
+      tag='n'
+      l = wnl.lemmatize(t,tag)
+      if l==t :
+        tag='v'
+        l=wnl.lemmatize(t,tag)
+      if l==t :
+        tag='a'
+        l = wnl.lemmatize(t, tag)
+      l=l.lower()
+      q_lemmas.append((l,tag))
+
+  for q_lemma,wn_q_tag in q_lemmas:
     if not good_word(q_lemma) or q_lemma in ".?": continue
 
+    #  actual QA starts here
     ys = l2occ.get(q_lemma)
 
     if not ys:
@@ -348,7 +374,7 @@ def answer_quest(q,talker) :
       for sent, _pos in ys:
         matches[sent].add(q_lemma)
     if talker.params.expand_query > 0:
-      related = wn_all(talker.params.expand_query, 3, q_lemma, wn_tag(q_tag))
+      related = wn_all(talker.params.expand_query, 3, q_lemma, wn_q_tag)
       for r_lemma in related:
         if not good_word(q_lemma): continue
         zs = l2occ.get(r_lemma)
@@ -362,7 +388,7 @@ def answer_quest(q,talker) :
   if unknowns: tprint("UNKNOWNS:", unknowns, '\n')
 
   best = []
-  if talker.params.pers:
+  if talker.params.pers and talker.params.with_answerer:
     d = {x: r for x, r in answerer.pr.items() if good_word(x)}
     talker.pr = nx.pagerank(talker.g, personalization=d)
 
