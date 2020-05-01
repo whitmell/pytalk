@@ -32,10 +32,14 @@ class Thinker(Talker) :
 
 
   def distill(self,q,answers,answerer):
+
     ''' handler for question q asked from this Thinker'''
 
     # apply BERT pipeline to italk.py answers
     self.get_gist(q, answers)
+
+    if not answerer:
+      return
 
     best=list(self.reason_about(answers,answerer))
     inf_answers = [(x[0], self.get_sentence(x[0]), x[1]) for x in best]

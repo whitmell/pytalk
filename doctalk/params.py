@@ -32,8 +32,8 @@ class talk_params:
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 0.000 # <================== should be higher - low just to debug
-    self.with_answerer=True
+    self.with_bert_qa = 0.00 # <================== should be higher - low just to debug
+    self.with_answerer=False
     # summary, and keyphrase set sizes
 
     self.top_sum = 9 # default number of sentences in summary
