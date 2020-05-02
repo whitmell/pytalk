@@ -882,7 +882,7 @@ class Talker :
     return g
 
   def dep_edge(self):
-    ''' dependency endge generator'''
+    ''' dependency edge generator'''
     sent_data, l2occ = self.db
     for info in sent_data:
       ws,ls,ts,_,deps,_=info

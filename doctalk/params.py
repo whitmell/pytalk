@@ -19,21 +19,19 @@ class talk_params:
 
     self.pers_idf = False #  both reduce rouge scores
     self.use_freqs = False # same
-
     self.prioritize_compounds = 16 # elevates rank of coumpound to favor them as keyphrases
-
-
     self.use_line_graph = False # spreads using line_graph
 
-    # 0 : no refiner, just doctalk, but with_bert_qa might control shor snippets
+    # 0 : no refiner, just doctalk, but with_bert_qa might control short snippets
     # 1 : abstractive BERT summarizer, with sumbert postprocessing
     # 2 : extractive BERT summarizer postprocessing
     # 3 : all of the above, concatenated
 
     self.with_refiner = 0 # <==================
     # controls short answer snippets via bert_qa pipeline
-    self.with_bert_qa = 0.01 # <================== should be higher - low just to debug
-    self.with_answerer=False
+    self.with_bert_qa = 0.1 # <================== should be higher - low just to debug
+
+    self.with_answerer=False # <== if False, it runs without calling corenlp parser for answerer
     # summary, and keyphrase set sizes
 
     self.top_sum = 9 # default number of sentences in summary
