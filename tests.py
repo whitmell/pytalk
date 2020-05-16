@@ -278,6 +278,10 @@ def t20():
   fname = 'examples/alice'
   run_with(fname, query=True)
 
+def t21():
+  fname = 'examples/cybok'
+  run_with(fname, query=True)
+
 def tgo()  :
   D=doc_dir
   files = sorted(glob.glob(D + "/*_quest.txt"))
@@ -356,6 +360,7 @@ if __name__== "__main__" :
   #otest()
   #api_test()
   #clean_text_file('examples/peirce.txt')
+  clean_text_file('examples/cybok.txt')
   pass
 
 
