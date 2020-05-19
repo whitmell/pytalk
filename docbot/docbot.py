@@ -33,16 +33,21 @@ def api_test() :
   print(answer_question(talker,quest))
     
 class Bot :
-  def __init__(self,textfile) :
-    params=new_params(from_json=
-      '{"top_sum":4,"top_keys":7,"top_answers":3,"prioritize_compounds":10,"with_bert_qa":0.01}')
-    self.talker=new_talker(from_file=textfile,params=params)
-    wss=json.loads(self.talker.summary_sentences())
-    ks=json.loads(self.talker.keyphrases())
-    sentences=[" ".join(ws) for ws in wss]    
-    self.summary=" ".join(sentences)
-    self.keyphrases=", ".join(ks)
-    
+  def __init__(self, fname_suf):
+    params = new_params(from_json=
+      '{"top_sum":4,"top_keys":7,"top_answers":3,'
+      '"prioritize_compounds":10,"with_bert_qa":0.01}')
+    suf = fname_suf[-4:]
+    if suf == ".pdf":
+      self.talker = new_talker(from_pdf=fname_suf, params=params)
+    else:
+      self.talker = new_talker(from_file=fname_suf, params=params)
+    wss = json.loads(self.talker.summary_sentences())
+    ks = json.loads(self.talker.keyphrases())
+    sentences = [" ".join(ws) for ws in wss]
+    self.summary = " ".join(sentences)
+    self.keyphrases = ", ".join(ks)
+
   def ask(self,question) :
     q=json.dumps(question)
     a= answer_question(self.talker,q)
