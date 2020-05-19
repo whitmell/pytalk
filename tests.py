@@ -81,8 +81,6 @@ def jtest() :
   t = Talker(from_file=fname,params=talk_params(from_json=d))
   t.show_all()
 
-'{"a": 1, "b": 2}'
-
 def do(qf) :
     df=qf.replace("_quest.txt","")
     run_with(df,query=True)
@@ -153,7 +151,14 @@ def nrun(fname):
     print('')
    '''
 
-
+def pdf_test() :
+  d = '{"quiet" : true}'
+  fname = 'pdfs/cloudmis.pdf'
+  #t = Talker(from_pdf=fname,params=talk_params(from_json=d))
+  #t.show_all()
+  fname = 'pdfs/cloudmis.txt'
+  t = Talker(from_file=fname, params=talk_params(from_json=d))
+  t.show_all()
 
 def ptest() :
   nrun('examples/wolfram')

@@ -64,7 +64,7 @@ def run_with(fname,query=True) :
           show=t.params.show_pics)
 
 def run_with_pdf(fname,**kwargs) :
-  pdf2txt(fname+".pdf")
+  pdf2txt(fname)
   run_with(fname, **kwargs)
 
 def chat_about(fname,qs=None) :
@@ -532,13 +532,18 @@ class Talker :
                from_json=None,
                from_file=None,
                from_text=None,
+               from_pdf=None,
                params=talk_params()
                ):
     '''creates data container from file or text document'''
     self.params=params
-
     self.from_file=from_file
-    if from_file:
+    if from_pdf:
+       from_pdf=from_pdf.replace('.pdf','')
+       pdf2txt(from_pdf)
+       self.from_file=from_pdf+".txt"
+       self.db = load(self.from_file, self.params.force)
+    elif from_file:
        self.db=load(from_file,self.params.force)
        self.from_file=from_file
     elif from_text :
@@ -1212,8 +1217,8 @@ def pdf2txt(fname) :
     pdf to txt conversion with external tool - optional
     make sure you install "poppler tools" for this to work!
   '''
-  subprocess.run(["pdftotext", fname])
-  clean_text_file(fname)
+  subprocess.run(["pdftotext", fname+".pdf"])
+  clean_text_file(fname+".txt")
 
 def file2string(fname):
   with open(fname, 'r') as f:
