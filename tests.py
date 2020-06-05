@@ -365,7 +365,7 @@ if __name__== "__main__" :
   #otest()
   #api_test()
   #clean_text_file('examples/peirce.txt')
-  clean_text_file('examples/cybok.txt')
+  #clean_text_file('examples/cybok.txt')
   pass
 
 
