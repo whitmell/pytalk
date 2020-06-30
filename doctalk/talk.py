@@ -906,6 +906,26 @@ class Talker :
         trt="_".join([tt,r,tf])
         yield wt, trt, wf
 
+  # TODO: USE IT
+  def raw_dep_edge(self,id):
+      ''' dependency edge generator for sentence id'''
+      sent_data, l2occ = self.db
+      info = sent_data[id]
+      ws,ls,ts,_,deps,_=info
+      for dep in deps:
+        #print(dep)
+        f, r, t = dep
+        if t== -1 : #  and r=='ROOT' :
+          wt='SENT'
+          tt = 'TOP'
+        else :
+          wt = ls[t]
+          tt=ts[t]
+        tf=ts[f]
+        wf=ls[f]
+        #r=r.replace(':','*')
+        trt="_".join([tt,r,tf])
+        yield wt, trt, wf
 
   def to_edges_in(self,id,sd):
     '''yields edges from dependency structure of sentence id'''
