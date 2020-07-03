@@ -42,6 +42,13 @@ tc2res(K,A,Rels,B,res(Steps,Id,Path)):-
   reverse(RevPath,Path).
 
 
+
+sub_term(X, X).
+sub_term(X, Term) :-
+    compound(Term),
+    arg(_, Term, Arg),
+    sub_term(X, Arg).
+
 do(Gs):-call(Gs),fail;true.
 
 ppp(X):-writeln('DEBUG'=X).
@@ -49,7 +56,7 @@ ppp(X):-writeln('DEBUG'=X).
 
 %%%%%%%%%%%%
 
-:-ensure_loaded('examples/tesla.pro').
+%:-ensure_loaded('examples/tesla.pro').
 
 /*
 

@@ -935,7 +935,7 @@ class Talker :
         if t != '.' : g.add_edge(f,t)
       if not 'SENT' in g :
         sent_data, l2occ = self.db
-        print('BAD SENT:',sent_data[id])
+        tprint('BAD SENT:',sent_data[id])
         return None
 
       t0=next(iter(g['SENT']))
@@ -947,13 +947,14 @@ class Talker :
          return ([x]+list(map(walk,xs)))
       return walk(t0)
 
-  def dep_term(self,id,quote=True):
+  def dep_term(self,id,quote=False):
     tree=self.dep_tree(id)
     if not tree : return None
     term = tree2term(tree,quote=quote)
     return term
 
-  def to_term_file(self):
+
+  def to_term_file(self,quote=False):
     fname=osp.basename(self.from_file)
     fname=fname.split('.')[0]
     file_name='temp/' + fname + ".pro"
@@ -961,10 +962,25 @@ class Talker :
 
     with open(file_name,'w') as outf:
       for id in range(len(sent_data)) :
-         x=self.dep_term(id)
+         x=self.dep_term(id,quote=quote)
          if not x : continue
          term='term('+x+').'
          print(term,file=outf)
+
+  def to_json_file(self):
+    fname = osp.basename(self.from_file)
+    fname = fname.split('.')[0]
+    file_name = 'temp/' + fname + ".json"
+    sent_data, _ = self.db
+    trees=[]
+    for id in range(len(sent_data)):
+        x = self.dep_tree(id)
+        if not x: continue
+        trees.append(x)
+    with open(file_name, 'w') as g:
+      json.dump(trees, g, indent=1)
+
+
 
   def to_edges_in(self,id,sd):
     '''yields edges from dependency structure of sentence id'''
@@ -1197,17 +1213,23 @@ class Talker :
 
 # helpers
 
-def dir_to_term_files(dir):
+# creates dep. tree database files from directory
+# to be used for QA, possibly via ML tools
+def dir_to_term_files(dir,target='json',quote=False):
+  if not target in ['json','pro'] :
+    raise "bad target in: dir_to_term_files"
   fs=os.listdir(dir)
   for fname in fs:
-    #print(fname)
     suf=fname.split('.')[1]
 
-    if suf == 'txt' and '_quest.' not in fname:
+    if suf == 'txt' : # and '_quest.' not in fname:
       fname=dir+fname
       t=Talker(from_file=fname)
-      print('talker from  --->',t.from_file)
-      t.to_term_file()
+      print(target + ' file from:',t.from_file)
+      if target=='json' :
+        t.to_json_file()
+      elif target=='pro':
+        t.to_term_file(quote=quote)
 
 
 def tree2term(term, quote=True):
@@ -1215,7 +1237,9 @@ def tree2term(term, quote=True):
     def walk(t):
       f=t[0]
       xs=t[1:]
-      if quote: f = "'" + f + "'"
+      f = f.replace("'", '').lower()
+      if quote or not f.isalpha():
+        f = "'" + f + "'"
       buf.append(f)
       if xs:
         buf.append('(')

@@ -355,13 +355,15 @@ def tt1():
   #print(1,list(t.raw_dep_edge(0)))
   #print(2,t.dep_tree(0))
   #print(3,t.dep_term(0,quote=False))
-  print(4,t.dep_tree(1))
+  #print(4,t.dep_tree(1))
   #print(5, t.dep_tree(2))
   #print(6,t.dep_term(2, quote=False))
   #t.to_term_file()
+  t.to_json_file()
 
 def tt2():
-  dir_to_term_files('examples/')
+  dir_to_term_files('examples/',target='json')
+  dir_to_term_files('examples/', target='pro')
 
 if __name__== "__main__" :
   #nlp_test()
