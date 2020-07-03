@@ -190,6 +190,7 @@ pdfs/*.gv.pdf
 *.gv.json
 
 
+temp/
 
 
 

@@ -294,6 +294,8 @@ def tgo()  :
     df=qf.replace("_quest.txt","")
     reason_with(df,query=True)
 
+
+
 import json
 def crunch() :
   with open('doctalk/in.txt','r') as f:
@@ -347,6 +349,17 @@ def api_test() :
   for ws in wss :
     print(' '.join(ws))
 
+def tt1():
+  fname = 'examples/test.txt'
+  t=Talker(from_file=fname)
+  print(1,list(t.raw_dep_edge(0)))
+  print(2,t.dep_tree(0))
+  print(3,t.dep_term(0,quote=False))
+  print(4,t.dep_term(1))
+  print(5, t.dep_tree(2))
+  print(6,t.dep_term(2, quote=False))
+  t.to_term_file()
+
 
 if __name__== "__main__" :
   #nlp_test()
@@ -366,6 +379,7 @@ if __name__== "__main__" :
   #api_test()
   #clean_text_file('examples/peirce.txt')
   #clean_text_file('examples/cybok.txt')
+  tt1()
   pass
 
 

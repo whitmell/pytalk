@@ -6,6 +6,7 @@ import networkx as nx
 from nltk.corpus import words as wn_words
 import statistics as stat
 from collections import OrderedDict
+import os.path as osp
 #from pprint import pprint
 import json
 
@@ -927,6 +928,32 @@ class Talker :
         trt="_".join([tt,r,tf])
         yield wt, trt, wf
 
+  def dep_tree(self,id) :
+      g=nx.DiGraph()
+      for f,r,t in self.raw_dep_edge(id) :
+        if t != '.' : g.add_edge(f,t)
+      #print(list(g['SENT']))
+      t0=next(iter(g['SENT']))
+      def walk(x) :
+         xs=[y for y in iter(g[x])]
+         return ([x]+list(map(walk,xs)))
+      return walk(t0)
+
+  def dep_term(self,id,quote=True):
+    tree=self.dep_tree(id)
+    return tree2term(tree,quote=quote)
+
+  def to_term_file(self):
+    fname=osp.basename(self.from_file)
+    fname=fname.split('.')[0]
+    file_name='temp/' + fname + ".pro"
+    sent_data, _ = self.db
+    with open(file_name,'w') as outf:
+      for id in range(len(sent_data)) :
+         term='term('+self.dep_term(id)+').'
+         print(term,file=outf)
+
+
   def to_edges_in(self,id,sd):
     '''yields edges from dependency structure of sentence id'''
     for dep in dep_from(id, sd):
@@ -1157,6 +1184,22 @@ class Talker :
 
 
 # helpers
+def tree2term(term, quote=True):
+    buf = []
+    def walk(t):
+      #f, xs = t
+      f=t[0]
+      xs=t[1:]
+      if quote: f = "'" + f + "'"
+      buf.append(f)
+      if xs:
+        buf.append('(')
+        for i, x in enumerate(xs):
+          if i > 0: buf.append(',')
+          walk(x)
+        buf.append(')')
+    walk(term)
+    return ''.join(buf)
 
 def nice_keys(keywords):
     '''
