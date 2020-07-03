@@ -350,16 +350,18 @@ def api_test() :
     print(' '.join(ws))
 
 def tt1():
-  fname = 'examples/test.txt'
+  fname = 'examples/bfr.txt'
   t=Talker(from_file=fname)
-  print(1,list(t.raw_dep_edge(0)))
-  print(2,t.dep_tree(0))
-  print(3,t.dep_term(0,quote=False))
-  print(4,t.dep_term(1))
-  print(5, t.dep_tree(2))
-  print(6,t.dep_term(2, quote=False))
-  t.to_term_file()
+  #print(1,list(t.raw_dep_edge(0)))
+  #print(2,t.dep_tree(0))
+  #print(3,t.dep_term(0,quote=False))
+  print(4,t.dep_tree(1))
+  #print(5, t.dep_tree(2))
+  #print(6,t.dep_term(2, quote=False))
+  #t.to_term_file()
 
+def tt2():
+  dir_to_term_files('examples/')
 
 if __name__== "__main__" :
   #nlp_test()
@@ -379,7 +381,7 @@ if __name__== "__main__" :
   #api_test()
   #clean_text_file('examples/peirce.txt')
   #clean_text_file('examples/cybok.txt')
-  tt1()
+  tt2()
   pass
 
 

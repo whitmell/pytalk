@@ -7,6 +7,7 @@ from nltk.corpus import words as wn_words
 import statistics as stat
 from collections import OrderedDict
 import os.path as osp
+import os
 #from pprint import pprint
 import json
 
@@ -932,27 +933,38 @@ class Talker :
       g=nx.DiGraph()
       for f,r,t in self.raw_dep_edge(id) :
         if t != '.' : g.add_edge(f,t)
-      #print(list(g['SENT']))
+      if not 'SENT' in g :
+        sent_data, l2occ = self.db
+        print('BAD SENT:',sent_data[id])
+        return None
+
       t0=next(iter(g['SENT']))
+      seen=set()
       def walk(x) :
+         if x in seen : return [x]
+         seen.add(x)
          xs=[y for y in iter(g[x])]
          return ([x]+list(map(walk,xs)))
       return walk(t0)
 
   def dep_term(self,id,quote=True):
     tree=self.dep_tree(id)
-    return tree2term(tree,quote=quote)
+    if not tree : return None
+    term = tree2term(tree,quote=quote)
+    return term
 
   def to_term_file(self):
     fname=osp.basename(self.from_file)
     fname=fname.split('.')[0]
     file_name='temp/' + fname + ".pro"
     sent_data, _ = self.db
+
     with open(file_name,'w') as outf:
       for id in range(len(sent_data)) :
-         term='term('+self.dep_term(id)+').'
+         x=self.dep_term(id)
+         if not x : continue
+         term='term('+x+').'
          print(term,file=outf)
-
 
   def to_edges_in(self,id,sd):
     '''yields edges from dependency structure of sentence id'''
@@ -1184,10 +1196,23 @@ class Talker :
 
 
 # helpers
+
+def dir_to_term_files(dir):
+  fs=os.listdir(dir)
+  for fname in fs:
+    #print(fname)
+    suf=fname.split('.')[1]
+
+    if suf == 'txt' and '_quest.' not in fname:
+      fname=dir+fname
+      t=Talker(from_file=fname)
+      print('talker from  --->',t.from_file)
+      t.to_term_file()
+
+
 def tree2term(term, quote=True):
     buf = []
     def walk(t):
-      #f, xs = t
       f=t[0]
       xs=t[1:]
       if quote: f = "'" + f + "'"
@@ -1199,7 +1224,8 @@ def tree2term(term, quote=True):
           walk(x)
         buf.append(')')
     walk(term)
-    return ''.join(buf)
+    s = ''.join(buf)
+    return s
 
 def nice_keys(keywords):
     '''
