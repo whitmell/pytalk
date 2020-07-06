@@ -125,7 +125,7 @@ def nrun(fname):
 
   N = NatTalker(from_file=docfile,
                 natscript=natscript)
-  with open(questfile, 'r') as f:
+  with ropen(questfile) as f:
     for q in f.readlines():
       N.natrun(q)
   # N.natrun("What deposits can be found in the Permian basin?")
@@ -298,8 +298,8 @@ def tgo()  :
 
 import json
 def crunch() :
-  with open('doctalk/in.txt','r') as f:
-    with  open('doctalk/lemmas.json','w') as g :
+  with ropen('doctalk/in.txt') as f:
+    with  wopen('doctalk/lemmas.json') as g :
       d=dict()
       for l in f.readlines() :
         ws = l.split()
@@ -383,7 +383,7 @@ if __name__== "__main__" :
   #api_test()
   #clean_text_file('examples/peirce.txt')
   #clean_text_file('examples/cybok.txt')
-  tt2()
+  #tt2()
   pass
 
 

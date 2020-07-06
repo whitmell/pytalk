@@ -36,7 +36,7 @@ def get_freqs() :
   global lemma_freqs
   if lemma_freqs : return lemma_freqs
   fname=my_path().replace('talk.py','lemmas.json')
-  with open(fname,'r') as f:
+  with ropen(fname) as f:
     lemma_freqs=json.load(f)
     return lemma_freqs
 
@@ -84,19 +84,19 @@ def tprint(*args) :
 def tload(infile) :
   ''' load a .txt file'''
   tprint('LOADING:',infile,'\n')
-  with open(infile, 'r') as f: text = f.read()
+  with ropen(infile) as f: text = f.read()
   return digest(text)
 
 def jload(infile) :
   ''' loads .json file, preprocessed from a .txt file'''
-  with open(infile, 'r') as f:
+  with ropen(infile) as f:
     res = json.load(f)
     return res
 
 def jsave(infile,outfile):
   '''preprocesses a .txt file to a .json file'''
   d=tload(infile)
-  with open(outfile,'w') as g:
+  with wopen(outfile) as g:
     json.dump(d,g,indent=0)
 
 def exists_file(fname) :
@@ -122,7 +122,7 @@ def get_quests(qs) :
   ''' decodes questions from list or file'''
   if not isinstance(qs,list) :
     qfname=qs
-    with open(qfname,'r') as f:
+    with ropen(qfname) as f:
       qs = list(l.strip() for l in f)
   return qs
 
@@ -960,7 +960,7 @@ class Talker :
     file_name='temp/' + fname + ".pro"
     sent_data, _ = self.db
 
-    with open(file_name,'w') as outf:
+    with wopen(file_name) as outf:
       for id in range(len(sent_data)) :
          x=self.dep_term(id,quote=quote)
          if not x : continue
@@ -977,7 +977,7 @@ class Talker :
         x = self.dep_tree(id)
         if not x: continue
         trees.append(x)
-    with open(file_name, 'w') as g:
+    with wopen(file_name) as g:
       json.dump(trees, g, indent=1)
 
 
@@ -1074,7 +1074,7 @@ class Talker :
     ''' generates a Prolog representation of a document's content'''
     if not self.from_file : return
     fname=self.from_file[:-4]
-    with open(fname+".pro",'w') as f :
+    with wopen(fname+".pro") as f :
       sent_data,l2occ=self.db
       f.write('% SENTENCES: \n')
       for i,data in enumerate(sent_data) :
@@ -1145,7 +1145,7 @@ class Talker :
     '''
     saves summary as plain text for ROUGE evaluation
     '''
-    with open(out_file,'w') as g:
+    with wopen(out_file) as g:
       for _, _, ws in self.get_summary():
         print(nice(ws),file=g)
 
@@ -1153,7 +1153,7 @@ class Talker :
     '''
       saves keyphrases one per line for ROUGE evaluation
     '''
-    with open(out_file,'w') as g:
+    with wopen(out_file) as g:
       for w in self.get_keys() :
         print(w,file=g)
 
@@ -1334,11 +1334,11 @@ def pdf2txt(fname) :
   clean_text_file(fname+".txt")
 
 def file2string(fname):
-  with open(fname, 'r') as f:
+  with ropen(fname) as f:
     return f.read()
 
 def string2file(text,fname) :
-  with open(fname,'w') as g:
+  with wopen(fname) as g:
     g.write(text)
 
 def clean_text_file(fname) :

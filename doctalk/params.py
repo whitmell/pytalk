@@ -86,6 +86,11 @@ class talk_params:
     for x,y in self.__dict__.items():
       print(x,'=',y)
 
+def ropen(f) :
+  return open(f,'r',encoding='utf8')
+
+def wopen(g) :
+  return open(g,'w',encoding='utf8')
 
 def ppp(*args) :
   if trace<0 : return

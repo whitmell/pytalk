@@ -42,7 +42,7 @@ def gshow(g, attr=None, file_name='temp.gv', show=1,json_save=True):
     if json_save : es.append((f,t,w))
   if json_save :
     jfile=file_name+".json"
-    with open(jfile,'w') as jf :
+    with wopen(jfile) as jf :
       json.dump(es,jf)
   dot.render(file_name, view=show>1)
 

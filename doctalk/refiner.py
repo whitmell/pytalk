@@ -30,7 +30,7 @@ def ask_bert(txt,q,confid=0) :
   import sys
   out = sys.stdout
   err =  sys.stderr
-  null = open(os.devnull, 'w')
+  null = open(os.devnull,'w')
   sys.stdout = null
   sys.stderr = null
   if not nlp :
@@ -39,6 +39,7 @@ def ask_bert(txt,q,confid=0) :
   r = nlp(question=q, context=txt)
   sys.stdout = out
   sys.stderr = err
+  null.close()
   if r==None : return r
   if confid == 0:
     return r['answer']+', with confidence ='+str(round(r['score'],3))
