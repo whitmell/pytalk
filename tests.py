@@ -6,6 +6,7 @@ from doctalk.think import *
 from doctalk.vis import *
 from doctalk.api import *
 from doctalk.pypro import NatTalker
+from doctalk.seek import *
 
 import pprint
 
@@ -286,6 +287,21 @@ def t20():
 def t21():
   fname = 'examples/cybok'
   run_with(fname, query=True)
+
+def s1() :
+  fname = 'examples/bfr.txt'
+  s=Seeker(from_file=fname)
+  s.qa()
+
+def s2() :
+  fname = 'examples/tesla.txt'
+  s=Seeker(from_file=fname)
+  s.qa()
+
+def s3() :
+  fname = 'examples/const.txt'
+  s=Seeker(from_file=fname)
+  s.qa()
 
 def tgo()  :
   D=doc_dir
