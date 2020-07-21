@@ -33,13 +33,21 @@ def ask_bert(txt,q,confid=0) :
   null = open(os.devnull,'w')
   sys.stdout = null
   sys.stderr = null
+  try :
+    r=try_to_ask_bert(txt,q,confid)
+  except:
+    r=None
+  sys.stdout = out
+  sys.stderr = err
+  null.close()
+  return r
+
+def try_to_ask_bert(txt,q,confid) :
+  global nlp
   if not nlp :
     from transformers import pipeline
     nlp = pipeline("question-answering")
   r = nlp(question=q, context=txt)
-  sys.stdout = out
-  sys.stderr = err
-  null.close()
   if r==None : return r
   if confid == 0:
     return r['answer']+', with confidence ='+str(round(r['score'],3))

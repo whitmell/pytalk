@@ -1098,17 +1098,26 @@ class Talker :
     from transformers import pipeline
     #ranks=[a[2] for a in answers]
     #assert ranks==sorted(ranks,reverse=True)
-    ws=[" ".join(a[1]) for a in answers]
-    lens=[len(a[1]) for a in answers]
+    xss=[a[1] for a in answers]
+
+    lens=[len(xs) for xs in xss]
     token_count = sum(lens)
 
+    ws = [" ".join(xs) for xs in xss]
     txt=" ".join(ws)
-    r=ask_bert(txt,q)
 
-    print('\n==============>BERT SHORT ANSWER:\n',
-          'sentences: ',len(lens),
-          #'sentence lengths:',lens,
-          'tokens:',token_count,':','\n',r+'\n')
+    r = ask_bert(txt, q)
+
+    if not r :
+      print('NO ANSWER from BERT.\n')
+      return
+
+    print('\n==============>ASKING BERT WITH:\n',
+          'sentences: ', len(lens),
+          ', sentence lengths:', lens,
+          ',tokens:', token_count,'\n')
+
+    print("==============>BERT's SHORT ANSWER:\n",r+'\n')
 
 
   def distill(self,q,answers,answerer):
@@ -1291,6 +1300,7 @@ def normalize_sent(r,sent_len,avg_len):
   '''
   if not r:
     r=0
+  #@@@@ if sent_len >= 64 : return 0
   if sent_len > 2*avg_len or sent_len < min(5,avg_len/4) :
     return 0
   factor =  1/(1+abs(sent_len-avg_len)+sent_len)

@@ -189,6 +189,10 @@ def t3():
   fname = 'examples/const'
   reason_with(fname, query=True)
 
+def t4a():
+  fname = 'examples/logrank'
+  run_with(fname, query=True)
+
 def t4():
   fname = 'examples/logrank'
   reason_with(fname, query=True)
