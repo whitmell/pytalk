@@ -58,7 +58,7 @@ def cleaned(w) :
 
 class NLPclient:
   def __init__(self, core_nlp_version = '2018-10-05'):
-    from stanfordnlp.server import CoreNLPClient
+    from stanza.server import CoreNLPClient
     self.client = CoreNLPClient(start_server=False)
 
   def __enter__(self): return self
