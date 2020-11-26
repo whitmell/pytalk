@@ -398,12 +398,12 @@ if __name__== "__main__" :
   #t12()
   #tftest()
   #otest()
-  #t0()
   #otest()
   #api_test()
   #clean_text_file('examples/peirce.txt')
   #clean_text_file('examples/cybok.txt')
   #tt2()
+  #t0()
   pass
 
 
