@@ -59,7 +59,12 @@ def cleaned(w) :
 class NLPclient:
   def __init__(self, core_nlp_version = '2018-10-05'):
     from stanza.server import CoreNLPClient
-    self.client = CoreNLPClient(start_server=False)
+    import os
+    remote_endpoint = os.environ['NLP_ENDPOINT']
+    if(remote_endpoint != '')
+      self.client = CoreNLPClient(start_server=False, endpoint=remote_endpoint)
+    else
+      self.client = CoreNLPClient(start_server=False)
 
   def __enter__(self): return self
   def __exit__(self, exc_type, exc_val, exc_tb): pass
